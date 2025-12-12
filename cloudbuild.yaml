@@ -1,0 +1,72 @@
+# Google Cloud Build 配置文件
+# 用于自动构建 Docker 镜像并部署到 Cloud Run
+
+steps:
+  # 步骤 1: 构建 Spring Boot JAR 文件
+  - name: 'maven:3.9-eclipse-temurin-21'
+    entrypoint: 'mvn'
+    args:
+      - 'clean'
+      - 'package'
+      - '-DskipTests'
+    id: 'build-jar'
+
+  # 步骤 2: 构建 Docker 镜像
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO_NAME}/${_SERVICE_NAME}:${SHORT_SHA}'
+      - '-t'
+      - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO_NAME}/${_SERVICE_NAME}:latest'
+      - '.'
+    id: 'build-image'
+    waitFor: ['build-jar']
+
+  # 步骤 3: 推送镜像到 Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - '--all-tags'
+      - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO_NAME}/${_SERVICE_NAME}'
+    id: 'push-image'
+    waitFor: ['build-image']
+
+  # 步骤 4: 部署到 Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - '${_SERVICE_NAME}'
+      - '--image'
+      - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO_NAME}/${_SERVICE_NAME}:${SHORT_SHA}'
+      - '--region'
+      - '${_REGION}'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+      - '--memory'
+      - '512Mi'
+      - '--cpu'
+      - '1'
+      - '--min-instances'
+      - '0'
+      - '--max-instances'
+      - '10'
+      - '--timeout'
+      - '300'
+      - '--port'
+      - '8080'
+    id: 'deploy-cloud-run'
+    waitFor: ['push-image']
+
+# 替换变量说明：
+# _REGION: Cloud Run 区域（例如：asia-southeast1）
+# _REPO_NAME: Artifact Registry 仓库名称（例如：employee-management）
+# _SERVICE_NAME: Cloud Run 服务名称（例如：employee-management）
+# PROJECT_ID: 自动从 Cloud Build 获取
+# SHORT_SHA: 自动从 Git commit 获取
+
+
+

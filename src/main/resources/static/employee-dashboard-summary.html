@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Employee Dashboard | Employee Management</title>
+	<link rel="stylesheet" href="/css/dashboard.css">
+	<link rel="stylesheet" href="/css/dashboard-enhanced.css">
+	<style>
+		.dashboard-header {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			margin-bottom: 24px;
+		}
+
+		.dashboard-title {
+			font-size: 1.8rem;
+			font-weight: 700;
+			margin: 0;
+			color: var(--text-primary);
+		}
+
+		.search-container {
+			position: relative;
+			margin-bottom: 24px;
+		}
+
+		.search-container input {
+			width: 100%;
+			padding: 12px 16px 12px 44px;
+			border-radius: var(--radius-element);
+			border: 1px solid var(--border-color);
+			background: #f9f9fb;
+			font-size: 0.95rem;
+		}
+
+		.search-container::before {
+			content: '🔍';
+			position: absolute;
+			left: 14px;
+			top: 50%;
+			transform: translateY(-50%);
+			font-size: 1.1rem;
+		}
+
+		.stats-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+			gap: 24px;
+			margin-bottom: 32px;
+		}
+
+		.stat-card {
+			background: #ffffff;
+			border-radius: 16px;
+			padding: 24px;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+			border: 1px solid rgba(0, 0, 0, 0.06);
+			display: flex;
+			flex-direction: column;
+			gap: 16px;
+			transition: transform 0.2s ease, box-shadow 0.2s ease;
+		}
+
+		.stat-card:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+		}
+
+		.stat-card-header {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+		}
+
+		.stat-icon {
+			width: 48px;
+			height: 48px;
+			border-radius: 12px;
+			display: grid;
+			place-items: center;
+			font-size: 1.5rem;
+		}
+
+		.stat-icon.purple {
+			background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+			color: white;
+			box-shadow: 0 4px 12px rgba(155, 89, 182, 0.3);
+		}
+
+		.stat-icon.green {
+			background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+			color: white;
+			box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+		}
+
+		.stat-icon.blue {
+			background: linear-gradient(135deg, #5dade2 0%, #3498db 100%);
+			color: white;
+			box-shadow: 0 4px 12px rgba(93, 173, 226, 0.3);
+		}
+
+		.stat-icon.orange {
+			background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+			color: white;
+			box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3);
+		}
+
+		.stat-icon.red {
+			background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+			color: white;
+			box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+		}
+
+		.stat-value {
+			font-size: 2rem;
+			font-weight: 700;
+			color: var(--text-primary);
+			margin: 0;
+		}
+
+		.stat-label {
+			font-size: 0.9rem;
+			color: var(--text-muted);
+			margin: 0;
+		}
+
+		.stat-trend {
+			display: flex;
+			align-items: center;
+			gap: 6px;
+			font-size: 0.85rem;
+			font-weight: 600;
+		}
+
+		.stat-trend.positive {
+			color: #27ae60;
+		}
+
+		.stat-trend.negative {
+			color: #e74c3c;
+		}
+
+		.stat-chart {
+			height: 40px;
+			display: flex;
+			align-items: flex-end;
+			gap: 4px;
+			margin-top: 8px;
+		}
+
+		.stat-chart-bar {
+			flex: 1;
+			background: linear-gradient(180deg, rgba(47, 76, 235, 0.6) 0%, rgba(47, 76, 235, 0.3) 100%);
+			border-radius: 4px 4px 0 0;
+			min-height: 4px;
+			transition: all 0.3s ease;
+		}
+
+		.stat-chart-bar:hover {
+			background: linear-gradient(180deg, rgba(47, 76, 235, 0.8) 0%, rgba(47, 76, 235, 0.5) 100%);
+		}
+
+		.weekly-hours-section {
+			background: #ffffff;
+			border-radius: 16px;
+			padding: 24px;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+			border: 1px solid rgba(0, 0, 0, 0.06);
+			margin-top: 32px;
+		}
+
+		.weekly-hours-title {
+			font-size: 1.1rem;
+			font-weight: 600;
+			margin: 0 0 20px 0;
+			color: var(--text-primary);
+			text-align: center;
+		}
+
+		.weekly-hours-chart {
+			display: flex;
+			flex-direction: column;
+			height: 280px;
+			position: relative;
+		}
+
+		.chart-content-wrapper {
+			flex: 1;
+			display: flex;
+			position: relative;
+			margin-bottom: 0;
+		}
+
+		.chart-y-axis {
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
+			position: absolute;
+			left: 0;
+			top: 0;
+			bottom: 40px;
+			width: 30px;
+			padding-right: 10px;
+		}
+
+		.y-axis-label {
+			font-size: 0.75rem;
+			color: var(--text-muted);
+			text-align: right;
+			font-weight: 500;
+		}
+
+		.chart-content {
+			display: flex;
+			flex: 1;
+			align-items: flex-end;
+			justify-content: space-around;
+			margin-left: 40px;
+			margin-bottom: 0;
+			padding-bottom: 0;
+			gap: 8px;
+			position: absolute;
+			left: 0;
+			right: 0;
+			top: 0;
+			bottom: 40px;
+		}
+
+		.chart-bar-container {
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			height: 100%;
+			justify-content: flex-end;
+			min-height: 0;
+		}
+
+		.chart-bar {
+			width: 100%;
+			background: linear-gradient(180deg, #7dd3a0 0%, #6bc48f 100%);
+			border-radius: 4px 4px 0 0;
+			min-height: 4px;
+			transition: all 0.3s ease;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+			align-self: flex-end;
+		}
+
+		.chart-bar:hover {
+			background: linear-gradient(180deg, #6bc48f 0%, #5ab87d 100%);
+			transform: translateY(-2px);
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+		}
+
+		.chart-x-axis {
+			display: flex;
+			justify-content: space-around;
+			margin-left: 40px;
+			padding-top: 10px;
+			border-top: 1px solid var(--border-color);
+			margin-top: auto;
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			right: 0;
+		}
+
+		.x-axis-label {
+			font-size: 0.85rem;
+			color: var(--text-muted);
+			font-weight: 600;
+			flex: 1;
+			text-align: center;
+		}
+
+		.chart-grid-lines {
+			position: absolute;
+			left: 40px;
+			right: 0;
+			top: 0;
+			bottom: 40px;
+			pointer-events: none;
+		}
+
+		.grid-line {
+			position: absolute;
+			left: 0;
+			right: 0;
+			border-top: 1px solid var(--border-color);
+		}
+
+		/* Announcements Section */
+		.announcements-section {
+			background: #ffffff;
+			border-radius: 16px;
+			padding: 24px;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+			border: 1px solid rgba(0, 0, 0, 0.06);
+			margin-top: 32px;
+		}
+
+		.announcements-header {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			margin-bottom: 20px;
+			padding-bottom: 16px;
+			border-bottom: 2px solid var(--border-color);
+		}
+
+		.announcements-title {
+			font-size: 1.3rem;
+			font-weight: 600;
+			color: var(--text-primary);
+			margin: 0;
+			display: flex;
+			align-items: center;
+			gap: 10px;
+		}
+
+		.announcements-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+			gap: 20px;
+		}
+
+		.announcement-card {
+			background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+			border-radius: 12px;
+			padding: 20px;
+			border: 1px solid var(--border-color);
+			transition: all 0.3s ease;
+			position: relative;
+			overflow: hidden;
+		}
+
+		.announcement-card:hover {
+			transform: translateY(-4px);
+			box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+			border-color: #3c8ce7;
+		}
+
+		.announcement-card.pinned {
+			border-left: 4px solid #f39c12;
+			background: linear-gradient(135deg, #fff8e1 0%, #ffffff 100%);
+		}
+
+		.announcement-card-header {
+			display: flex;
+			align-items: flex-start;
+			justify-content: space-between;
+			margin-bottom: 12px;
+		}
+
+		.announcement-title {
+			font-size: 1.1rem;
+			font-weight: 600;
+			color: var(--text-primary);
+			margin: 0;
+			flex: 1;
+		}
+
+		.announcement-pin {
+			background: #f39c12;
+			color: white;
+			padding: 4px 8px;
+			border-radius: 4px;
+			font-size: 0.7rem;
+			font-weight: 600;
+			text-transform: uppercase;
+			margin-left: 8px;
+		}
+
+		.announcement-message {
+			font-size: 0.9rem;
+			color: var(--text-muted);
+			line-height: 1.6;
+			margin: 12px 0;
+			display: -webkit-box;
+			-webkit-line-clamp: 3;
+			line-clamp: 3;
+			-webkit-box-orient: vertical;
+			overflow: hidden;
+		}
+
+		.announcement-footer {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			margin-top: 16px;
+			padding-top: 12px;
+			border-top: 1px solid var(--border-color);
+			font-size: 0.85rem;
+			color: var(--text-muted);
+		}
+
+		.announcement-author {
+			display: flex;
+			align-items: center;
+			gap: 6px;
+		}
+
+		.announcement-date {
+			display: flex;
+			align-items: center;
+			gap: 6px;
+		}
+
+		.announcement-audience {
+			display: inline-block;
+			padding: 4px 10px;
+			border-radius: 12px;
+			font-size: 0.75rem;
+			font-weight: 500;
+			background: rgba(60, 140, 231, 0.1);
+			color: #3c8ce7;
+		}
+
+		.announcements-empty {
+			text-align: center;
+			padding: 40px 20px;
+			color: var(--text-muted);
+		}
+
+		.announcements-empty::before {
+			content: '📢';
+			display: block;
+			font-size: 3rem;
+			margin-bottom: 16px;
+			opacity: 0.5;
+		}
+
+		.loading {
+			text-align: center;
+			padding: 40px;
+			color: var(--text-muted);
+		}
+
+		.error {
+			background: #fee;
+			color: #c33;
+			padding: 16px;
+			border-radius: var(--radius-element);
+			margin: 16px 0;
+		}
+	</style>
+</head>
+
+<body>
+	<header>
+		<div class="brand">
+			<div class="brand__avatar"></div>
+			<div class="brand__content">
+				<h1 class="brand__title">TheLorry</h1>
+				<p class="brand__subtitle">Malaysia • Employee Portal</p>
+			</div>
+		</div>
+		
+		<div class="page-meta" id="userBadge"></div>
+		<button id="logoutButton" class="logout-button">Logout</button>
+	</header>
+
+	<div class="layout">
+		<nav class="sidebar sidebar-modern" id="sidebar" style="background: #ffffff !important; color: var(--text-primary) !important; border: 1px solid var(--border-color) !important; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;">
+			<div class="nav-section">
+				<a class="nav-link active" href="#" data-nav-scope="employee" data-nav-target="dashboard">Dashboard</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="profile">Profile</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="attendance">Attendance</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="leave">Leave</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="overtime">Overtime</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="payroll">Payroll</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="benefits">Benefits</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="performance">Performance</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="announcements">Announcements</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="reports">Reports</a>
+			</div>
+		</nav>
+
+		<div class="content-area">
+			<div id="dashboardContent">
+				<div class="loading">Loading dashboard data...</div>
+			</div>
+		</div>
+	</div>
+
+	<script src="/js/common-ui.js"></script>
+	<script src="/js/dashboard.js"></script>
+	<script>
+		let currentUser = null;
+		let dashboardData = null;
+
+		// Initialize dashboard
+		document.addEventListener('DOMContentLoaded', async () => {
+			try {
+				const response = await fetch('/api/auth/me', { credentials: 'same-origin' });
+				if (!response.ok) {
+					window.location.href = '/login.html';
+					return;
+				}
+				currentUser = await response.json();
+				
+				// Check if user is admin (redirect to admin dashboard)
+				if (currentUser.role === 'ADMIN') {
+					window.location.href = '/admin-dashboard-summary.html';
+					return;
+				}
+				
+				// Use DashboardApp for consistency with other pages
+				DashboardApp.renderUserBadge();
+				
+				// Ensure sidebar-modern class is applied and wait for CommonUI
+				const sidebar = document.getElementById('sidebar');
+				if (sidebar) {
+					sidebar.classList.add('sidebar-modern');
+				}
+				
+				// Wait for CommonUI to finish initialization
+				await new Promise(resolve => setTimeout(resolve, 100));
+				
+				DashboardApp.initSidebar({ 
+					scope: 'employee', 
+					active: 'dashboard' 
+				});
+				DashboardApp.attachLogout();
+				DashboardApp.initFloatingChatbot();
+				DashboardApp.initInactivityMonitor();
+				
+				loadDashboard();
+			} catch (error) {
+				console.error('Auth check failed:', error);
+				window.location.href = '/login.html';
+			}
+		});
+
+		async function loadDashboard() {
+			try {
+				// Ensure currentUser is set
+				if (!currentUser || !currentUser.userId) {
+					console.log('Fetching current user...');
+					const userResponse = await fetch('/api/auth/me', { credentials: 'same-origin' });
+					if (userResponse.ok) {
+						currentUser = await userResponse.json();
+						console.log('Current user set:', currentUser.userId);
+					} else {
+						console.error('Failed to fetch current user');
+						throw new Error('Failed to fetch current user');
+					}
+				}
+				
+				const apiUrl = '/api/employee/dashboard/summary';
+				
+				console.log('Loading dashboard from:', apiUrl);
+				const response = await fetch(apiUrl, { credentials: 'same-origin' });
+				
+				if (!response.ok) {
+					const errorText = await response.text();
+					console.error('API Error:', response.status, errorText);
+					throw new Error(`Failed to load dashboard data: ${response.status} ${errorText}`);
+				}
+				
+				dashboardData = await response.json();
+				console.log('Dashboard data loaded:', dashboardData);
+				
+				// Load attendance data for weekly chart (currentUser should be set now)
+				await loadWeeklyHoursChart();
+				console.log('Weekly hours data after loading:', weeklyHoursData);
+				
+				renderDashboard();
+			} catch (error) {
+				console.error('Error loading dashboard:', error);
+				document.getElementById('dashboardContent').innerHTML = 
+					`<div class="error">
+						<p>Failed to load dashboard data.</p>
+						<p style="font-size: 0.85rem; margin-top: 8px;">Error: ${error.message}</p>
+						<p style="font-size: 0.85rem;">Please check the browser console for more details.</p>
+					</div>`;
+			}
+		}
+
+		let weeklyHoursData = [0, 0, 0, 0, 0, 0, 0]; // Monday to Sunday
+
+			async function loadWeeklyHoursChart() {
+			try {
+				// Get current user from session if not available
+				if (!currentUser || !currentUser.userId) {
+					console.warn('Current user not available, fetching from API...');
+					const userResponse = await fetch('/api/auth/me', { credentials: 'same-origin' });
+					if (userResponse.ok) {
+						currentUser = await userResponse.json();
+						console.log('Current user fetched:', currentUser);
+					} else {
+						console.warn('Failed to fetch current user for weekly chart');
+						return;
+					}
+				}
+				
+				if (!currentUser || !currentUser.userId) {
+					console.warn('Current user still not available for weekly chart');
+					return;
+				}
+				
+				console.log('Loading attendance for user:', currentUser.userId);
+				const attendanceResponse = await fetch(`/api/employee/attendance/${currentUser.userId}`, { credentials: 'same-origin' });
+				if (!attendanceResponse.ok) {
+					console.warn('Failed to load attendance data for weekly chart');
+					return;
+				}
+				
+				const attendanceList = await attendanceResponse.json();
+				
+				// Get current week (Monday to Sunday)
+				const now = new Date();
+				const dayOfWeek = now.getDay(); // 0 = Sunday, 1 = Monday, etc.
+				const monday = new Date(now);
+				monday.setDate(now.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+				monday.setHours(0, 0, 0, 0);
+				
+				const sunday = new Date(monday);
+				sunday.setDate(monday.getDate() + 6);
+				sunday.setHours(23, 59, 59, 999);
+				
+				console.log('Current week calculation:');
+				console.log('  Today:', now.toISOString().split('T')[0], 'Day of week:', dayOfWeek);
+				console.log('  Monday:', monday.toISOString().split('T')[0]);
+				console.log('  Sunday:', sunday.toISOString().split('T')[0]);
+				
+				// Initialize weekly hours array (Monday to Sunday)
+				weeklyHoursData = [0, 0, 0, 0, 0, 0, 0];
+				
+				// Process attendance records
+				console.log('Processing attendance records for weekly chart. Total records:', attendanceList.length);
+				attendanceList.forEach(att => {
+					if (!att.workDate) {
+						console.log('  Skipping record with no workDate');
+						return;
+					}
+					
+					// Parse workDate (format: yyyy-MM-dd)
+					const workDateParts = att.workDate.split('-');
+					const workDate = new Date(parseInt(workDateParts[0]), parseInt(workDateParts[1]) - 1, parseInt(workDateParts[2]));
+					workDate.setHours(0, 0, 0, 0); // Normalize time to avoid timezone issues
+					
+					// Normalize monday and sunday times
+					const mondayNormalized = new Date(monday);
+					mondayNormalized.setHours(0, 0, 0, 0);
+					const sundayNormalized = new Date(sunday);
+					sundayNormalized.setHours(0, 0, 0, 0);
+					
+					console.log('  Checking record:', {
+						workDate: att.workDate,
+						parsedDate: workDate.toISOString().split('T')[0],
+						monday: mondayNormalized.toISOString().split('T')[0],
+						sunday: sundayNormalized.toISOString().split('T')[0],
+						inRange: workDate >= mondayNormalized && workDate <= sundayNormalized,
+						status: att.status,
+						checkIn: att.checkIn,
+						checkOut: att.checkOut
+					});
+					
+					if (workDate >= mondayNormalized && workDate <= sundayNormalized) {
+						// Calculate day index (0 = Monday, 6 = Sunday)
+						const dayIndex = workDate.getDay() === 0 ? 6 : workDate.getDay() - 1;
+						
+						// Normalize status for comparison
+						const statusStr = att.status ? 
+							(typeof att.status === 'string' ? att.status : 
+							(att.status.name || att.status.value || att.status.toString() || '')) : '';
+						const normalizedStatus = statusStr.toUpperCase().trim();
+						
+						// Only calculate hours for PRESENT, LATE, or REMOTE status
+						if (normalizedStatus !== 'PRESENT' && normalizedStatus !== 'LATE' && normalizedStatus !== 'REMOTE') {
+							console.log(`    ✗ Skipping record (status: ${normalizedStatus} is not PRESENT/LATE/REMOTE)`);
+							return; // Skip this record
+						}
+						
+						// Calculate hours worked (only for PRESENT/LATE/REMOTE)
+						let hours = 0;
+						if (att.checkIn && att.checkOut) {
+							// Parse time strings (format: HH:mm or HH:mm:ss)
+							const checkInParts = att.checkIn.split(':');
+							const checkOutParts = att.checkOut.split(':');
+							const checkInMinutes = parseInt(checkInParts[0]) * 60 + parseInt(checkInParts[1]);
+							const checkOutMinutes = parseInt(checkOutParts[0]) * 60 + parseInt(checkOutParts[1]);
+							
+							let diffMinutes = checkOutMinutes - checkInMinutes;
+							if (diffMinutes < 0) {
+								// Handle overnight shifts
+								diffMinutes += 24 * 60;
+							}
+							hours = diffMinutes / 60;
+							console.log(`    ✓ Calculated hours from checkIn/Out: ${hours} (${att.checkIn} to ${att.checkOut}), status: ${normalizedStatus}`);
+						} else {
+							// Default to 8 hours if no check-in/out but status is PRESENT/LATE/REMOTE
+							hours = 8;
+							console.log(`    ✓ Using default 8 hours for status: ${normalizedStatus} (no checkIn/checkOut)`);
+						}
+						
+						if (hours > 0) {
+							weeklyHoursData[dayIndex] = hours;
+							const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+							console.log(`    ✓ Set hours for day index ${dayIndex} (${dayNames[dayIndex]}): ${hours} hours`);
+						} else {
+							console.log(`    ✗ No hours calculated for day index ${dayIndex}`);
+						}
+					}
+				});
+				
+				console.log('Weekly hours data after processing:', weeklyHoursData);
+			} catch (error) {
+				console.error('Error loading weekly hours chart:', error);
+			}
+		}
+
+		async function renderDashboard() {
+			if (!dashboardData) {
+				console.error('No dashboard data available');
+				document.getElementById('dashboardContent').innerHTML = 
+					'<div class="error">No data available. Please check the console for errors.</div>';
+				return;
+			}
+
+			console.log('Rendering dashboard with data:', dashboardData);
+			console.log('Late Arrivals from API:', dashboardData.lateArrivals);
+			console.log('Monthly Attendance Days from API:', dashboardData.monthlyAttendanceDays);
+
+			const content = document.getElementById('dashboardContent');
+			
+			// Use employee-specific metrics from API
+			const pendingLeaveRequests = dashboardData.pendingLeaveRequests != null ? dashboardData.pendingLeaveRequests : 0;
+			const monthlyAttendanceDays = dashboardData.monthlyAttendanceDays != null ? dashboardData.monthlyAttendanceDays : 0;
+			const lateArrivals = dashboardData.lateArrivals != null ? dashboardData.lateArrivals : 0;
+			const monthlyWorkingHours = dashboardData.monthlyWorkingHours != null ? dashboardData.monthlyWorkingHours : 0;
+			
+			// New metrics
+			const pendingOvertimeRequests = dashboardData.pendingOvertimeRequests != null ? dashboardData.pendingOvertimeRequests : 0;
+			const monthlyOvertimeHours = dashboardData.monthlyOvertimeHours != null ? dashboardData.monthlyOvertimeHours : 0;
+			const upcomingLeaves = dashboardData.upcomingLeaves != null ? dashboardData.upcomingLeaves : 0;
+			const kpiCompletionRate = dashboardData.kpiCompletionRate != null ? dashboardData.kpiCompletionRate : 0;
+			const sickLeaveBalance = dashboardData.sickLeaveBalance != null ? dashboardData.sickLeaveBalance : 0;
+			const annualLeaveBalance = dashboardData.annualLeaveBalance != null ? dashboardData.annualLeaveBalance : 0;
+			
+			
+			
+			const cardsHtml = `
+				${createStatCard('Pending Leave Requests', pendingLeaveRequests, 0, 
+					dashboardData.pendingLeaveRequestsChartData || generateSimpleChartData(7), 'orange', '📋', 'Leave requests awaiting approval')}
+				${createStatCard('Available Leave', dashboardData.availableLeave, dashboardData.availableLeaveChangePercent, 
+					dashboardData.availableLeaveChartData, 'blue', '☁️', 'Remaining leave days')}
+				${createStatCard('Monthly Attendance', monthlyAttendanceDays, 0, 
+					dashboardData.monthlyAttendanceDaysChartData || generateSimpleChartData(7), 'green', '✅', 'Days present this month')}
+				${createStatCard('Late Arrivals', lateArrivals, 0, 
+					dashboardData.lateArrivalsChartData || generateSimpleChartData(7), 'red', '⏰', 'Late arrivals this month')}
+				${createStatCard('Project Assigned', dashboardData.projectsAssigned, dashboardData.projectsAssignedChangePercent, 
+					dashboardData.projectsAssignedChartData, 'purple', '📁', 'Active KPI projects')}
+				${createStatCard('Monthly Working Hours', Math.round(monthlyWorkingHours), 0, 
+					dashboardData.monthlyWorkingHoursChartData || generateSimpleChartData(7), 'blue', '⏱️', 'Total hours this month')}
+				${createStatCard('Pending Overtime', pendingOvertimeRequests, 0, 
+					generateSimpleChartData(7), 'orange', '🕐', 'Overtime requests awaiting approval')}
+				${createStatCard('Monthly Overtime Hours', monthlyOvertimeHours.toFixed(1), 0, 
+					generateSimpleChartData(7), 'blue', '⏰', 'Approved overtime hours this month')}
+			
+				
+			`;
+			
+			// Load announcements
+			let announcementsHtml = '';
+			try {
+				const announcementsResponse = await fetch('/api/employee/announcements', { credentials: 'same-origin' });
+				if (announcementsResponse.ok) {
+					const allAnnouncements = await announcementsResponse.json();
+					const today = new Date().toISOString().split('T')[0];
+					
+					// Filter expired announcements and sort (pinned first, then by date)
+					const validAnnouncements = allAnnouncements
+						.filter(a => !a.expiresOn || a.expiresOn >= today)
+						.sort((a, b) => {
+							if (a.pinned !== b.pinned) return b.pinned - a.pinned;
+							return new Date(b.createdAt) - new Date(a.createdAt);
+						})
+						.slice(0, 6); // Show max 6 announcements
+					
+					if (validAnnouncements.length > 0) {
+						announcementsHtml = `
+							<div class="announcements-section">
+								<div class="announcements-header">
+									<h2 class="announcements-title">
+										<span>📢</span>
+										<span>Announcements</span>
+									</h2>
+								</div>
+								<div class="announcements-grid">
+									${validAnnouncements.map(announcement => createAnnouncementCard(announcement)).join('')}
+								</div>
+							</div>
+						`;
+					} else {
+						announcementsHtml = `
+							<div class="announcements-section">
+								<div class="announcements-header">
+									<h2 class="announcements-title">
+										<span>📢</span>
+										<span>Announcements</span>
+									</h2>
+								</div>
+								<div class="announcements-empty">
+									No announcements available
+								</div>
+							</div>
+						`;
+					}
+				}
+			} catch (error) {
+				console.error('Error loading announcements:', error);
+			}
+			
+			content.innerHTML = `
+				<div class="stats-grid">
+					${cardsHtml}
+				</div>
+				${createWeeklyHoursChart()}
+				${announcementsHtml}
+			`;
+		}
+
+		function createStatCard(label, value, changePercent, chartData, iconClass, iconEmoji, description = '') {
+			const isPositive = changePercent >= 0;
+			const trendText = changePercent === 0 
+				? 'No Change'
+				: (isPositive 
+					? `+${changePercent.toFixed(0)}% Higher Than Last Month`
+					: `${changePercent.toFixed(0)}% Lower Than Last Month`);
+			
+			const maxValue = Math.max(...chartData, 1);
+			const chartBars = chartData.map(val => {
+				const height = (val / maxValue) * 100;
+				return `<div class="stat-chart-bar" style="height: ${height}%"></div>`;
+			}).join('');
+
+			return `
+				<div class="stat-card">
+					<div class="stat-card-header">
+						<div class="stat-icon ${iconClass}">${iconEmoji}</div>
+					</div>
+					<div>
+						<p class="stat-value">${value}</p>
+						<p class="stat-label">${label}</p>
+						${description ? `<p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">${description}</p>` : ''}
+					</div>
+					${changePercent !== 0 ? `
+					<div class="stat-trend ${isPositive ? 'positive' : 'negative'}">
+						<span>${isPositive ? '↑' : '↓'}</span>
+						<span>${trendText}</span>
+					</div>
+					` : ''}
+					<div class="stat-chart">
+						${chartBars}
+					</div>
+				</div>
+			`;
+		}
+		
+		function generateSimpleChartData(days) {
+			const data = [];
+			for (let i = 0; i < days; i++) {
+				data.push(Math.floor(Math.random() * 5) + 1);
+			}
+			return data;
+		}
+
+		function createAnnouncementCard(announcement) {
+			const createdDate = new Date(announcement.createdAt);
+			const formattedDate = createdDate.toLocaleDateString('en-US', { 
+				year: 'numeric', 
+				month: 'short', 
+				day: 'numeric' 
+			});
+			const formattedTime = createdDate.toLocaleTimeString('en-US', { 
+				hour: '2-digit', 
+				minute: '2-digit' 
+			});
+			
+			const audienceLabel = announcement.audience === 'ALL' ? 'All' : 
+				announcement.audience === 'EMPLOYEE' ? 'Employees' : 'Admins';
+			
+			return `
+				<div class="announcement-card ${announcement.pinned ? 'pinned' : ''}">
+					<div class="announcement-card-header">
+						<h3 class="announcement-title">${escapeHtml(announcement.title)}</h3>
+						${announcement.pinned ? '<span class="announcement-pin">📌 Pinned</span>' : ''}
+					</div>
+					<div class="announcement-message">${escapeHtml(announcement.message)}</div>
+					<div class="announcement-footer">
+						<div class="announcement-author">
+							<span>👤</span>
+							<span>${escapeHtml(announcement.createdBy || 'Admin')}</span>
+						</div>
+						<div class="announcement-date">
+							<span>📅</span>
+							<span>${formattedDate} ${formattedTime}</span>
+						</div>
+					</div>
+					<div style="margin-top: 8px;">
+						<span class="announcement-audience">${audienceLabel}</span>
+					</div>
+				</div>
+			`;
+		}
+
+		function escapeHtml(text) {
+			if (!text) return '';
+			const div = document.createElement('div');
+			div.textContent = text;
+			return div.innerHTML;
+		}
+
+		function createWeeklyHoursChart() {
+			const maxHours = 10;
+			const dayLabels = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+			const yAxisLabels = [10, 8, 6, 4, 2, 0]; // From top to bottom: 10 at top, 0 at bottom
+			
+			// Create grid lines
+			const gridLines = [0, 2, 4, 6, 8, 10].map((label) => {
+				const percentage = (label / maxHours) * 100;
+				return `<div class="grid-line" style="bottom: ${percentage}%"></div>`;
+			}).join('');
+			
+			// Create bars
+			const bars = weeklyHoursData.map((hours, index) => {
+				const height = Math.min((hours / maxHours) * 100, 100);
+				const formattedHours = hours > 0 ? hours.toFixed(1) : '0';
+				console.log(`  Bar ${index} (${dayLabels[index]}): hours=${hours}, height=${height}%`);
+				return `
+					<div class="chart-bar-container" title="${dayLabels[index]}: ${formattedHours} hours">
+						<div class="chart-bar" style="height: ${height}%"></div>
+					</div>
+				`;
+			}).join('');
+			
+			// Create x-axis labels
+			const xAxisLabels = dayLabels.map(day => 
+				`<div class="x-axis-label">${day}</div>`
+			).join('');
+			
+			// Create y-axis labels (will be reversed by flex-direction: column-reverse)
+			const yAxisLabelsHtml = yAxisLabels.map(label => 
+				`<div class="y-axis-label">${label}</div>`
+			).join('');
+			
+			return `
+				<div class="weekly-hours-section">
+					<h2 class="weekly-hours-title">Work Hour (hh:mm)</h2>
+					<div class="weekly-hours-chart">
+						<div class="chart-grid-lines">
+							${gridLines}
+						</div>
+						<div class="chart-y-axis">
+							${yAxisLabelsHtml}
+						</div>
+						<div class="chart-content">
+							${bars}
+						</div>
+						<div class="chart-x-axis">
+							${xAxisLabels}
+						</div>
+					</div>
+				</div>
+			`;
+		}
+	</script>
+</body>
+
+</html>
+
+
+
+
+

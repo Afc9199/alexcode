@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>AI Chatbot | Employee Management</title>
+	<link rel="stylesheet" href="/css/dashboard.css">
+	<link rel="stylesheet" href="/css/dashboard-enhanced.css">
+	<style>
+		.chatbot-page-header {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			margin-bottom: 24px;
+			flex-wrap: wrap;
+			gap: 16px;
+		}
+
+		.chatbot-page-title {
+			font-size: 1.8rem;
+			font-weight: 700;
+			margin: 0;
+			color: var(--text-primary);
+		}
+
+		.chatbot-badge {
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+			padding: 8px 16px;
+			background: linear-gradient(135deg, #2f4ceb 0%, #7d5afe 100%);
+			color: #ffffff;
+			border-radius: 999px;
+			font-size: 0.85rem;
+			font-weight: 600;
+			box-shadow: 0 4px 12px rgba(47, 76, 235, 0.3);
+		}
+
+		.chatbot-card {
+			background: #ffffff;
+			border-radius: 20px;
+			padding: 32px;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+			border: 1px solid rgba(0, 0, 0, 0.06);
+		}
+
+		.chatbot-card-header {
+			margin-bottom: 24px;
+			padding-bottom: 20px;
+			border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+		}
+
+		.chatbot-card-header h2 {
+			font-size: 1.5rem;
+			font-weight: 700;
+			margin: 0 0 8px 0;
+			color: var(--text-primary);
+		}
+
+		.chatbot-card-header p {
+			color: var(--text-muted);
+			margin: 0;
+			font-size: 0.95rem;
+			line-height: 1.5;
+		}
+
+		.chatbot-grid {
+			display: grid;
+			grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
+			gap: 24px;
+		}
+
+		.chat-panel {
+			display: flex;
+			flex-direction: column;
+			gap: 16px;
+		}
+
+		.chat-history {
+			background: #f9f9fb;
+			border-radius: 16px;
+			padding: 20px;
+			min-height: 400px;
+			max-height: 600px;
+			overflow-y: auto;
+			display: flex;
+			flex-direction: column;
+			gap: 16px;
+			border: 1px solid rgba(0, 0, 0, 0.06);
+			box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.04);
+		}
+
+		.chat-history::-webkit-scrollbar {
+			width: 8px;
+		}
+
+		.chat-history::-webkit-scrollbar-track {
+			background: transparent;
+		}
+
+		.chat-history::-webkit-scrollbar-thumb {
+			background: rgba(0, 0, 0, 0.2);
+			border-radius: 4px;
+		}
+
+		.chat-history::-webkit-scrollbar-thumb:hover {
+			background: rgba(0, 0, 0, 0.3);
+		}
+
+		.chat-message {
+			padding: 14px 18px;
+			border-radius: 16px;
+			max-width: 85%;
+			word-wrap: break-word;
+			line-height: 1.5;
+			font-size: 0.95rem;
+		}
+
+		.chat-message--assistant {
+			background: linear-gradient(135deg, rgba(47, 76, 235, 0.1) 0%, rgba(125, 90, 254, 0.1) 100%);
+			border: 1px solid rgba(47, 76, 235, 0.15);
+			align-self: flex-start;
+			color: var(--text-primary);
+		}
+
+		.chat-message--user {
+			background: #ffffff;
+			border: 1px solid rgba(47, 76, 235, 0.2);
+			align-self: flex-end;
+			color: var(--text-primary);
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+		}
+
+		.chat-message--system {
+			background: rgba(255, 193, 7, 0.1);
+			border: 1px solid rgba(255, 193, 7, 0.2);
+			align-self: center;
+			max-width: 90%;
+			font-size: 0.9rem;
+			color: var(--text-muted);
+		}
+
+		.chat-typing {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			padding: 12px 18px;
+			background: rgba(47, 76, 235, 0.05);
+			border-radius: 16px;
+			align-self: flex-start;
+			font-size: 0.9rem;
+			color: var(--text-muted);
+		}
+
+		.chat-typing .dot {
+			width: 8px;
+			height: 8px;
+			border-radius: 50%;
+			background: #2f4ceb;
+			animation: typing 1.4s infinite;
+		}
+
+		.chat-typing .dot:nth-child(2) {
+			animation-delay: 0.2s;
+		}
+
+		.chat-typing .dot:nth-child(3) {
+			animation-delay: 0.4s;
+		}
+
+		@keyframes typing {
+			0%, 60%, 100% {
+				transform: translateY(0);
+				opacity: 0.7;
+			}
+			30% {
+				transform: translateY(-10px);
+				opacity: 1;
+			}
+		}
+
+		.chat-suggestions {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 10px;
+		}
+
+		.chip-button {
+			padding: 10px 18px;
+			background: #ffffff;
+			color: var(--text-primary);
+			border: 1px solid rgba(47, 76, 235, 0.25);
+			border-radius: 999px;
+			font-size: 0.9rem;
+			font-weight: 500;
+			cursor: pointer;
+			transition: all 0.2s ease;
+			box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+		}
+
+		.chip-button:hover {
+			background: linear-gradient(135deg, #2f4ceb 0%, #7d5afe 100%);
+			color: #ffffff;
+			border-color: transparent;
+			transform: translateY(-2px);
+			box-shadow: 0 4px 12px rgba(47, 76, 235, 0.3);
+		}
+
+		.chat-input-bar {
+			display: flex;
+			gap: 12px;
+			align-items: flex-end;
+			background: #ffffff;
+			border: 1px solid rgba(47, 76, 235, 0.15);
+			border-radius: 16px;
+			padding: 12px;
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+		}
+
+		.chat-input-bar textarea {
+			flex: 1;
+			border: none;
+			resize: none;
+			font-size: 0.95rem;
+			font-family: inherit;
+			color: var(--text-primary);
+			background: transparent;
+			min-height: 44px;
+			max-height: 120px;
+		}
+
+		.chat-input-bar textarea:focus {
+			outline: none;
+		}
+
+		.chat-input-bar textarea::placeholder {
+			color: var(--text-muted);
+		}
+
+		.chat-input-bar button {
+			padding: 12px 24px;
+			background: linear-gradient(135deg, #2f4ceb 0%, #1e3dd4 100%);
+			color: #ffffff;
+			border: none;
+			border-radius: 12px;
+			font-weight: 600;
+			font-size: 0.95rem;
+			cursor: pointer;
+			transition: all 0.2s ease;
+			box-shadow: 0 4px 12px rgba(47, 76, 235, 0.3);
+		}
+
+		.chat-input-bar button:hover:not(:disabled) {
+			transform: translateY(-1px);
+			box-shadow: 0 6px 16px rgba(47, 76, 235, 0.4);
+		}
+
+		.chat-input-bar button:disabled {
+			opacity: 0.6;
+			cursor: not-allowed;
+		}
+
+		.chat-input-bar--loading {
+			opacity: 0.7;
+		}
+
+		.chat-meta {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			font-size: 0.85rem;
+			color: var(--text-muted);
+			padding: 0 4px;
+		}
+
+		.chat-latency {
+			color: #2f4ceb;
+			font-weight: 600;
+		}
+
+		.chat-context-panel {
+			background: linear-gradient(135deg, #f8f9ff 0%, #eef2ff 100%);
+			border-radius: 16px;
+			padding: 24px;
+			border: 1px solid rgba(47, 76, 235, 0.12);
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+			height: fit-content;
+		}
+
+		.chat-context-header {
+			margin-bottom: 20px;
+			padding-bottom: 16px;
+			border-bottom: 1px solid rgba(47, 76, 235, 0.1);
+		}
+
+		.chat-context-header h3 {
+			font-size: 1.1rem;
+			font-weight: 700;
+			margin: 0 0 6px 0;
+			color: var(--text-primary);
+		}
+
+		.chat-context-header p {
+			font-size: 0.85rem;
+			color: var(--text-muted);
+			margin: 0;
+			line-height: 1.4;
+		}
+
+		.chat-context-list {
+			list-style: none;
+			padding: 0;
+			margin: 0;
+			display: flex;
+			flex-direction: column;
+			gap: 12px;
+		}
+
+		.chat-context-item {
+			background: #ffffff;
+			padding: 12px 16px;
+			border-radius: 12px;
+			border: 1px solid rgba(47, 76, 235, 0.1);
+			font-size: 0.9rem;
+			color: var(--text-primary);
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+		}
+
+		.chat-context-item strong {
+			color: #2f4ceb;
+			font-weight: 600;
+		}
+
+		.chat-context-empty {
+			text-align: center;
+			padding: 24px;
+			color: var(--text-muted);
+			font-size: 0.9rem;
+			font-style: italic;
+		}
+
+		@media (max-width: 1024px) {
+			.chatbot-grid {
+				grid-template-columns: 1fr;
+			}
+
+			.chat-context-panel {
+				order: -1;
+			}
+		}
+
+		@media (max-width: 768px) {
+			.chatbot-page-header {
+				flex-direction: column;
+				align-items: flex-start;
+			}
+
+			.chatbot-card {
+				padding: 20px;
+			}
+
+			.chat-history {
+				min-height: 300px;
+				max-height: 400px;
+			}
+
+			.chat-message {
+				max-width: 95%;
+			}
+
+			.chat-input-bar {
+				flex-direction: column;
+				align-items: stretch;
+			}
+
+			.chat-input-bar button {
+				width: 100%;
+			}
+
+			.chat-meta {
+				flex-direction: column;
+				align-items: flex-start;
+				gap: 8px;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<header>
+		<div class="brand">
+			<div class="brand__avatar"></div>
+			<div class="brand__content">
+				<h1 class="brand__title">TheLorry</h1>
+				<p class="brand__subtitle">Malaysia • Employee Portal</p>
+			</div>
+		</div>
+		<div class="page-meta" id="userBadge"></div>
+		<button id="logoutButton" class="logout-button">Logout</button>
+	</header>
+
+	<div class="layout">
+		<nav class="sidebar sidebar-modern" id="sidebar">
+			<div class="nav-section">
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="dashboard">Dashboard</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="profile">Profile</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="attendance">Attendance</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="leave">Leave</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="overtime">Overtime</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="payroll">Payroll</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="benefits">Benefits</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="performance">Performance</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="announcements">Announcements</a>
+				<a class="nav-link active" href="#" data-nav-scope="employee" data-nav-target="chatbot">AI Chatbot</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="reports">Reports</a>
+			</div>
+		</nav>
+
+		<div class="content-area">
+			<main>
+				<div class="chatbot-page-header">
+					<h2 class="chatbot-page-title">Employee Assistant</h2>
+					<span class="chatbot-badge">Local Assistant</span>
+				</div>
+
+				<div class="chatbot-card">
+					<div class="chatbot-card-header">
+						<h2>Ask Your Questions</h2>
+						<p>Ask natural-language questions about your leave balances, payroll, KPIs, or attendance records. The assistant only uses data stored in this system.</p>
+					</div>
+
+					<div class="chatbot-grid">
+						<section class="chat-panel">
+							<div id="chatHistory" class="chat-history" aria-live="polite">
+								<div class="chat-message chat-message--assistant">
+									<p>Hi! I can help you understand your attendance, leave balances, payroll, and KPIs using the records HR has on file. Try asking "How many annual leave days do I still have?"</p>
+								</div>
+							</div>
+
+							<div id="chatLoadingIndicator" class="chat-typing" role="status" aria-live="polite" style="display: none;">
+								<span class="dot"></span>
+								<span class="dot"></span>
+								<span class="dot"></span>
+								<span>Processing your question…</span>
+							</div>
+
+							<div class="chat-suggestions">
+								<button type="button" class="chip-button" data-chat-suggestion="How many annual leave days do I still have available?">Annual leave balance?</button>
+								<button type="button" class="chip-button" data-chat-suggestion="Summarize my past 3 attendance records.">Summarize attendance</button>
+								<button type="button" class="chip-button" data-chat-suggestion="What was my latest payroll net pay?">Latest payroll</button>
+								<button type="button" class="chip-button" data-chat-suggestion="List my active KPIs and their status.">Active KPIs</button>
+							</div>
+
+							<form id="chatInputForm" class="chat-input-bar">
+								<textarea id="chatInput" placeholder="Type your question here (Shift + Enter for newline)" rows="2"></textarea>
+								<button id="chatSendButton" type="submit">Send</button>
+							</form>
+
+							<div class="chat-meta">
+								<span id="chatLatency" class="chat-latency"></span>
+								<small>Responses follow HR data policies — no personal data leaves this page.</small>
+							</div>
+						</section>
+
+						<aside class="chat-context-panel">
+							<div class="chat-context-header">
+								<h3>Data Snapshot</h3>
+								<p>The assistant only uses the items listed below from your employee records.</p>
+							</div>
+							<ul id="chatContextList" class="chat-context-list">
+								<li class="chat-context-empty">Ask a question to load the latest data snapshot.</li>
+							</ul>
+						</aside>
+					</div>
+				</div>
+			</main>
+		</div>
+	</div>
+
+	<div id="status" class="status-toast"></div>
+	<script src="/js/common-ui.js"></script>
+	<script src="/js/dashboard.js"></script>
+	<script>
+		document.addEventListener('DOMContentLoaded', async () => {
+			await DashboardApp.guardRole('EMPLOYEE');
+			DashboardApp.renderUserBadge();
+			DashboardApp.initSidebar({ scope: 'employee', active: 'chatbot' });
+			DashboardApp.attachLogout();
+			DashboardApp.initEmployeeChatbot();
+			DashboardApp.initFloatingChatbot();
+			DashboardApp.initInactivityMonitor();
+		});
+	</script>
+</body>
+
+</html>

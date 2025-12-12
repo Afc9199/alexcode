@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Admin Leave | Employee Management</title>
+	<link rel="stylesheet" href="/css/dashboard.css">
+	<link rel="stylesheet" href="/css/dashboard-enhanced.css">
+	<style>
+		/* Modern Card Styling */
+		.card-modern {
+			background: #ffffff;
+			border-radius: 16px;
+			padding: 24px;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+			border: 1px solid rgba(0, 0, 0, 0.06);
+			margin-bottom: 24px;
+		}
+
+		.card-modern h2 {
+			font-size: 1.3rem;
+			font-weight: 600;
+			color: var(--text-primary);
+			margin: 0 0 20px 0;
+			padding-bottom: 16px;
+			border-bottom: 1px solid var(--border-color);
+		}
+
+		/* Modern Toolbar */
+		.toolbar-modern {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 12px;
+			align-items: center;
+			margin-bottom: 24px;
+			padding: 16px;
+			background: #f9f9fb;
+			border-radius: 12px;
+			border: 1px solid var(--border-color);
+		}
+
+		.toolbar-modern .search-container {
+			flex: 1;
+			min-width: 250px;
+			margin: 0;
+		}
+
+		.toolbar-modern .filter-group {
+			display: flex;
+			gap: 8px;
+			align-items: center;
+		}
+
+		.filter-select-modern {
+			padding: 10px 14px;
+			border: 1px solid var(--border-color);
+			border-radius: 8px;
+			background: #ffffff;
+			font-size: 0.9rem;
+			color: var(--text-primary);
+			cursor: pointer;
+			transition: all 0.2s ease;
+		}
+
+		.filter-select-modern:hover {
+			border-color: #3c8ce7;
+		}
+
+		.filter-select-modern:focus {
+			outline: none;
+			border-color: #3c8ce7;
+			box-shadow: 0 0 0 3px rgba(60, 140, 231, 0.15);
+		}
+
+		/* Modern Buttons */
+		.btn-modern {
+			padding: 10px 20px;
+			border-radius: 8px;
+			font-weight: 500;
+			font-size: 0.9rem;
+			border: none;
+			cursor: pointer;
+			transition: all 0.2s ease;
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+		}
+
+		.btn-modern-primary {
+			background: linear-gradient(135deg, #2f4ceb 0%, #1e3dd4 100%);
+			color: white;
+			box-shadow: 0 2px 8px rgba(47, 76, 235, 0.3);
+		}
+
+		.btn-modern-primary:hover {
+			transform: translateY(-1px);
+			box-shadow: 0 4px 12px rgba(47, 76, 235, 0.4);
+		}
+
+		.btn-modern-secondary {
+			background: #ffffff;
+			color: var(--text-primary);
+			border: 1px solid var(--border-color);
+		}
+
+		.btn-modern-secondary:hover {
+			background: #f9f9fb;
+			border-color: #3c8ce7;
+		}
+
+		.btn-modern-danger {
+			background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+			color: white;
+			box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+		}
+
+		.btn-modern-danger:hover {
+			transform: translateY(-1px);
+			box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
+		}
+
+		.btn-group-modern {
+			display: flex;
+			gap: 8px;
+			align-items: center;
+		}
+
+		/* Modern Table */
+		.table-modern {
+			width: 100%;
+			border-collapse: separate;
+			border-spacing: 0;
+			background: #ffffff;
+			border-radius: 12px;
+			overflow: hidden;
+			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+		}
+
+		.table-modern thead {
+			background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+		}
+
+		.table-modern thead th {
+			padding: 16px;
+			text-align: left;
+			font-weight: 600;
+			font-size: 0.85rem;
+			color: var(--text-primary);
+			text-transform: uppercase;
+			letter-spacing: 0.5px;
+			border-bottom: 2px solid var(--border-color);
+		}
+
+		.table-modern tbody tr {
+			transition: background-color 0.2s ease;
+			border-bottom: 1px solid #f0f0f0;
+		}
+
+		.table-modern tbody tr:hover {
+			background-color: #f8f9fa;
+		}
+
+		.table-modern tbody tr:last-child {
+			border-bottom: none;
+		}
+
+		.table-modern tbody td {
+			padding: 16px;
+			font-size: 0.9rem;
+			color: var(--text-primary);
+		}
+
+		/* Status Pill */
+		.status-pill-modern {
+			display: inline-block;
+			padding: 6px 12px;
+			border-radius: 20px;
+			font-size: 0.8rem;
+			font-weight: 500;
+		}
+
+		.status-pill-modern.approved {
+			background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+			color: white;
+		}
+
+		.status-pill-modern.rejected {
+			background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+			color: white;
+		}
+
+		.status-pill-modern.cancelled {
+			background: #e9ecef;
+			color: #6c757d;
+		}
+
+		.status-pill-modern.pending {
+			background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+			color: white;
+		}
+
+		.status-pill-modern.available {
+			background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+			color: white;
+		}
+
+		.status-pill-modern.low-balance {
+			background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+			color: white;
+		}
+
+		.status-pill-modern.exhausted {
+			background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+			color: white;
+		}
+
+		/* Action Buttons */
+		.action-btn-modern {
+			padding: 6px 12px;
+			border-radius: 6px;
+			font-size: 0.85rem;
+			font-weight: 500;
+			border: none;
+			cursor: pointer;
+			transition: all 0.2s ease;
+			background: transparent;
+			color: #2f4ceb;
+		}
+
+		.action-btn-modern:hover {
+			background: rgba(47, 76, 235, 0.1);
+		}
+
+		.action-btn-modern.danger {
+			color: #e74c3c;
+		}
+
+		.action-btn-modern.danger:hover {
+			background: rgba(231, 76, 60, 0.1);
+		}
+
+		/* Empty State */
+		.empty-state-modern {
+			text-align: center;
+			padding: 60px 20px;
+			color: var(--text-muted);
+		}
+
+		.empty-state-modern::before {
+			content: '📋';
+			display: block;
+			font-size: 3rem;
+			margin-bottom: 16px;
+		}
+
+		/* Form Styling */
+		.input-modern,
+		.select-modern,
+		.textarea-modern {
+			padding: 12px 16px;
+			border: 1px solid var(--border-color);
+			border-radius: 8px;
+			font-size: 0.9rem;
+			color: var(--text-primary);
+			background: #ffffff;
+			transition: all 0.2s ease;
+			width: 100%;
+		}
+
+		.input-modern:focus,
+		.select-modern:focus,
+		.textarea-modern:focus {
+			outline: none;
+			border-color: #3c8ce7;
+			box-shadow: 0 0 0 3px rgba(60, 140, 231, 0.15);
+		}
+
+		/* Modal Styles */
+		.modal-overlay {
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background: rgba(0, 0, 0, 0.5);
+			backdrop-filter: blur(4px);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			z-index: 10000;
+			opacity: 0;
+			pointer-events: none;
+			transition: opacity 0.3s ease;
+		}
+
+		.modal-overlay.show {
+			opacity: 1;
+			pointer-events: all;
+		}
+
+		.modal-dialog {
+			background: #ffffff;
+			border-radius: 16px;
+			box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+			max-width: 600px;
+			width: 90%;
+			max-height: 90vh;
+			overflow-y: auto;
+			transform: scale(0.9) translateY(20px);
+			transition: transform 0.3s ease;
+			position: relative;
+		}
+
+		.modal-overlay.show .modal-dialog {
+			transform: scale(1) translateY(0);
+		}
+
+		.modal-header {
+			padding: 24px 24px 16px;
+			border-bottom: 1px solid var(--border-color);
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			position: sticky;
+			top: 0;
+			background: #ffffff;
+			z-index: 1;
+		}
+
+		.modal-title {
+			font-size: 1.5rem;
+			font-weight: 700;
+			color: var(--text-primary);
+			margin: 0;
+		}
+
+		.modal-close {
+			width: 32px;
+			height: 32px;
+			border-radius: 50%;
+			border: none;
+			background: #f0f0f0;
+			color: var(--text-muted);
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 1.5rem;
+			transition: all 0.2s ease;
+		}
+
+		.modal-close:hover {
+			background: #e0e0e0;
+			color: var(--text-primary);
+		}
+
+		.modal-body {
+			padding: 24px;
+		}
+
+		.modal-footer {
+			padding: 16px 24px 24px;
+			border-top: 1px solid var(--border-color);
+			display: flex;
+			justify-content: flex-end;
+			gap: 12px;
+			position: sticky;
+			bottom: 0;
+			background: #ffffff;
+			z-index: 1;
+		}
+
+		/* Responsive */
+		@media (max-width: 768px) {
+			.toolbar-modern {
+				flex-direction: column;
+			}
+
+			.toolbar-modern .search-container {
+				width: 100%;
+			}
+
+			.modal-dialog {
+				width: 95%;
+				max-height: 95vh;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<header>
+		<div class="brand">
+			<div class="brand__avatar"></div>
+			<div class="brand__content">
+				<h1 class="brand__title">TheLorry</h1>
+				<p class="brand__subtitle">Malaysia • Employee Management</p>
+			</div>
+		</div>
+		<div class="page-meta" id="userBadge"></div>
+		<button id="logoutButton" class="logout-button">Logout</button>
+	</header>
+
+	<div class="layout">
+		<nav class="sidebar" id="sidebar">
+			<div class="nav-section">
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="dashboard">Dashboard</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="users">Employees</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="attendance">Attendance</a>
+			<a class="nav-link active" href="#" data-nav-scope="admin" data-nav-target="leave">Leave</a>
+			<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="overtime">Overtime</a>
+			<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="payroll">Payroll</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="benefits">Benefits</a>
+			<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="performance">Performance</a>
+			<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="job-postings">Job Postings</a>
+			<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="announcements">Announcements</a>
+			<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="reports">Reports</a>
+			<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="company-settings">Company Settings</a>
+			</div>
+		</nav>
+
+		<div class="content-area">
+			<main>
+				<!-- Leave Requests Card -->
+				<div class="card-modern">
+					<h2>Leave Requests</h2>
+					
+					<!-- Toolbar -->
+					<div class="toolbar-modern">
+						<div class="search-container">
+							<input type="search" id="leaveSearchInput" class="input-modern" placeholder="Search by Employee ID, Employee Name, or Status">
+						</div>
+						<div class="btn-group-modern">
+							<button type="button" class="btn-modern btn-modern-danger" id="adminLeaveDeleteSelected" style="display: none;">🗑️ Delete Selected</button>
+						</div>
+					</div>
+
+					<!-- Table -->
+					<div class="table-responsive">
+						<div id="adminLeaveResult"></div>
+						<div id="adminLeaveEmptyState" class="empty-state-modern" style="display: none;">No leave requests match this view.</div>
+					</div>
+				</div>
+
+				<!-- View Employee Leave Balance Card -->
+				<div class="card-modern">
+					<h2>View Employee Leave Balance</h2>
+					<div class="toolbar-modern" style="margin-bottom: 0;">
+						<div class="search-container">
+							<select id="employeeBalanceSelect" class="select-modern">
+								<option value="">Select an employee (Active or Inactive)</option>
+							</select>
+						</div>
+					</div>
+					<div id="employeeBalanceResult" style="margin-top: 24px; overflow-x: auto;">
+						<p style="text-align: center; color: var(--text-muted); padding: 2rem;">Select an employee to view leave balance.</p>
+					</div>
+				</div>
+
+				<!-- Process Leave Request Card (hidden) -->
+				<div class="card-modern" style="display: none;">
+					<h2>Process Leave Request</h2>
+					<form id="adminLeaveFormOld" style="display: none;">
+						<label>Leave ID <span style="color: red;">*</span></label>
+						<input type="text" class="input-modern" name="leaveId" required placeholder="Enter Leave ID (e.g., L001)">
+						
+						<label>Decision <span style="color: red;">*</span></label>
+						<select class="select-modern" name="status" required>
+							<option value="">-- Select Decision --</option>
+							<option value="APPROVED">✅ APPROVED</option>
+							<option value="REJECTED">❌ REJECTED</option>
+							<option value="CANCELLED">🚫 CANCELLED</option>
+						</select>
+						
+						<label>Admin Remarks <span style="color: red;">*</span></label>
+						<textarea class="textarea-modern" name="managerComment" required placeholder="Enter your remarks here..." rows="4"></textarea>
+						
+						<input type="hidden" name="decidedBy" id="decidedByHidden">
+						
+						<label>Decided By</label>
+						<input type="text" class="input-modern" id="decidedByDisplay" readonly style="background-color: #f5f5f5; cursor: not-allowed;" placeholder="Loading...">
+						
+						<div class="form-actions" style="margin-top: 20px; display: flex; gap: 12px; justify-content: flex-end;">
+							<button type="submit" class="btn-modern btn-modern-primary">Submit Decision</button>
+						</div>
+					</form>
+				</div>
+			</main>
+		</div>
+	</div>
+
+	<div id="status" class="status-toast"></div>
+
+	<!-- Process Leave Request Modal -->
+	<div id="processLeaveModal" class="modal-overlay">
+		<div class="modal-dialog">
+			<div class="modal-header">
+				<h2 class="modal-title">Process Leave Request</h2>
+				<button class="modal-close" id="closeProcessLeaveModal" aria-label="Close">×</button>
+			</div>
+			<div class="modal-body">
+				<form id="adminLeaveForm">
+					<input type="hidden" name="leaveId" id="processLeaveId">
+					
+					<label>Decision <span style="color: red;">*</span></label>
+					<select class="select-modern" name="status" required>
+						<option value="">-- Select Decision --</option>
+						<option value="APPROVED">✅ APPROVED</option>
+						<option value="REJECTED">❌ REJECTED</option>
+						<option value="CANCELLED">🚫 CANCELLED</option>
+					</select>
+					
+					<label>Admin Remarks <span style="color: red;">*</span></label>
+					<textarea class="textarea-modern" name="managerComment" required placeholder="Enter your remarks here..." rows="4"></textarea>
+					
+					<input type="hidden" name="decidedBy" id="decidedByHidden">
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="submit" form="adminLeaveForm" class="btn-modern btn-modern-primary">Submit Decision</button>
+			</div>
+		</div>
+	</div>
+
+	<script src="/js/common-ui.js"></script>
+	<script src="/js/dashboard.js"></script>
+	<script>
+		document.addEventListener('DOMContentLoaded', async () => {
+			await DashboardApp.guardRole('ADMIN');
+			DashboardApp.renderUserBadge();
+			DashboardApp.initSidebar({ scope: 'admin', active: 'leave' });
+			DashboardApp.attachLogout();
+			DashboardApp.prefillForms(['adminLeaveForm']);
+			DashboardApp.initAdminLeave();
+			DashboardApp.initInactivityMonitor();
+		});
+	</script>
+</body>
+
+</html>
+

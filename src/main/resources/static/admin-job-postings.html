@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Job Postings | Employee Management</title>
+	<link rel="stylesheet" href="/css/dashboard.css">
+	<link rel="stylesheet" href="/css/dashboard-enhanced.css">
+	<style>
+		/* Modern Page Header */
+		.page-header-modern {
+			margin-bottom: 32px;
+		}
+
+		.page-title-modern {
+			font-size: 1.8rem;
+			font-weight: 700;
+			color: var(--text-primary);
+			margin: 0 0 8px 0;
+		}
+
+		.page-subtitle-modern {
+			font-size: 0.95rem;
+			color: var(--text-muted);
+			margin: 0;
+		}
+
+		/* Modern Card Styling */
+		.card-modern {
+			background: #ffffff;
+			border-radius: 16px;
+			padding: 24px;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+			border: 1px solid rgba(0, 0, 0, 0.06);
+			margin-bottom: 24px;
+		}
+
+		.card-modern h2 {
+			font-size: 1.3rem;
+			font-weight: 600;
+			color: var(--text-primary);
+			margin: 0 0 20px 0;
+			padding-bottom: 16px;
+			border-bottom: 1px solid var(--border-color);
+		}
+
+		/* Modern Toolbar */
+		.toolbar-modern {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 12px;
+			align-items: center;
+			margin-bottom: 24px;
+			padding: 16px;
+			background: #f9f9fb;
+			border-radius: 12px;
+			border: 1px solid var(--border-color);
+		}
+
+		.toolbar-modern .search-container {
+			flex: 1;
+			min-width: 250px;
+			margin: 0;
+		}
+
+		/* Modern Buttons */
+		.btn-modern {
+			padding: 10px 20px;
+			border-radius: 8px;
+			font-weight: 500;
+			font-size: 0.9rem;
+			border: none;
+			cursor: pointer;
+			transition: all 0.2s ease;
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+		}
+
+		.btn-modern-primary {
+			background: linear-gradient(135deg, #2f4ceb 0%, #1e3dd4 100%);
+			color: white;
+			box-shadow: 0 2px 8px rgba(47, 76, 235, 0.3);
+		}
+
+		.btn-modern-primary:hover {
+			transform: translateY(-1px);
+			box-shadow: 0 4px 12px rgba(47, 76, 235, 0.4);
+		}
+
+		.btn-modern-secondary {
+			background: #ffffff;
+			color: var(--text-primary);
+			border: 1px solid var(--border-color);
+		}
+
+		.btn-modern-secondary:hover {
+			background: #f9f9fb;
+			border-color: #3c8ce7;
+		}
+
+		/* Modern Table */
+		.table-modern {
+			width: 100%;
+			border-collapse: separate;
+			border-spacing: 0;
+			background: #ffffff;
+			border-radius: 12px;
+			overflow: hidden;
+			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+		}
+
+		.table-modern thead {
+			background: #f9f9fb;
+		}
+
+		.table-modern thead th {
+			padding: 16px;
+			text-align: left;
+			font-weight: 600;
+			font-size: 0.85rem;
+			color: var(--text-primary);
+			text-transform: uppercase;
+			letter-spacing: 0.5px;
+			border-bottom: 2px solid var(--border-color);
+		}
+
+		.table-modern tbody tr {
+			border-bottom: 1px solid var(--border-color);
+			transition: background-color 0.2s ease;
+		}
+
+		.table-modern tbody tr:hover {
+			background: #f9f9fb;
+		}
+
+		.table-modern tbody td {
+			padding: 16px;
+			font-size: 0.9rem;
+			color: var(--text-primary);
+		}
+
+		/* Status Pill */
+		.status-pill-modern {
+			display: inline-block;
+			padding: 6px 12px;
+			border-radius: 20px;
+			font-size: 0.8rem;
+			font-weight: 500;
+		}
+
+		.status-pill-modern.available {
+			background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+			color: white;
+		}
+
+		.status-pill-modern.hired {
+			background: #e9ecef;
+			color: #6c757d;
+		}
+
+		/* Action Buttons */
+		.action-btn-modern {
+			padding: 6px 12px;
+			border-radius: 6px;
+			font-size: 0.85rem;
+			font-weight: 500;
+			border: none;
+			cursor: pointer;
+			transition: all 0.2s ease;
+			background: transparent;
+			color: #2f4ceb;
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
+		}
+
+		.action-btn-modern:hover {
+			background: rgba(47, 76, 235, 0.1);
+			transform: translateY(-1px);
+		}
+
+		.action-btn-modern.danger {
+			color: #e74c3c;
+		}
+
+		.action-btn-modern.danger:hover {
+			background: rgba(231, 76, 60, 0.1);
+		}
+
+		.action-btn-modern.success {
+			color: #198754;
+		}
+
+		.action-btn-modern.success:hover {
+			background: rgba(25, 135, 84, 0.1);
+		}
+
+		/* Form Styling */
+		.input-modern,
+		.select-modern,
+		.textarea-modern {
+			padding: 12px 16px;
+			border: 1px solid var(--border-color);
+			border-radius: 8px;
+			font-size: 0.9rem;
+			color: var(--text-primary);
+			background: #ffffff;
+			transition: all 0.2s ease;
+			width: 100%;
+		}
+
+		.input-modern:focus,
+		.select-modern:focus,
+		.textarea-modern:focus {
+			outline: none;
+			border-color: #3c8ce7;
+			box-shadow: 0 0 0 3px rgba(60, 140, 231, 0.15);
+		}
+
+		.form-actions {
+			display: flex;
+			gap: 12px;
+			justify-content: flex-end;
+			margin-top: 24px;
+		}
+
+		/* Empty State */
+		.empty-state-modern {
+			text-align: center;
+			padding: 60px 20px;
+			color: var(--text-muted);
+		}
+	</style>
+</head>
+
+<body>
+	<header>
+		<div class="brand">
+			<div class="brand__avatar"></div>
+			<div class="brand__content">
+				<h1 class="brand__title">TheLorry</h1>
+				<p class="brand__subtitle">Malaysia • Employee Management</p>
+			</div>
+		</div>
+		<div class="page-meta" id="userBadge"></div>
+		<button id="logoutButton" class="logout-button">Logout</button>
+	</header>
+
+	<div class="layout">
+		<nav class="sidebar" id="sidebar">
+			<div class="nav-section">
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="dashboard">Dashboard</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="users">Employees</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="attendance">Attendance</a>
+			<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="leave">Leave</a>
+			<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="overtime">Overtime</a>
+			<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="payroll">Payroll</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="benefits">Benefits</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="performance">Performance</a>
+				<a class="nav-link active" href="#" data-nav-scope="admin" data-nav-target="job-postings">Job Postings</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="announcements">Announcements</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="reports">Reports</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="company-settings">Company Settings</a>
+			</div>
+		</nav>
+
+		<div class="content-area">
+			<main>
+				
+
+				<div class="card-modern">
+					<h2>Job Postings</h2>
+					<div class="toolbar-modern">
+						<div class="search-container">
+							<input type="text" id="jobPostingSearchInput" placeholder="Search job postings...">
+						</div>
+						<select id="jobPostingStatusFilter" class="select-modern" style="min-width: 180px;">
+							<option value="">All statuses</option>
+							<option value="Available">Available</option>
+							<option value="Hired">Hired</option>
+						</select>
+						<button type="button" id="jobPostingSearchButton" class="btn-modern btn-modern-secondary">Search</button>
+						<button type="button" id="jobPostingRefreshButton" class="btn-modern btn-modern-secondary">Refresh</button>
+					</div>
+					<div class="table-responsive">
+						<table class="table-modern">
+							<thead>
+								<tr>
+									<th>Job Posting ID</th>
+									<th>Job Title</th>
+									<th>Created Date</th>
+									<th>Status</th>
+									<th>Created By</th>
+									<th>Actions</th>
+								</tr>
+							</thead>
+							<tbody id="jobPostingTableBody"></tbody>
+						</table>
+						<div id="jobPostingEmptyState" class="empty-state-modern">No job postings found.</div>
+					</div>
+				</div>
+
+				<div class="card-modern">
+					<h2 id="jobPostingFormTitle">Create New Job Posting</h2>
+					<form id="jobPostingForm" novalidate>
+						<input type="hidden" name="jobPostingId" id="jobPostingId">
+						<input type="hidden" name="id" id="jobPostingMongoId">
+						
+						<label>Job Posting ID</label>
+						<input type="text" id="displayJobPostingId" class="input-modern" readonly style="background-color: #f5f5f5; cursor: not-allowed;">
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Auto-generated job posting ID
+						</small>
+						
+						<label>Job Title <span style="color: red;">*</span></label>
+						<input type="text" name="jobTitle" id="jobTitleInput" class="input-modern" required maxlength="250" placeholder="Enter job title">
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Maximum 250 characters
+						</small>
+						
+						<label>Job Description</label>
+						<textarea name="jobDescription" id="jobDescriptionInput" class="textarea-modern" rows="6" placeholder="Enter job description (no limit)"></textarea>
+						
+						<label>Created Date <span style="color: red;">*</span></label>
+						<input type="date" name="createdDate" id="createdDateInput" class="input-modern" required readonly style="background-color: #f5f5f5; cursor: not-allowed;">
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Automatically set to today's date
+						</small>
+						
+						<label>Status <span style="color: red;">*</span></label>
+						<select name="status" id="statusInput" class="select-modern" required>
+							<option value="">Select status</option>
+							<option value="Available">Available</option>
+							<option value="Hired">Hired</option>
+						</select>
+						
+						<div class="form-actions">
+							<button type="submit" id="jobPostingSubmitButton" class="btn-modern btn-modern-primary">Create Job Posting</button>
+							<button type="button" class="btn-modern btn-modern-secondary" id="jobPostingCancelButton" style="display: none;">Cancel Edit</button>
+						</div>
+					</form>
+				</div>
+
+				<div class="card-modern" id="candidatesSection" style="display: none;">
+					<h2>Candidates for Job Posting: <span id="selectedJobPostingTitle"></span></h2>
+					<div style="margin-bottom: 1rem;">
+						<button type="button" id="addCandidateButton" class="btn-modern btn-modern-secondary">+ Add Candidate</button>
+						<small id="candidateStatusNotice" style="display: none; color: #d9534f; margin-top: 0.5rem;">
+							This job posting is marked as Hired. Adding candidates is disabled.
+						</small>
+					</div>
+					<div class="table-responsive">
+						<table class="table-modern">
+							<thead>
+								<tr>
+									<th>Resume ID</th>
+									<th>Candidate Name</th>
+									<th>Email</th>
+									<th>Contact Number</th>
+									<th>Upload Date</th>
+									<th>Resume</th>
+									<th>Actions</th>
+								</tr>
+							</thead>
+							<tbody id="candidatesTableBody"></tbody>
+						</table>
+						<div id="candidatesEmptyState" class="empty-state-modern">No candidates found for this job posting.</div>
+					</div>
+				</div>
+
+				<div class="card-modern" id="addCandidateForm" style="display: none;">
+					<h2 id="candidateFormTitle">Add Candidate</h2>
+					<form id="candidateForm" novalidate enctype="multipart/form-data">
+						<input type="hidden" id="candidateJobPostingId">
+						<input type="hidden" id="displayResumeId" readonly>
+						<input type="hidden" id="candidateRecordId">
+						
+						<label>Resume ID</label>
+						<input type="text" id="resumeIdDisplay" class="input-modern" readonly style="background-color: #f5f5f5; cursor: not-allowed;" placeholder="Auto-generated">
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Auto-generated resume ID
+						</small>
+						
+						<label>Candidate Name <span style="color: red;">*</span></label>
+						<input type="text" id="candidateNameInput" class="input-modern" required placeholder="Enter candidate name">
+						
+						<label>Candidate Email <span style="color: red;">*</span></label>
+						<input type="email" id="candidateEmailInput" class="input-modern" required placeholder="Enter candidate email">
+						
+						<label>Candidate Contact Number <span style="color: red;">*</span></label>
+						<div style="display: flex; gap: 8px; align-items: center;">
+							<span style="padding: 12px; background-color: #f5f5f5; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 500;">+60</span>
+							<input type="text" id="candidateContactInput" class="input-modern" required placeholder="12-345 6789" maxlength="15" style="flex: 1;">
+						</div>
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Malaysia phone number (9-10 digits after +60, spaces and dashes will be removed)
+						</small>
+						
+						<label>Resume File <span style="color: red;">*</span></label>
+						<input type="file" id="resumeFileInput" class="input-modern" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" required>
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Upload resume (PDF, DOC, DOCX, or image files, max 10MB). Required when adding a candidate, optional when editing.
+						</small>
+						
+						<div class="form-actions">
+							<button type="submit" id="candidateSubmitButton" class="btn-modern btn-modern-primary">Add Candidate</button>
+							<button type="button" class="btn-modern btn-modern-secondary" id="candidateCancelButton">Cancel</button>
+						</div>
+					</form>
+				</div>
+			</main>
+		</div>
+	</div>
+
+	<div id="status" class="status-toast"></div>
+	<script src="/js/common-ui.js"></script>
+	<script src="/js/dashboard.js"></script>
+	<script>
+		document.addEventListener('DOMContentLoaded', async () => {
+			await DashboardApp.guardRole('ADMIN');
+			DashboardApp.renderUserBadge();
+			DashboardApp.initSidebar({ scope: 'admin', active: 'job-postings' });
+			DashboardApp.attachLogout();
+			
+			// Set today's date immediately
+			const createdDateInput = document.getElementById('createdDateInput');
+			if (createdDateInput) {
+				const today = new Date();
+				const yyyy = today.getFullYear();
+				const mm = String(today.getMonth() + 1).padStart(2, '0');
+				const dd = String(today.getDate()).padStart(2, '0');
+				createdDateInput.value = `${yyyy}-${mm}-${dd}`;
+			}
+			
+			// Load next job posting ID immediately
+			const displayJobPostingId = document.getElementById('displayJobPostingId');
+			if (displayJobPostingId) {
+				try {
+					const response = await fetch('/api/admin/job-postings/next-job-posting-id', {
+						credentials: 'same-origin'
+					});
+					if (response.ok) {
+						const jobPostingId = await response.text();
+						if (jobPostingId) {
+							displayJobPostingId.value = jobPostingId.trim();
+						}
+					}
+				} catch (error) {
+					console.error('Failed to load next job posting ID:', error);
+				}
+			}
+			
+			DashboardApp.initAdminJobPostings();
+			DashboardApp.initInactivityMonitor();
+		});
+	</script>
+</body>
+
+</html>
+

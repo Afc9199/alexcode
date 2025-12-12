@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Employee Overtime | Employee Management</title>
+	<link rel="stylesheet" href="/css/dashboard.css">
+	<link rel="stylesheet" href="/css/dashboard-enhanced.css">
+	<style>
+		.overtime-form-card {
+			background: #ffffff;
+			border-radius: 16px;
+			padding: 28px;
+			border: 1px solid rgba(0, 0, 0, 0.06);
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+			margin-bottom: 24px;
+		}
+
+		.overtime-form-header {
+			margin-bottom: 24px;
+			padding-bottom: 20px;
+			border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+		}
+
+		.overtime-form-header h2 {
+			font-size: 1.5rem;
+			font-weight: 700;
+			margin: 0 0 8px 0;
+			color: var(--text-primary);
+		}
+
+		.overtime-requests-card {
+			background: #ffffff;
+			border-radius: 16px;
+			padding: 28px;
+			border: 1px solid rgba(0, 0, 0, 0.06);
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+		}
+
+		.split-layout {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 16px;
+		}
+
+		@media (max-width: 768px) {
+			.split-layout {
+				grid-template-columns: 1fr;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<header>
+		<div class="brand">
+			<div class="brand__avatar"></div>
+			<div class="brand__content">
+				<h1 class="brand__title">TheLorry</h1>
+				<p class="brand__subtitle">Malaysia • Employee Portal</p>
+			</div>
+		</div>
+		<div class="page-meta" id="userBadge"></div>
+		<button id="logoutButton" class="logout-button">Logout</button>
+	</header>
+
+	<div class="layout">
+		<nav class="sidebar sidebar-modern" id="sidebar">
+			<div class="nav-section">
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="dashboard">Dashboard</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="profile">Profile</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="attendance">Attendance</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="leave">Leave</a>
+				<a class="nav-link active" href="#" data-nav-scope="employee" data-nav-target="overtime">Overtime</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="payroll">Payroll</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="benefits">Benefits</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="performance">Performance</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="announcements">Announcements</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="reports">Reports</a>
+			</div>
+		</nav>
+
+		<div class="content-area">
+			<main>
+				<div class="overtime-form-card">
+					<div class="overtime-form-header">
+						<h2>Submit Overtime Request</h2>
+						<p>Fill in the form below to submit a new overtime request</p>
+					</div>
+					<form id="overtimeForm">
+						<input type="hidden" name="userId" required>
+						
+						<label>Overtime ID</label>
+						<input type="text" id="nextOvertimeId" readonly style="background-color: #f5f5f5; cursor: not-allowed;">
+						
+						<label>Work Date <span style="color: red;">*</span></label>
+						<input type="date" name="workDate" required>
+						
+						<div class="split-layout">
+							<div>
+								<label>Start Time <span style="color: red;">*</span></label>
+								<input type="time" name="startTime" required>
+							</div>
+							<div>
+								<label>End Time <span style="color: red;">*</span></label>
+								<input type="time" name="endTime" required>
+							</div>
+						</div>
+						
+						<label>Reason <span style="color: red;">*</span></label>
+						<textarea name="reason" required placeholder="Please provide a reason for your overtime request..." rows="4"></textarea>
+						
+						<div class="form-actions">
+							<button type="submit" class="btn-modern btn-modern-primary">Submit Overtime Request</button>
+							<button type="button" class="btn-modern btn-modern-secondary" data-action="listOvertime">View My Requests</button>
+						</div>
+					</form>
+				</div>
+
+				<div class="overtime-requests-card">
+					<div class="overtime-form-header">
+						<h2>My Overtime Requests</h2>
+					</div>
+					<div id="overtimeResult"></div>
+				</div>
+			</main>
+		</div>
+	</div>
+
+	<div id="status" class="status-toast"></div>
+	<script src="/js/common-ui.js"></script>
+	<script src="/js/dashboard.js"></script>
+	<script>
+		document.addEventListener('DOMContentLoaded', async () => {
+			await DashboardApp.guardRole('EMPLOYEE');
+			DashboardApp.renderUserBadge();
+			DashboardApp.initSidebar({ scope: 'employee', active: 'overtime' });
+			DashboardApp.attachLogout();
+			DashboardApp.prefillForms(['overtimeForm']);
+			DashboardApp.initEmployeeOvertime();
+			DashboardApp.initInactivityMonitor();
+		});
+	</script>
+</body>
+
+</html>
+

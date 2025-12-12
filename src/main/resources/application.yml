@@ -1,0 +1,61 @@
+spring:
+  application:
+    name: employee-management
+  data:
+    mongodb:
+      # 支持环境变量，如果没有设置则使用默认值
+      uri: ${MONGODB_URI:mongodb+srv://alex_db:Alex1234@cluster0.pqshzez.mongodb.net/employee_management?retryWrites=true&w=majority&appName=Cluster0}
+      port: 27017
+      database: ${MONGODB_DATABASE:employee_management}
+      username: ${MONGODB_USERNAME:admin}
+      password: ${MONGODB_PASSWORD:admin123}
+      auto-index-creation: true
+
+server:
+  # Cloud Run 会设置 PORT 环境变量，如果没有则使用 8081（本地开发）
+  port: ${PORT:8081}
+  servlet:
+    session:
+      cookie:
+        http-only: true
+        # Cloud Run 和 ngrok 使用 HTTPS，所以 secure 应该为 true
+        # 设置为 true 以支持 ngrok HTTPS 隧道
+        secure: ${COOKIE_SECURE:true}
+        max-age: -1
+        # Allow cookies to work with ngrok
+        same-site: ${COOKIE_SAME_SITE:none}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+attendance:
+  security:
+    location:
+      latitude: ${ATTENDANCE_LATITUDE:3.201388}
+      longitude: ${ATTENDANCE_LONGITUDE:101.71495}
+      radius-meters: ${ATTENDANCE_RADIUS:300}
+      max-accuracy-meters: ${ATTENDANCE_MAX_ACCURACY:1200}
+    # 注意：allowed-networks 在 Cloud Run 中需要通过环境变量配置
+    # 格式：ALLOWED_NETWORKS=192.168.0.0/24,2001:f40:97c:2a3::/64
+    # 如果未设置，使用默认值（仅用于本地开发）
+    allowed-networks:
+      - 192.168.0.0/24          # 公司WiFi：IPv4 192.168.0.x 网段
+      - 2001:f40:97c:2a3::/64   # 公司WiFi：IPv6 网段（例如 2001:f40:97c:2a3:xxxx:xxxx:xxxx:xxxx）
+      - 161.142.145.141/32      # 公司WiFi：IPv4 网段（测试用，生产环境应移除）
+
+gemini:
+  api-key: ${GEMINI_API_KEY:AIzaSyD0A4r8ff9PZjKjWEcSuTeGNSbeCYMDUOw}
+  api-url: ${GEMINI_API_URL:https://generativelanguage.googleapis.com/v1beta/models}
+  model: ${GEMINI_MODEL:gemini-2.5-pro}
+  temperature: ${GEMINI_TEMPERATURE:0.25}
+  top-p: ${GEMINI_TOP_P:0.9}
+  top-k: ${GEMINI_TOP_K:32}
+  max-output-tokens: ${GEMINI_MAX_TOKENS:1024}
+

@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Admin Dashboard | Employee Management</title>
+	<link rel="stylesheet" href="/css/dashboard.css">
+	<link rel="stylesheet" href="/css/dashboard-enhanced.css">
+	<style>
+		.dashboard-header {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			margin-bottom: 24px;
+		}
+
+		.dashboard-title {
+			font-size: 1.8rem;
+			font-weight: 700;
+			margin: 0;
+			color: var(--text-primary);
+		}
+
+		.search-container {
+			position: relative;
+			margin-bottom: 24px;
+		}
+
+		.search-container input {
+			width: 100%;
+			padding: 12px 16px 12px 44px;
+			border-radius: var(--radius-element);
+			border: 1px solid var(--border-color);
+			background: #f9f9fb;
+			font-size: 0.95rem;
+		}
+
+		.search-container::before {
+			content: '🔍';
+			position: absolute;
+			left: 14px;
+			top: 50%;
+			transform: translateY(-50%);
+			font-size: 1.1rem;
+		}
+
+		.stats-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+			gap: 24px;
+			margin-bottom: 32px;
+		}
+
+		.stat-card {
+			background: #ffffff;
+			border-radius: 16px;
+			padding: 24px;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+			border: 1px solid rgba(0, 0, 0, 0.06);
+			display: flex;
+			flex-direction: column;
+			gap: 16px;
+			transition: transform 0.2s ease, box-shadow 0.2s ease;
+		}
+
+		.stat-card:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+		}
+
+		.stat-card-header {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+		}
+
+		.stat-icon {
+			width: 48px;
+			height: 48px;
+			border-radius: 12px;
+			display: grid;
+			place-items: center;
+			font-size: 1.5rem;
+		}
+
+		.stat-icon.purple {
+			background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+			color: white;
+			box-shadow: 0 4px 12px rgba(155, 89, 182, 0.3);
+		}
+
+		.stat-icon.green {
+			background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+			color: white;
+			box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+		}
+
+		.stat-icon.blue {
+			background: linear-gradient(135deg, #5dade2 0%, #3498db 100%);
+			color: white;
+			box-shadow: 0 4px 12px rgba(93, 173, 226, 0.3);
+		}
+
+		.stat-icon.orange {
+			background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+			color: white;
+			box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3);
+		}
+
+		.stat-icon.red {
+			background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+			color: white;
+			box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+		}
+
+		.stat-value {
+			font-size: 2rem;
+			font-weight: 700;
+			color: var(--text-primary);
+			margin: 0;
+		}
+
+		.stat-label {
+			font-size: 0.9rem;
+			color: var(--text-muted);
+			margin: 0;
+		}
+
+		.stat-trend {
+			display: flex;
+			align-items: center;
+			gap: 6px;
+			font-size: 0.85rem;
+			font-weight: 600;
+		}
+
+		.stat-trend.positive {
+			color: #27ae60;
+		}
+
+		.stat-trend.negative {
+			color: #e74c3c;
+		}
+
+		.stat-chart {
+			height: 40px;
+			display: flex;
+			align-items: flex-end;
+			gap: 4px;
+			margin-top: 8px;
+		}
+
+		.stat-chart-bar {
+			flex: 1;
+			background: linear-gradient(180deg, rgba(47, 76, 235, 0.6) 0%, rgba(47, 76, 235, 0.3) 100%);
+			border-radius: 4px 4px 0 0;
+			min-height: 4px;
+			transition: all 0.3s ease;
+		}
+
+		.stat-chart-bar:hover {
+			background: linear-gradient(180deg, rgba(47, 76, 235, 0.8) 0%, rgba(47, 76, 235, 0.5) 100%);
+		}
+
+		.weekly-hours-section {
+			background: #ffffff;
+			border-radius: 16px;
+			padding: 24px;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+			border: 1px solid rgba(0, 0, 0, 0.06);
+		}
+
+		.weekly-hours-title {
+			font-size: 1.1rem;
+			font-weight: 600;
+			margin: 0 0 16px 0;
+			color: var(--text-primary);
+		}
+
+		.loading {
+			text-align: center;
+			padding: 40px;
+			color: var(--text-muted);
+		}
+
+		.error {
+			background: #fee;
+			color: #c33;
+			padding: 16px;
+			border-radius: var(--radius-element);
+			margin: 16px 0;
+		}
+
+		/* Announcements Section */
+		.announcements-section {
+			background: #ffffff;
+			border-radius: 16px;
+			padding: 24px;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+			border: 1px solid rgba(0, 0, 0, 0.06);
+			margin-top: 32px;
+		}
+
+		.announcements-header {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			margin-bottom: 20px;
+			padding-bottom: 16px;
+			border-bottom: 2px solid var(--border-color);
+		}
+
+		.announcements-title {
+			font-size: 1.3rem;
+			font-weight: 600;
+			color: var(--text-primary);
+			margin: 0;
+			display: flex;
+			align-items: center;
+			gap: 10px;
+		}
+
+		.announcements-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+			gap: 20px;
+		}
+
+		.announcement-card {
+			background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+			border-radius: 12px;
+			padding: 20px;
+			border: 1px solid var(--border-color);
+			transition: all 0.3s ease;
+			position: relative;
+			overflow: hidden;
+		}
+
+		.announcement-card:hover {
+			transform: translateY(-4px);
+			box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+			border-color: #3c8ce7;
+		}
+
+		.announcement-card.pinned {
+			border-left: 4px solid #f39c12;
+			background: linear-gradient(135deg, #fff8e1 0%, #ffffff 100%);
+		}
+
+		.announcement-card-header {
+			display: flex;
+			align-items: flex-start;
+			justify-content: space-between;
+			margin-bottom: 12px;
+		}
+
+		.announcement-title {
+			font-size: 1.1rem;
+			font-weight: 600;
+			color: var(--text-primary);
+			margin: 0;
+			flex: 1;
+		}
+
+		.announcement-pin {
+			background: #f39c12;
+			color: white;
+			padding: 4px 8px;
+			border-radius: 4px;
+			font-size: 0.7rem;
+			font-weight: 600;
+			text-transform: uppercase;
+			margin-left: 8px;
+		}
+
+		.announcement-message {
+			font-size: 0.9rem;
+			color: var(--text-muted);
+			line-height: 1.6;
+			margin: 12px 0;
+			display: -webkit-box;
+			-webkit-line-clamp: 3;
+			line-clamp: 3;
+			-webkit-box-orient: vertical;
+			overflow: hidden;
+		}
+
+		.announcement-footer {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			margin-top: 16px;
+			padding-top: 12px;
+			border-top: 1px solid var(--border-color);
+			font-size: 0.85rem;
+			color: var(--text-muted);
+		}
+
+		.announcement-author {
+			display: flex;
+			align-items: center;
+			gap: 6px;
+		}
+
+		.announcement-date {
+			display: flex;
+			align-items: center;
+			gap: 6px;
+		}
+
+		.announcement-audience {
+			display: inline-block;
+			padding: 4px 10px;
+			border-radius: 12px;
+			font-size: 0.75rem;
+			font-weight: 500;
+			background: rgba(60, 140, 231, 0.1);
+			color: #3c8ce7;
+		}
+
+		.announcements-empty {
+			text-align: center;
+			padding: 40px 20px;
+			color: var(--text-muted);
+		}
+
+		.announcements-empty::before {
+			content: '📢';
+			display: block;
+			font-size: 3rem;
+			margin-bottom: 16px;
+			opacity: 0.5;
+		}
+	</style>
+</head>
+
+<body>
+	<header>
+		<div class="brand">
+			<div class="brand__avatar"></div>
+			<div class="brand__content">
+				<h1 class="brand__title">TheLorry</h1>
+				<p class="brand__subtitle">Malaysia • Employee Management</p>
+			</div>
+		</div>
+		<div class="page-meta" id="userBadge"></div>
+		
+		<button id="logoutButton" class="logout-button">Logout</button>
+	</header>
+
+	<div class="layout">
+		<nav class="sidebar sidebar-modern" id="sidebar" style="background: #ffffff !important; color: var(--text-primary) !important; border: 1px solid var(--border-color) !important; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;">
+			<div class="nav-section">
+				<a class="nav-link active" href="#" data-nav-scope="admin" data-nav-target="dashboard">Dashboard</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="users">Employees</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="attendance">Attendance</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="leave">Leave</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="overtime">Overtime</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="payroll">Payroll</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="benefits">Benefits</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="performance">Performance</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="job-postings">Job Postings</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="announcements">Announcements</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="reports">Reports</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="company-settings">Company Settings</a>
+			</div>
+		</nav>
+
+		<div class="content-area">
+			<div id="dashboardContent">
+				<div class="loading">Loading dashboard data...</div>
+			</div>
+		</div>
+	</div>
+
+	<script src="/js/common-ui.js"></script>
+	<script src="/js/dashboard.js"></script>
+	<script>
+		let currentUser = null;
+		let dashboardData = null;
+
+		// Initialize dashboard
+		document.addEventListener('DOMContentLoaded', async () => {
+			try {
+				const response = await fetch('/api/auth/me', { credentials: 'same-origin' });
+				if (!response.ok) {
+					window.location.href = '/login.html';
+					return;
+				}
+				currentUser = await response.json();
+				
+				// Check if user is admin
+				if (currentUser.role !== 'ADMIN') {
+					window.location.href = '/employee-dashboard-summary.html';
+					return;
+				}
+				
+				// Use DashboardApp for consistency with other pages
+				DashboardApp.renderUserBadge();
+				
+				// Ensure sidebar-modern class is applied and wait for CommonUI
+				const sidebar = document.getElementById('sidebar');
+				if (sidebar) {
+					sidebar.classList.add('sidebar-modern');
+				}
+				
+				// Wait for CommonUI to finish initialization
+				await new Promise(resolve => setTimeout(resolve, 100));
+				
+				DashboardApp.initSidebar({ 
+					scope: 'admin', 
+					active: 'dashboard' 
+				});
+				DashboardApp.attachLogout();
+				
+				loadDashboard();
+			} catch (error) {
+				console.error('Auth check failed:', error);
+				window.location.href = '/login.html';
+			}
+		});
+
+		async function loadDashboard() {
+			try {
+				const apiUrl = '/api/admin/dashboard/summary';
+				
+				console.log('Loading dashboard from:', apiUrl);
+				const response = await fetch(apiUrl, { credentials: 'same-origin' });
+				
+				if (!response.ok) {
+					const errorText = await response.text();
+					console.error('API Error:', response.status, errorText);
+					throw new Error(`Failed to load dashboard data: ${response.status} ${errorText}`);
+				}
+				
+				dashboardData = await response.json();
+				console.log('Dashboard data loaded:', dashboardData);
+				console.log('Total Employees:', dashboardData.totalEmployees);
+				console.log('Total Departments:', dashboardData.totalDepartments);
+				renderDashboard();
+			} catch (error) {
+				console.error('Error loading dashboard:', error);
+				document.getElementById('dashboardContent').innerHTML = 
+					`<div class="error">
+						<p>Failed to load dashboard data.</p>
+						<p style="font-size: 0.85rem; margin-top: 8px;">Error: ${error.message}</p>
+						<p style="font-size: 0.85rem;">Please check the browser console for more details.</p>
+					</div>`;
+			}
+		}
+
+		async function renderDashboard() {
+			if (!dashboardData) {
+				console.error('No dashboard data available');
+				document.getElementById('dashboardContent').innerHTML = 
+					'<div class="error">No data available. Please check the console for errors.</div>';
+				return;
+			}
+
+			console.log('Rendering dashboard with data:', dashboardData);
+
+			const content = document.getElementById('dashboardContent');
+			
+			// Load additional data for new cards
+			let pendingLeaves = 0;
+			let activeEmployees = 0;
+			let todayAttendance = 0;
+			let recentHires = 0;
+			let absentEmployees = 0;
+			
+			try {
+				// Get pending leave requests (all pending, not just this month)
+				const leavesResponse = await fetch('/api/admin/leave', { credentials: 'same-origin' });
+				if (leavesResponse.ok) {
+					const leaves = await leavesResponse.json();
+					pendingLeaves = leaves.filter(l => l.status === 'PENDING').length;
+				}
+				
+				// Get active employees and recent hires
+				const usersResponse = await fetch('/api/admin/users', { credentials: 'same-origin' });
+				if (usersResponse.ok) {
+					const users = await usersResponse.json();
+					const now = new Date();
+					const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+					
+					activeEmployees = users.filter(u => u.role === 'EMPLOYEE' && u.active === true).length;
+					recentHires = users.filter(u => {
+						if (!u.dateOfHire) return false;
+						const hireDate = new Date(u.dateOfHire);
+						return hireDate >= firstDayOfMonth;
+					}).length;
+				}
+				
+				// Get today's attendance and absent employees
+				const attendanceResponse = await fetch('/api/admin/attendance', { credentials: 'same-origin' });
+				if (attendanceResponse.ok) {
+					const attendance = await attendanceResponse.json();
+					
+					// Get today's date in local timezone (YYYY-MM-DD format)
+					// Use local date instead of UTC to avoid timezone issues
+					const now = new Date();
+					const year = now.getFullYear();
+					const month = String(now.getMonth() + 1).padStart(2, '0');
+					const day = String(now.getDate()).padStart(2, '0');
+					const today = `${year}-${month}-${day}`;
+					
+					console.log('Today date (local):', today);
+					console.log('Current date object:', now);
+					console.log('Total attendance records:', attendance.length);
+					
+					// Helper function to convert workDate to string
+					const workDateToString = (workDate) => {
+						if (!workDate) return null;
+						if (typeof workDate === 'string') {
+							return workDate;
+						}
+						if (typeof workDate === 'object') {
+							if (workDate.year !== undefined) {
+								let monthValue = workDate.monthValue;
+								if (monthValue === undefined && workDate.month !== undefined) {
+									// month might be 0-indexed (0-11) or 1-indexed (1-12)
+									monthValue = workDate.month < 12 ? workDate.month + 1 : workDate.month;
+								}
+								const dayValue = workDate.dayOfMonth || workDate.day;
+								if (monthValue !== undefined && dayValue !== undefined) {
+									return `${workDate.year}-${String(monthValue).padStart(2, '0')}-${String(dayValue).padStart(2, '0')}`;
+								}
+							}
+						}
+						return String(workDate);
+					};
+					
+					// Log all records with their dates for debugging
+					console.log('All attendance records with dates:');
+					attendance.forEach((a, idx) => {
+						const workDateStr = workDateToString(a.workDate);
+						console.log(`Record ${idx}:`, {
+							employeeId: a.employeeId,
+							employeeName: a.employeeName,
+							workDate: a.workDate,
+							workDateStr: workDateStr,
+							workDateType: typeof a.workDate,
+							status: a.status,
+							matchesToday: workDateStr === today
+						});
+					});
+					
+					// Filter today's records - workDate is a LocalDate serialized as "YYYY-MM-DD" string
+					const todayAttendanceRecords = attendance.filter(a => {
+						if (!a.workDate) {
+							return false;
+						}
+						// Convert workDate to string using helper function
+						const workDateStr = workDateToString(a.workDate);
+						if (!workDateStr) {
+							return false;
+						}
+						
+						// Compare dates (exact match)
+						const matches = workDateStr === today;
+						if (matches) {
+							console.log('✓ Matched today:', workDateStr, '===', today, 'for employee:', a.employeeId || a.employeeName, 'status:', a.status);
+						}
+						return matches;
+					});
+					
+					console.log('Today attendance records:', todayAttendanceRecords.length);
+					if (todayAttendanceRecords.length > 0) {
+						console.log('Sample today record (full):', JSON.stringify(todayAttendanceRecords[0], null, 2));
+						// Log all statuses for debugging
+						todayAttendanceRecords.forEach((record, index) => {
+							console.log(`Record ${index}:`, {
+								employeeId: record.employeeId,
+								employeeName: record.employeeName,
+								workDate: record.workDate,
+								status: record.status,
+								statusType: typeof record.status,
+								statusString: String(record.status)
+							});
+						});
+					}
+					
+					// Helper function to normalize status
+					const normalizeStatus = (status) => {
+						if (status === null || status === undefined) {
+							return '';
+						}
+						if (typeof status === 'string') {
+							return status.toUpperCase().trim();
+						}
+						if (typeof status === 'object' && status !== null) {
+							// If status is an object (enum), try to get the name or value
+							return (status.name || status.value || status.toString() || '').toUpperCase().trim();
+						}
+						return String(status).toUpperCase().trim();
+					};
+					
+					// Count present/late/remote employees
+					todayAttendance = todayAttendanceRecords.filter(a => {
+						const statusStr = normalizeStatus(a.status);
+						const isPresent = statusStr === 'PRESENT' || statusStr === 'LATE' || statusStr === 'REMOTE';
+						if (isPresent) {
+							console.log('✓ Found present/late/remote:', statusStr, 'for employee:', a.employeeId || a.employeeName);
+						} else {
+							console.log('✗ Not present/late/remote:', statusStr, 'for employee:', a.employeeId || a.employeeName);
+						}
+						return isPresent;
+					}).length;
+					
+					// Count absent employees (status is ABSENT)
+					absentEmployees = todayAttendanceRecords.filter(a => {
+						const statusStr = normalizeStatus(a.status);
+						const isAbsent = statusStr === 'ABSENT';
+						if (isAbsent) {
+							console.log('✓ Found absent:', statusStr, 'for employee:', a.employeeId || a.employeeName);
+						} else {
+							console.log('✗ Not absent:', statusStr, 'for employee:', a.employeeId || a.employeeName);
+						}
+						return isAbsent;
+					}).length;
+					
+					console.log('Today attendance count:', todayAttendance);
+					console.log('Absent employees count:', absentEmployees);
+				} else {
+					console.error('Failed to fetch attendance:', attendanceResponse.status, attendanceResponse.statusText);
+				}
+			} catch (error) {
+				console.error('Error loading additional dashboard data:', error);
+			}
+			
+			// Create new cards with better design
+			let cardsHtml = `
+				${createStatCard('Pending Leave Requests', pendingLeaves, 0, 
+					generateSimpleChartData(7), 'orange', '📋', 'Leave requests awaiting approval')}
+				${createStatCard('Active Employees', activeEmployees, 0, 
+					generateSimpleChartData(7), 'green', '👥', 'Currently active employees')}
+				${createStatCard('Today\'s Attendance', todayAttendance, 0, 
+					generateSimpleChartData(7), 'blue', '✅', 'Employees checked in today')}
+				${createStatCard('Absent Employees', absentEmployees, 0, 
+					generateSimpleChartData(7), 'red', '❌', 'Employees absent today')}
+				${createStatCard('Recent Hires', recentHires, 0, 
+					generateSimpleChartData(7), 'purple', '🎉', 'New employees this month')}
+				${createStatCard('Project Assigned', dashboardData.projectsAssigned, dashboardData.projectsAssignedChangePercent, 
+					dashboardData.projectsAssignedChartData, 'orange', '📁', 'Active KPI projects')}
+			`;
+			
+			// Add Total Employee and Total Department cards for admin
+			const totalEmployees = dashboardData.totalEmployees != null ? dashboardData.totalEmployees : 0;
+			const totalDepartments = dashboardData.totalDepartments != null ? dashboardData.totalDepartments : 0;
+			
+			cardsHtml += `
+				${createStatCard('Total Employees', totalEmployees, 0, 
+					generateSimpleChartData(7), 'blue', '👥', 'Total employee count')}
+				${createStatCard('Total Departments', totalDepartments, 0, 
+					generateSimpleChartData(7), 'green', '🏢', 'Total department count')}
+			`;
+			
+			// Load announcements
+			let announcementsHtml = '';
+			try {
+				const announcementsResponse = await fetch('/api/admin/announcements', { credentials: 'same-origin' });
+				if (announcementsResponse.ok) {
+					const allAnnouncements = await announcementsResponse.json();
+					const today = new Date().toISOString().split('T')[0];
+					
+					// Filter expired announcements and sort (pinned first, then by date)
+					const validAnnouncements = allAnnouncements
+						.filter(a => !a.expiresOn || a.expiresOn >= today)
+						.sort((a, b) => {
+							if (a.pinned !== b.pinned) return b.pinned - a.pinned;
+							return new Date(b.createdAt) - new Date(a.createdAt);
+						})
+						.slice(0, 6); // Show max 6 announcements
+					
+					if (validAnnouncements.length > 0) {
+						announcementsHtml = `
+							<div class="announcements-section">
+								<div class="announcements-header">
+									<h2 class="announcements-title">
+										<span>📢</span>
+										<span>Announcements</span>
+									</h2>
+								</div>
+								<div class="announcements-grid">
+									${validAnnouncements.map(announcement => createAnnouncementCard(announcement)).join('')}
+								</div>
+							</div>
+						`;
+					} else {
+						announcementsHtml = `
+							<div class="announcements-section">
+								<div class="announcements-header">
+									<h2 class="announcements-title">
+										<span>📢</span>
+										<span>Announcements</span>
+									</h2>
+								</div>
+								<div class="announcements-empty">
+									No announcements available
+								</div>
+							</div>
+						`;
+					}
+				}
+			} catch (error) {
+				console.error('Error loading announcements:', error);
+			}
+			
+			content.innerHTML = `
+				<div class="stats-grid">
+					${cardsHtml}
+				</div>
+				${announcementsHtml}
+			`;
+		}
+
+		function createAnnouncementCard(announcement) {
+			const createdDate = new Date(announcement.createdAt);
+			const formattedDate = createdDate.toLocaleDateString('en-US', { 
+				year: 'numeric', 
+				month: 'short', 
+				day: 'numeric' 
+			});
+			const formattedTime = createdDate.toLocaleTimeString('en-US', { 
+				hour: '2-digit', 
+				minute: '2-digit' 
+			});
+			
+			const audienceLabel = announcement.audience === 'ALL' ? 'All' : 
+				announcement.audience === 'EMPLOYEE' ? 'Employees' : 'Admins';
+			
+			return `
+				<div class="announcement-card ${announcement.pinned ? 'pinned' : ''}">
+					<div class="announcement-card-header">
+						<h3 class="announcement-title">${escapeHtml(announcement.title)}</h3>
+						${announcement.pinned ? '<span class="announcement-pin">📌 Pinned</span>' : ''}
+					</div>
+					<div class="announcement-message">${escapeHtml(announcement.message)}</div>
+					<div class="announcement-footer">
+						<div class="announcement-author">
+							<span>👤</span>
+							<span>${escapeHtml(announcement.createdBy || 'Admin')}</span>
+						</div>
+						<div class="announcement-date">
+							<span>📅</span>
+							<span>${formattedDate} ${formattedTime}</span>
+						</div>
+					</div>
+					<div style="margin-top: 8px;">
+						<span class="announcement-audience">${audienceLabel}</span>
+					</div>
+				</div>
+			`;
+		}
+
+		function escapeHtml(text) {
+			if (!text) return '';
+			const div = document.createElement('div');
+			div.textContent = text;
+			return div.innerHTML;
+		}
+
+		function createStatCard(label, value, changePercent, chartData, iconClass, iconEmoji, description = '') {
+			const isPositive = changePercent >= 0;
+			const trendText = changePercent === 0 
+				? 'No Change'
+				: (isPositive 
+					? `+${changePercent.toFixed(0)}% Higher Than Last Month`
+					: `${changePercent.toFixed(0)}% Lower Than Last Month`);
+			
+			const maxValue = Math.max(...chartData, 1);
+			const chartBars = chartData.map(val => {
+				const height = (val / maxValue) * 100;
+				return `<div class="stat-chart-bar" style="height: ${height}%"></div>`;
+			}).join('');
+
+			return `
+				<div class="stat-card">
+					<div class="stat-card-header">
+						<div class="stat-icon ${iconClass}">${iconEmoji}</div>
+					</div>
+					<div>
+						<p class="stat-value">${value}</p>
+						<p class="stat-label">${label}</p>
+						${description ? `<p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">${description}</p>` : ''}
+					</div>
+					${changePercent !== 0 ? `
+					<div class="stat-trend ${isPositive ? 'positive' : 'negative'}">
+						<span>${isPositive ? '↑' : '↓'}</span>
+						<span>${trendText}</span>
+					</div>
+					` : ''}
+					<div class="stat-chart">
+						${chartBars}
+					</div>
+				</div>
+			`;
+		}
+		
+		function generateSimpleChartData(days) {
+			const data = [];
+			for (let i = 0; i < days; i++) {
+				data.push(Math.floor(Math.random() * 5) + 1);
+			}
+			return data;
+		}
+	</script>
+</body>
+
+</html>
+

@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Admin Performance | Employee Management</title>
+	<link rel="stylesheet" href="/css/dashboard.css">
+	<link rel="stylesheet" href="/css/dashboard-enhanced.css">
+	<style>
+		/* Modern Page Header */
+		.page-header-modern {
+			margin-bottom: 32px;
+		}
+
+		.page-title-modern {
+			font-size: 1.8rem;
+			font-weight: 700;
+			color: var(--text-primary);
+			margin: 0 0 8px 0;
+		}
+
+		.page-subtitle-modern {
+			font-size: 0.95rem;
+			color: var(--text-muted);
+			margin: 0;
+		}
+
+		/* Modern Card Styling */
+		.card-modern {
+			background: #ffffff;
+			border-radius: 16px;
+			padding: 24px;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+			border: 1px solid rgba(0, 0, 0, 0.06);
+			margin-bottom: 24px;
+		}
+
+		.card-modern h2 {
+			font-size: 1.3rem;
+			font-weight: 600;
+			color: var(--text-primary);
+			margin: 0 0 20px 0;
+			padding-bottom: 16px;
+			border-bottom: 1px solid var(--border-color);
+		}
+
+		/* Modern Toolbar */
+		.toolbar-modern {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 12px;
+			align-items: center;
+			margin-bottom: 24px;
+			padding: 16px;
+			background: #f9f9fb;
+			border-radius: 12px;
+			border: 1px solid var(--border-color);
+		}
+
+		.toolbar-modern .search-container {
+			flex: 1;
+			min-width: 250px;
+			margin: 0;
+		}
+
+		/* Modern Buttons */
+		.btn-modern {
+			padding: 10px 20px;
+			border-radius: 8px;
+			font-weight: 500;
+			font-size: 0.9rem;
+			border: none;
+			cursor: pointer;
+			transition: all 0.2s ease;
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+		}
+
+		.btn-modern-primary {
+			background: linear-gradient(135deg, #2f4ceb 0%, #1e3dd4 100%);
+			color: white;
+			box-shadow: 0 2px 8px rgba(47, 76, 235, 0.3);
+		}
+
+		.btn-modern-primary:hover {
+			transform: translateY(-1px);
+			box-shadow: 0 4px 12px rgba(47, 76, 235, 0.4);
+		}
+
+		.btn-modern-secondary {
+			background: #ffffff;
+			color: var(--text-primary);
+			border: 1px solid var(--border-color);
+		}
+
+		.btn-modern-secondary:hover {
+			background: #f9f9fb;
+			border-color: #3c8ce7;
+		}
+
+		/* Modern Table */
+		.table-modern {
+			width: 100%;
+			border-collapse: separate;
+			border-spacing: 0;
+			background: #ffffff;
+			border-radius: 12px;
+			overflow: hidden;
+			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+		}
+
+		.table-modern thead {
+			background: #f9f9fb;
+		}
+
+		.table-modern thead th {
+			padding: 16px;
+			text-align: left;
+			font-weight: 600;
+			font-size: 0.85rem;
+			color: var(--text-primary);
+			text-transform: uppercase;
+			letter-spacing: 0.5px;
+			border-bottom: 2px solid var(--border-color);
+		}
+
+		.table-modern tbody tr {
+			border-bottom: 1px solid var(--border-color);
+			transition: background-color 0.2s ease;
+		}
+
+		.table-modern tbody tr:hover {
+			background: #f9f9fb;
+		}
+
+		.table-modern tbody td {
+			padding: 16px;
+			font-size: 0.9rem;
+			color: var(--text-primary);
+		}
+
+		/* Status Pill */
+		.status-pill-modern {
+			display: inline-block;
+			padding: 6px 12px;
+			border-radius: 20px;
+			font-size: 0.8rem;
+			font-weight: 500;
+		}
+
+		.status-pill-modern.pending {
+			background: #fff3cd;
+			color: #856404;
+		}
+
+		.status-pill-modern.completed {
+			background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+			color: white;
+		}
+
+		.status-pill-modern.incomplete {
+			background: #f8d7da;
+			color: #721c24;
+		}
+
+		/* Action Buttons */
+		.action-btn-modern {
+			padding: 6px 12px;
+			border-radius: 6px;
+			font-size: 0.85rem;
+			font-weight: 500;
+			border: none;
+			cursor: pointer;
+			transition: all 0.2s ease;
+			background: transparent;
+			color: #2f4ceb;
+		}
+
+		.action-btn-modern:hover {
+			background: rgba(47, 76, 235, 0.1);
+		}
+
+		.action-btn-modern.danger {
+			color: #e74c3c;
+		}
+
+		.action-btn-modern.danger:hover {
+			background: rgba(231, 76, 60, 0.1);
+		}
+
+		/* Form Styling */
+		.input-modern,
+		.select-modern,
+		.textarea-modern {
+			padding: 12px 16px;
+			border: 1px solid var(--border-color);
+			border-radius: 8px;
+			font-size: 0.9rem;
+			color: var(--text-primary);
+			background: #ffffff;
+			transition: all 0.2s ease;
+			width: 100%;
+		}
+
+		.input-modern:focus,
+		.select-modern:focus,
+		.textarea-modern:focus {
+			outline: none;
+			border-color: #3c8ce7;
+			box-shadow: 0 0 0 3px rgba(60, 140, 231, 0.15);
+		}
+
+		.form-actions {
+			display: flex;
+			gap: 12px;
+			justify-content: flex-end;
+			margin-top: 24px;
+		}
+
+		/* Empty State */
+		.empty-state-modern {
+			text-align: center;
+			padding: 60px 20px;
+			color: var(--text-muted);
+		}
+
+		/* Modal Styling */
+		.modal-overlay {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0, 0, 0, 0.5);
+			z-index: 1000;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+
+		.modal-dialog {
+			background: white;
+			padding: 32px;
+			border-radius: 16px;
+			max-width: 520px;
+			width: 90%;
+			box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+			position: relative;
+			z-index: 1001;
+			pointer-events: auto;
+			max-height: 90vh;
+			overflow-y: auto;
+		}
+		
+		.modal-dialog button {
+			pointer-events: auto !important;
+			cursor: pointer !important;
+		}
+		
+		.modal-dialog button:disabled {
+			pointer-events: none !important;
+			cursor: not-allowed !important;
+		}
+
+		.modal-dialog h2 {
+			font-size: 1.5rem;
+			font-weight: 700;
+			color: var(--text-primary);
+			margin: 0 0 20px 0;
+		}
+	</style>
+</head>
+
+<body>
+	<header>
+		<div class="brand">
+			<div class="brand__avatar"></div>
+			<div class="brand__content">
+				<h1 class="brand__title">TheLorry</h1>
+				<p class="brand__subtitle">Malaysia • Employee Management</p>
+			</div>
+		</div>
+		<div class="page-meta" id="userBadge"></div>
+		<button id="logoutButton" class="logout-button">Logout</button>
+	</header>
+
+	<div class="layout">
+		<nav class="sidebar" id="sidebar">
+			<div class="nav-section">
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="dashboard">Dashboard</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="users">Employees</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="attendance">Attendance</a>
+			<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="leave">Leave</a>
+			<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="overtime">Overtime</a>
+			<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="payroll">Payroll</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="benefits">Benefits</a>
+			<a class="nav-link active" href="#" data-nav-scope="admin" data-nav-target="performance">Performance</a>
+			<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="job-postings">Job Postings</a>
+			<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="announcements">Announcements</a>
+			<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="reports">Reports</a>
+			<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="company-settings">Company Settings</a>
+			</div>
+		</nav>
+
+		<div class="content-area">
+			<main>
+				<div class="card-modern">
+					<h2>KPI Categories</h2>
+					<div class="toolbar-modern">
+						<div class="search-container">
+							<input type="text" id="kpiSearchInput" placeholder="Search KPI categories...">
+						</div>
+						<button type="button" id="kpiSearchButton" class="btn-modern btn-modern-secondary">Search</button>
+						<button type="button" id="kpiRefreshButton" class="btn-modern btn-modern-secondary">Refresh</button>
+					</div>
+					<div id="kpiResult" style="overflow-x: auto;">
+						<!-- KPI categories will be displayed here -->
+					</div>
+				</div>
+
+				<div class="card-modern">
+					<h2>Create New KPI Category</h2>
+					<form id="kpiForm">
+						<label>KPI ID</label>
+						<input type="text" id="displayKpiId" class="input-modern" readonly style="background-color: #f5f5f5; cursor: not-allowed;" placeholder="Auto-generated">
+						
+						<label>KPI Name <span style="color: red;">*</span></label>
+						<input type="text" name="name" class="input-modern" required placeholder="e.g., Monthly Sales Target, Punctuality, Project Deadlines" maxlength="100">
+						<small style="color: #666; display: block; margin-top: 0.25rem;">Maximum 100 characters</small>
+						
+						<label>Description</label>
+						<textarea name="description" class="textarea-modern" placeholder="Enter a description for this KPI category..." rows="4" maxlength="500"></textarea>
+						<small style="color: #666; display: block; margin-top: 0.25rem;">Maximum 500 characters</small>
+						
+						<label>Measurable Value <span style="color: red;">*</span></label>
+						<input type="number" name="measurableValue" id="measurableValueInput" class="input-modern" required step="1" min="1" placeholder="e.g., 1000">
+						<small style="color: #666; display: block; margin-top: 0.25rem;">Enter the target value (digits only, must be greater than 0, cannot start with 0)</small>
+						
+						<label>Due Date <span style="color: red;">*</span></label>
+						<input type="date" name="dueDate" class="input-modern" required id="kpiDueDateInput">
+						<small style="color: #666; display: block; margin-top: 0.25rem;">Select the strict due date for this KPI</small>
+						
+						<label>Bonus Amount (RM) <span style="color: red;">*</span></label>
+						<input type="number" name="bonusAmount" class="input-modern" required step="0.01" min="0.01" placeholder="0.00" id="bonusAmountInput">
+						<small style="color: #666; display: block; margin-top: 0.25rem;">Enter the monetary bonus amount in Malaysian Ringgit (RM). Must be greater than 0 and cannot start with 0.</small>
+						
+						<input type="hidden" name="kpiId" id="kpiId">
+						
+						<div class="form-actions">
+							<button type="submit" id="kpiSubmitButton" class="btn-modern btn-modern-primary">Create KPI Category</button>
+							<button type="button" class="btn-modern btn-modern-secondary" id="kpiCancelButton" style="display: none;">Cancel Edit</button>
+						</div>
+					</form>
+				</div>
+
+				<div class="card-modern">
+					<h2>Assign KPIs to Employees</h2>
+					<form id="assignKPIForm">
+						<label>Assignment Type <span style="color: red;">*</span></label>
+						<select name="assignmentType" id="assignmentType" class="select-modern" required>
+							<option value="">Select assignment type</option>
+							<option value="individual">Individual Assignment</option>
+							<option value="bulk">Bulk Assignment (By Department)</option>
+						</select>
+						<small style="color: #666; display: block; margin-top: 0.25rem;">Choose to assign to a single employee or all employees in a department</small>
+						
+						<div id="individualAssignmentFields" style="display: none;">
+							<label>Select Employee <span style="color: red;">*</span></label>
+							<select name="employeeId" id="assignEmployeeSelect" class="select-modern">
+								<option value="">Select an active employee</option>
+							</select>
+							<small style="color: #666; display: block; margin-top: 0.25rem;">Only employees with EMPLOYEE role and Active status are listed</small>
+							
+							<label>Employee Name</label>
+							<input type="text" id="assignEmployeeName" class="input-modern" readonly style="background-color: #f5f5f5; cursor: not-allowed;">
+							<small style="color: #666; display: block; margin-top: 0.25rem;">Auto-filled based on the selected employee</small>
+						</div>
+						
+						<div id="bulkAssignmentFields" style="display: none;">
+							<label>Department Name <span style="color: red;">*</span></label>
+							<select name="departmentName" id="assignDepartmentName" class="select-modern">
+								<option value="">Select a department</option>
+							</select>
+							<small style="color: #666; display: block; margin-top: 0.25rem;">Select the department to assign KPI to all employees</small>
+						</div>
+						
+						<label>KPI Category <span style="color: red;">*</span></label>
+						<select name="kpiCategoryId" id="assignKpiCategory" class="select-modern" required>
+							<option value="">Select a KPI category</option>
+						</select>
+						<small style="color: #666; display: block; margin-top: 0.25rem;">Select the KPI to assign</small>
+						
+						<div class="form-actions">
+							<button type="submit" id="assignKPIButton" class="btn-modern btn-modern-primary">Assign KPI</button>
+							<button type="button" class="btn-modern btn-modern-secondary" id="assignKPIClearButton">Clear All</button>
+						</div>
+					</form>
+				</div>
+
+				<div class="card-modern">
+					<h2>KPI Assignments</h2>
+					<div class="toolbar-modern">
+						<div class="search-container">
+							<input type="text" id="kpiAssignmentSearchInput" placeholder="Search by Employee ID or KPI...">
+						</div>
+						<button type="button" id="kpiAssignmentSearchButton" class="btn-modern btn-modern-secondary">Search</button>
+						<button type="button" id="kpiAssignmentRefreshButton" class="btn-modern btn-modern-secondary">Refresh</button>
+					</div>
+					<div id="kpiDueAlert" style="display: none; margin-bottom: 1rem; padding: 0.75rem 1rem; border-radius: 6px; background: #fff3cd; color: #856404; border: 1px solid #ffeeba;">
+						All KPI assignments are within their timelines.
+					</div>
+					<div id="kpiAssignmentResult" style="overflow-x: auto;">
+						<!-- KPI assignments will be displayed here -->
+					</div>
+				</div>
+			</main>
+		</div>
+	</div>
+
+	<div id="status" class="status-toast"></div>
+
+	<!-- KPI Evaluation Modal -->
+	<div id="kpiEvaluationModal" class="modal-overlay" style="display: none;">
+		<div class="modal-dialog">
+			<h2 id="evaluationModalTitle">Evaluate KPI</h2>
+			<p style="margin: 0 0 0.5rem; color: #555;" id="evaluationEmployeeText">Employee</p>
+			<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem; margin-bottom: 1rem;">
+				<div>
+					<strong>Target</strong>
+					<div id="evaluationTargetText" style="color: #333;">-</div>
+				</div>
+				<div>
+					<strong>Progress</strong>
+					<div id="evaluationProgressText" style="color: #333;">-</div>
+				</div>
+				<div>
+					<strong>Status</strong>
+					<div id="evaluationStatusBadge">Pending</div>
+				</div>
+			</div>
+			<div id="evaluationDueWarning" style="display: none; margin-bottom: 1rem; padding: 0.75rem; border-radius: 6px; background: #ffe8e6; color: #b02a37;">
+				This KPI is still in progress. Evaluation is unlocked after the due date.
+			</div>
+			<form id="kpiEvaluationForm">
+				<input type="hidden" id="evaluationAssignmentId">
+				<div class="form-actions" style="margin-top: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+					<button type="button" id="evaluationCompleteButton" data-eval-status="COMPLETED" class="btn-modern" style="background: #198754; color: white;">Mark as Completed</button>
+					<button type="button" id="evaluationIncompleteButton" data-eval-status="INCOMPLETE" class="btn-modern" style="background: #dc3545; color: white;">Mark as Incomplete</button>
+					<button type="button" id="closeEvaluationModal" class="btn-modern btn-modern-secondary" style="margin-left: auto;">Close</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<script src="/js/common-ui.js"></script>
+	<script src="/js/dashboard.js"></script>
+	<script>
+		document.addEventListener('DOMContentLoaded', async () => {
+			await DashboardApp.guardRole('ADMIN');
+			DashboardApp.renderUserBadge();
+			
+			// Ensure sidebar-modern class is applied
+			const sidebar = document.getElementById('sidebar');
+			if (sidebar) {
+				sidebar.classList.add('sidebar-modern');
+			}
+			
+			// Wait for CommonUI to finish
+			await new Promise(resolve => setTimeout(resolve, 150));
+			
+			DashboardApp.initSidebar({ scope: 'admin', active: 'performance' });
+			DashboardApp.attachLogout();
+			DashboardApp.prefillForms(['kpiForm']);
+			DashboardApp.initAdminKPIs();
+			DashboardApp.initInactivityMonitor();
+		});
+	</script>
+</body>
+
+</html>
+

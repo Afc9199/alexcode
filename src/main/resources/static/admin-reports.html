@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Admin Reports | Employee Management</title>
+	<link rel="stylesheet" href="/css/dashboard.css">
+	<link rel="stylesheet" href="/css/dashboard-enhanced.css">
+	<style>
+		/* Modern Card Styling */
+		.card-modern {
+			background: #ffffff;
+			border-radius: 16px;
+			padding: 24px;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+			border: 1px solid rgba(0, 0, 0, 0.06);
+			margin-bottom: 24px;
+		}
+
+		.card-modern h2 {
+			font-size: 1.3rem;
+			font-weight: 600;
+			color: var(--text-primary);
+			margin: 0 0 20px 0;
+			padding-bottom: 16px;
+			border-bottom: 1px solid var(--border-color);
+		}
+
+		/* Modern Buttons */
+		.btn-modern {
+			padding: 10px 20px;
+			border-radius: 8px;
+			font-weight: 500;
+			font-size: 0.9rem;
+			border: none;
+			cursor: pointer;
+			transition: all 0.2s ease;
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+		}
+
+		.btn-modern-primary {
+			background: linear-gradient(135deg, #2f4ceb 0%, #1e3dd4 100%);
+			color: white;
+			box-shadow: 0 2px 8px rgba(47, 76, 235, 0.3);
+		}
+
+		.btn-modern-primary:hover {
+			transform: translateY(-1px);
+			box-shadow: 0 4px 12px rgba(47, 76, 235, 0.4);
+		}
+
+		.btn-modern-secondary {
+			background: #ffffff;
+			color: var(--text-primary);
+			border: 1px solid var(--border-color);
+		}
+
+		.btn-modern-secondary:hover {
+			background: #f9f9fb;
+			border-color: #3c8ce7;
+		}
+
+		/* Form Styling */
+		.input-modern,
+		.select-modern {
+			padding: 12px 16px;
+			border: 1px solid var(--border-color);
+			border-radius: 8px;
+			font-size: 0.9rem;
+			color: var(--text-primary);
+			background: #ffffff;
+			transition: all 0.2s ease;
+			width: 100%;
+			box-sizing: border-box;
+		}
+
+		.input-modern:focus,
+		.select-modern:focus {
+			outline: none;
+			border-color: #3c8ce7;
+			box-shadow: 0 0 0 3px rgba(60, 140, 231, 0.15);
+		}
+
+		.form-group {
+			margin-bottom: 20px;
+		}
+
+		.form-group label {
+			display: block;
+			margin-bottom: 8px;
+			font-weight: 500;
+			color: var(--text-primary);
+			font-size: 0.9rem;
+		}
+
+		.form-row {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+			gap: 16px;
+			margin-bottom: 20px;
+		}
+
+		.report-section {
+			margin-bottom: 32px;
+		}
+
+		.report-actions {
+			display: flex;
+			gap: 12px;
+			margin-top: 20px;
+		}
+
+		.loading {
+			text-align: center;
+			padding: 20px;
+			color: var(--text-muted);
+		}
+
+		.error {
+			background: #fee;
+			color: #c33;
+			padding: 12px;
+			border-radius: 8px;
+			margin: 12px 0;
+		}
+
+		/* Modern Table */
+		.table-modern {
+			width: 100%;
+			border-collapse: separate;
+			border-spacing: 0;
+			background: #ffffff;
+			border-radius: 12px;
+			overflow: hidden;
+			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+		}
+
+		.table-modern thead {
+			background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+		}
+
+		.table-modern thead th {
+			padding: 12px 16px;
+			text-align: left;
+			font-weight: 600;
+			font-size: 0.85rem;
+			color: var(--text-primary);
+			text-transform: uppercase;
+			letter-spacing: 0.5px;
+			border-bottom: 2px solid var(--border-color);
+		}
+
+		.table-modern tbody tr {
+			transition: background-color 0.2s ease;
+			border-bottom: 1px solid #f0f0f0;
+		}
+
+		.table-modern tbody tr:hover {
+			background-color: #f8f9fa;
+		}
+
+		.table-modern tbody tr:last-child {
+			border-bottom: none;
+		}
+
+		.table-modern tbody td {
+			padding: 12px 16px;
+			font-size: 0.9rem;
+			color: var(--text-primary);
+		}
+	</style>
+</head>
+
+<body>
+	<header>
+		<div class="brand">
+			<div class="brand__avatar"></div>
+			<div class="brand__content">
+				<h1 class="brand__title">TheLorry</h1>
+				<p class="brand__subtitle">Malaysia • Employee Management</p>
+			</div>
+		</div>
+		<div class="page-meta" id="userBadge"></div>
+		<button id="logoutButton" class="logout-button">Logout</button>
+	</header>
+
+	<div class="layout">
+		<nav class="sidebar" id="sidebar">
+			<div class="nav-section">
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="dashboard">Dashboard</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="users">Employees</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="attendance">Attendance</a>
+			<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="leave">Leave</a>
+			<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="overtime">Overtime</a>
+			<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="payroll">Payroll</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="benefits">Benefits</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="performance">Performance</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="job-postings">Job Postings</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="announcements">Announcements</a>
+				<a class="nav-link active" href="#" data-nav-scope="admin" data-nav-target="reports">Reports</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="company-settings">Company Settings</a>
+			</div>
+		</nav>
+
+		<div class="content-area">
+			<main>
+				<div class="card-modern">
+					<h2>📊 Reports Generation</h2>
+
+					<!-- Attendance Reports Section -->
+					<div class="report-section">
+						<h3 style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color);">8.1. Attendance Reports</h3>
+						
+						<div class="form-row">
+							<div class="form-group">
+								<label>Report Type</label>
+								<select id="attendanceReportType" class="select-modern">
+									<option value="daily">Daily</option>
+									<option value="weekly">Weekly</option>
+									<option value="monthly">Monthly</option>
+								</select>
+							</div>
+							<div class="form-group">
+								<label>Start Date</label>
+								<input type="date" id="attendanceStartDate" class="input-modern" required>
+							</div>
+							<div class="form-group">
+								<label>End Date</label>
+								<input type="date" id="attendanceEndDate" class="input-modern" required>
+							</div>
+							<div class="form-group">
+								<label>Department (Optional)</label>
+								<select id="attendanceDepartment" class="select-modern">
+									<option value="">All Departments</option>
+								</select>
+							</div>
+						</div>
+						
+						<div class="report-actions">
+							<button type="button" id="generateAttendanceReport" class="btn-modern btn-modern-primary">Generate Report</button>
+							<button type="button" id="exportAttendanceExcel" class="btn-modern btn-modern-secondary" disabled>📊 Export to Excel</button>
+							<button type="button" id="exportAttendancePDF" class="btn-modern btn-modern-secondary" disabled>📄 Export to PDF</button>
+						</div>
+						
+						<div id="attendanceReportResult"></div>
+					</div>
+
+					<!-- Payroll Reports Section -->
+					<div class="report-section">
+						<h3 style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color);">8.2. Payroll Reports</h3>
+						
+						<div class="form-row">
+							<div class="form-group">
+								<label>Report Type</label>
+								<select id="payrollReportType" class="select-modern">
+									<option value="employee">By Employee</option>
+									<option value="department">By Department</option>
+								</select>
+							</div>
+							<div class="form-group">
+								<label>Month</label>
+								<input type="month" id="payrollMonth" class="input-modern" required>
+							</div>
+							<div class="form-group">
+								<label>Employee (If By Employee)</label>
+								<select id="payrollEmployee" class="select-modern">
+									<option value="">All Employees</option>
+								</select>
+							</div>
+							<div class="form-group">
+								<label>Department (If By Department)</label>
+								<select id="payrollDepartment" class="select-modern">
+									<option value="">All Departments</option>
+								</select>
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label>
+								<input type="checkbox" id="includeStatutory" checked> Include Statutory Contribution Summaries
+							</label>
+						</div>
+						
+						<div class="report-actions">
+							<button type="button" id="generatePayrollReport" class="btn-modern btn-modern-primary">Generate Report</button>
+							<button type="button" id="exportPayrollExcel" class="btn-modern btn-modern-secondary" disabled>📊 Export to Excel</button>
+							<button type="button" id="exportPayrollPDF" class="btn-modern btn-modern-secondary" disabled>📄 Export to PDF</button>
+						</div>
+						
+						<div id="payrollReportResult"></div>
+					</div>
+
+					<!-- Benefits & Performance Reports Section -->
+					<div class="report-section">
+						<h3 style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color);">8.3. Benefits & Performance Reports</h3>
+						
+						<div class="form-row">
+							<div class="form-group">
+								<label>Report Type</label>
+								<select id="benefitsReportType" class="select-modern">
+									<option value="benefits">Benefits Assignment</option>
+									<option value="performance">KPI Performance</option>
+								</select>
+							</div>
+							<div class="form-group">
+								<label>Benefit Category (If Benefits Report)</label>
+								<select id="benefitCategory" class="select-modern">
+									<option value="">All Benefits</option>
+								</select>
+							</div>
+							<div class="form-group">
+								<label>Department (Optional)</label>
+								<select id="benefitsDepartment" class="select-modern">
+									<option value="">All Departments</option>
+								</select>
+							</div>
+							<div class="form-group">
+								<label>Year (If KPI Report)</label>
+								<input type="number" id="kpiYear" class="input-modern" min="2020" max="2099" value="2024">
+							</div>
+						</div>
+						
+						<div class="report-actions">
+							<button type="button" id="generateBenefitsReport" class="btn-modern btn-modern-primary">Generate Report</button>
+							<button type="button" id="exportBenefitsExcel" class="btn-modern btn-modern-secondary" disabled>📊 Export to Excel</button>
+							<button type="button" id="exportBenefitsPDF" class="btn-modern btn-modern-secondary" disabled>📄 Export to PDF</button>
+						</div>
+						
+						<div id="benefitsReportResult"></div>
+					</div>
+				</div>
+			</main>
+		</div>
+	</div>
+
+	<div id="status" class="status-toast"></div>
+	<script src="/js/common-ui.js"></script>
+	<script src="/js/dashboard.js"></script>
+	<script>
+		document.addEventListener('DOMContentLoaded', async () => {
+			await DashboardApp.guardRole('ADMIN');
+			DashboardApp.renderUserBadge();
+			DashboardApp.initSidebar({ scope: 'admin', active: 'reports' });
+			DashboardApp.attachLogout();
+			DashboardApp.initInactivityMonitor();
+
+			// Set default dates
+			const today = new Date();
+			const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+			const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+			
+			document.getElementById('attendanceStartDate').value = firstDay.toISOString().split('T')[0];
+			document.getElementById('attendanceEndDate').value = lastDay.toISOString().split('T')[0];
+			document.getElementById('payrollMonth').value = today.toISOString().slice(0, 7);
+
+			// Load departments
+			const loadDepartments = async () => {
+				try {
+					const res = await DashboardApp.api('/api/admin/departments');
+					if (res.ok && res.payload) {
+						const deptSelects = ['attendanceDepartment', 'payrollDepartment', 'benefitsDepartment'];
+						deptSelects.forEach(selectId => {
+							const select = document.getElementById(selectId);
+							if (select) {
+								res.payload.forEach(dept => {
+									const option = document.createElement('option');
+									option.value = dept.name;
+									option.textContent = dept.name;
+									select.appendChild(option);
+								});
+							}
+						});
+					}
+				} catch (error) {
+					console.error('Error loading departments:', error);
+				}
+			};
+
+			// Load employees
+			const loadEmployees = async () => {
+				try {
+					const res = await DashboardApp.api('/api/admin/users');
+					if (res.ok && res.payload) {
+						const select = document.getElementById('payrollEmployee');
+						if (select) {
+							res.payload.forEach(emp => {
+								const option = document.createElement('option');
+								option.value = emp.id;
+								option.textContent = `${emp.employeeId} - ${emp.fullName}`;
+								select.appendChild(option);
+							});
+						}
+					}
+				} catch (error) {
+					console.error('Error loading employees:', error);
+				}
+			};
+
+			// Load benefit categories
+			const loadBenefitCategories = async () => {
+				try {
+					const res = await DashboardApp.api('/api/admin/benefit-categories');
+					if (res.ok && res.payload) {
+						const select = document.getElementById('benefitCategory');
+						if (select) {
+							res.payload.forEach(cat => {
+								const option = document.createElement('option');
+								option.value = cat.id;
+								option.textContent = cat.name;
+								select.appendChild(option);
+							});
+						}
+					}
+				} catch (error) {
+					console.error('Error loading benefit categories:', error);
+				}
+			};
+
+			await loadDepartments();
+			await loadEmployees();
+			await loadBenefitCategories();
+
+			// Attendance Report
+			document.getElementById('generateAttendanceReport').addEventListener('click', async () => {
+				const reportType = document.getElementById('attendanceReportType').value;
+				const startDate = document.getElementById('attendanceStartDate').value;
+				const endDate = document.getElementById('attendanceEndDate').value;
+				const department = document.getElementById('attendanceDepartment').value;
+				
+				const resultDiv = document.getElementById('attendanceReportResult');
+				resultDiv.innerHTML = '<div class="loading">Generating report...</div>';
+				
+				try {
+					const params = new URLSearchParams({
+						type: reportType,
+						startDate: startDate,
+						endDate: endDate
+					});
+					if (department) params.append('department', department);
+					
+					const res = await DashboardApp.api(`/api/admin/reports/attendance?${params}`);
+					if (res.ok && res.payload) {
+						const report = res.payload;
+						let itemsHtml = '';
+						if (report.items && report.items.length > 0) {
+							itemsHtml = '<table class="table-modern" style="margin-top: 16px;"><thead><tr><th>Employee ID</th><th>Employee Name</th><th>Department</th><th>Job Title</th><th>Work Date</th><th>Check In</th><th>Check Out</th><th>Status</th><th>Work Hours</th><th>OT Hours</th></tr></thead><tbody>';
+							report.items.slice(0, 10).forEach(item => {
+								itemsHtml += `<tr>
+									<td>${item.employeeId || ''}</td>
+									<td>${item.employeeName || ''}</td>
+									<td>${item.department || ''}</td>
+									<td>${item.jobTitle || ''}</td>
+									<td>${item.workDate || ''}</td>
+									<td>${item.checkIn || ''}</td>
+									<td>${item.checkOut || ''}</td>
+									<td>${item.status || ''}</td>
+									<td>${item.workHours != null ? item.workHours.toFixed(2) : '0.00'}</td>
+									<td>${item.overtimeHours != null ? item.overtimeHours.toFixed(2) : '0.00'}</td>
+								</tr>`;
+							});
+							itemsHtml += '</tbody></table>';
+							if (report.items.length > 10) {
+								itemsHtml += `<p style="margin-top: 8px; color: #666;">Showing first 10 of ${report.items.length} records</p>`;
+							}
+						}
+						resultDiv.innerHTML = `<div style="padding: 16px; background: #f0f9ff; border-radius: 8px; margin-top: 16px;">
+							<h4>Report Generated Successfully</h4>
+							<p><strong>Report type:</strong> ${report.reportType || reportType}</p>
+							<p><strong>Period:</strong> ${report.startDate || startDate} to ${report.endDate || endDate}</p>
+							<p><strong>Department:</strong> ${report.department || 'All Departments'}</p>
+							<p><strong>Date Generated:</strong> ${report.dateGenerated || new Date().toISOString().split('T')[0]}</p>
+							<p><strong>Total records:</strong> ${report.totalRecords || 0}</p>
+							<p><strong>Total Work Hours:</strong> ${report.totalWorkHours != null ? report.totalWorkHours.toFixed(2) : '0.00'}</p>
+							<p><strong>Total Overtime Hours:</strong> ${report.totalOvertimeHours != null ? report.totalOvertimeHours.toFixed(2) : '0.00'}</p>
+							${itemsHtml}
+						</div>`;
+						document.getElementById('exportAttendanceExcel').disabled = false;
+						document.getElementById('exportAttendancePDF').disabled = false;
+					} else {
+						const errorMsg = res.payload?.message || res.rawText || 'Failed to generate report';
+						resultDiv.innerHTML = `<div class="error">Error: ${errorMsg}</div>`;
+					}
+				} catch (error) {
+					resultDiv.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+				}
+			});
+
+			// Payroll Report
+			document.getElementById('generatePayrollReport').addEventListener('click', async () => {
+				const reportType = document.getElementById('payrollReportType').value;
+				const month = document.getElementById('payrollMonth').value;
+				const employee = document.getElementById('payrollEmployee').value;
+				const department = document.getElementById('payrollDepartment').value;
+				const includeStatutory = document.getElementById('includeStatutory').checked;
+				
+				const resultDiv = document.getElementById('payrollReportResult');
+				resultDiv.innerHTML = '<div class="loading">Generating report...</div>';
+				
+				try {
+					const params = new URLSearchParams({
+						type: reportType,
+						month: month,
+						includeStatutory: includeStatutory
+					});
+					if (employee) params.append('employeeId', employee);
+					if (department) params.append('department', department);
+					
+					const res = await DashboardApp.api(`/api/admin/reports/payroll?${params}`);
+					if (res.ok && res.payload) {
+						const report = res.payload;
+						let itemsHtml = '';
+						if (report.items && report.items.length > 0) {
+							itemsHtml = '<table class="table-modern" style="margin-top: 16px;"><thead><tr><th>Employee ID</th><th>Employee Name</th><th>Department</th><th>Gross Pay</th><th>Net Pay</th></tr></thead><tbody>';
+							report.items.slice(0, 10).forEach(item => {
+								itemsHtml += `<tr><td>${item.employeeId || ''}</td><td>${item.employeeName || ''}</td><td>${item.department || ''}</td><td>RM ${(item.grossPay || 0).toFixed(2)}</td><td>RM ${(item.netPay || 0).toFixed(2)}</td></tr>`;
+							});
+							itemsHtml += '</tbody></table>';
+							if (report.items.length > 10) {
+								itemsHtml += `<p style="margin-top: 8px; color: #666;">Showing first 10 of ${report.items.length} records</p>`;
+							}
+						}
+						let statutoryHtml = '';
+						if (report.includeStatutory && report.statutorySummary) {
+							const s = report.statutorySummary;
+							statutoryHtml = `<div style="margin-top: 16px; padding: 12px; background: #fff; border-radius: 8px; border: 1px solid var(--border-color);">
+								<h5>Statutory Contributions Summary</h5>
+								<p><strong>Total EPF (Employee):</strong> RM ${(s.totalEpfEmployee || 0).toFixed(2)}</p>
+								<p><strong>Total EPF (Employer):</strong> RM ${(s.totalEpfEmployer || 0).toFixed(2)}</p>
+								<p><strong>Total SOCSO (Employee):</strong> RM ${(s.totalSocsoEmployee || 0).toFixed(2)}</p>
+								<p><strong>Total SOCSO (Employer):</strong> RM ${(s.totalSocsoEmployer || 0).toFixed(2)}</p>
+								<p><strong>Total EIS (Employee):</strong> RM ${(s.totalEisEmployee || 0).toFixed(2)}</p>
+								<p><strong>Total EIS (Employer):</strong> RM ${(s.totalEisEmployer || 0).toFixed(2)}</p>
+								<p><strong>Total PCB:</strong> RM ${(s.totalPcb || 0).toFixed(2)}</p>
+							</div>`;
+						}
+						resultDiv.innerHTML = `<div style="padding: 16px; background: #f0f9ff; border-radius: 8px; margin-top: 16px;">
+							<h4>Report Generated Successfully</h4>
+							<p><strong>Report type:</strong> ${report.reportType || reportType}</p>
+							<p><strong>Month:</strong> ${report.month || month}</p>
+							<p><strong>Total employees:</strong> ${report.totalEmployees || 0}</p>
+							${itemsHtml}
+							${statutoryHtml}
+						</div>`;
+						document.getElementById('exportPayrollExcel').disabled = false;
+						document.getElementById('exportPayrollPDF').disabled = false;
+					} else {
+						const errorMsg = res.payload?.message || res.rawText || 'Failed to generate report';
+						resultDiv.innerHTML = `<div class="error">Error: ${errorMsg}</div>`;
+					}
+				} catch (error) {
+					resultDiv.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+				}
+			});
+
+			// Benefits & Performance Report
+			document.getElementById('generateBenefitsReport').addEventListener('click', async () => {
+				const reportType = document.getElementById('benefitsReportType').value;
+				const benefitCategory = document.getElementById('benefitCategory').value;
+				const department = document.getElementById('benefitsDepartment').value;
+				const year = document.getElementById('kpiYear').value;
+				
+				const resultDiv = document.getElementById('benefitsReportResult');
+				resultDiv.innerHTML = '<div class="loading">Generating report...</div>';
+				
+				try {
+					const params = new URLSearchParams({
+						type: reportType
+					});
+					if (benefitCategory) params.append('benefitCategoryId', benefitCategory);
+					if (department) params.append('department', department);
+					if (reportType === 'performance') params.append('year', year);
+					
+					const res = await DashboardApp.api(`/api/admin/reports/benefits?${params}`);
+					if (res.ok && res.payload) {
+						const report = res.payload;
+						let itemsHtml = '';
+						if (report.items && report.items.length > 0) {
+							if (reportType === 'benefits') {
+								itemsHtml = '<table class="table-modern" style="margin-top: 16px;"><thead><tr><th>Employee ID</th><th>Employee Name</th><th>Department</th><th>Benefit Name</th><th>Category</th><th>Status</th></tr></thead><tbody>';
+								report.items.slice(0, 10).forEach(item => {
+									itemsHtml += `<tr><td>${item.employeeId || ''}</td><td>${item.employeeName || ''}</td><td>${item.department || ''}</td><td>${item.benefitName || ''}</td><td>${item.benefitCategory || ''}</td><td>${item.status || ''}</td></tr>`;
+								});
+							} else {
+								itemsHtml = '<table class="table-modern" style="margin-top: 16px;"><thead><tr><th>Employee ID</th><th>Employee Name</th><th>Department</th><th>KPI Name</th><th>Target</th><th>Actual</th><th>Achievement %</th><th>Status</th></tr></thead><tbody>';
+								report.items.slice(0, 10).forEach(item => {
+									itemsHtml += `<tr><td>${item.employeeId || ''}</td><td>${item.employeeName || ''}</td><td>${item.department || ''}</td><td>${item.kpiName || ''}</td><td>${(item.targetValue || 0).toFixed(2)}</td><td>${(item.actualValue || 0).toFixed(2)}</td><td>${(item.achievementPercentage || 0).toFixed(2)}%</td><td>${item.status || ''}</td></tr>`;
+								});
+							}
+							itemsHtml += '</tbody></table>';
+							if (report.items.length > 10) {
+								itemsHtml += `<p style="margin-top: 8px; color: #666;">Showing first 10 of ${report.items.length} records</p>`;
+							}
+						}
+						resultDiv.innerHTML = `<div style="padding: 16px; background: #f0f9ff; border-radius: 8px; margin-top: 16px;">
+							<h4>Report Generated Successfully</h4>
+							<p><strong>Report type:</strong> ${report.reportType || reportType}</p>
+							<p><strong>Total records:</strong> ${report.totalRecords || 0}</p>
+							${itemsHtml}
+						</div>`;
+						document.getElementById('exportBenefitsExcel').disabled = false;
+						document.getElementById('exportBenefitsPDF').disabled = false;
+					} else {
+						const errorMsg = res.payload?.message || res.rawText || 'Failed to generate report';
+						resultDiv.innerHTML = `<div class="error">Error: ${errorMsg}</div>`;
+					}
+				} catch (error) {
+					resultDiv.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+				}
+			});
+
+			// Export functions
+			document.getElementById('exportAttendanceExcel').addEventListener('click', async () => {
+				const reportType = document.getElementById('attendanceReportType').value;
+				const startDate = document.getElementById('attendanceStartDate').value;
+				const endDate = document.getElementById('attendanceEndDate').value;
+				const department = document.getElementById('attendanceDepartment').value;
+				
+				const params = new URLSearchParams({
+					type: reportType,
+					startDate: startDate,
+					endDate: endDate
+				});
+				if (department) params.append('department', department);
+				
+				window.location.href = `/api/admin/reports/attendance/export/excel?${params}`;
+			});
+
+			document.getElementById('exportAttendancePDF').addEventListener('click', async () => {
+				const reportType = document.getElementById('attendanceReportType').value;
+				const startDate = document.getElementById('attendanceStartDate').value;
+				const endDate = document.getElementById('attendanceEndDate').value;
+				const department = document.getElementById('attendanceDepartment').value;
+				
+				const params = new URLSearchParams({
+					type: reportType,
+					startDate: startDate,
+					endDate: endDate
+				});
+				if (department) params.append('department', department);
+				
+				window.location.href = `/api/admin/reports/attendance/export/pdf?${params}`;
+			});
+
+			document.getElementById('exportPayrollExcel').addEventListener('click', async () => {
+				const reportType = document.getElementById('payrollReportType').value;
+				const month = document.getElementById('payrollMonth').value;
+				const employee = document.getElementById('payrollEmployee').value;
+				const department = document.getElementById('payrollDepartment').value;
+				const includeStatutory = document.getElementById('includeStatutory').checked;
+				
+				const params = new URLSearchParams({
+					type: reportType,
+					month: month,
+					includeStatutory: includeStatutory
+				});
+				if (employee) params.append('employeeId', employee);
+				if (department) params.append('department', department);
+				
+				window.location.href = `/api/admin/reports/payroll/export/excel?${params}`;
+			});
+
+			document.getElementById('exportPayrollPDF').addEventListener('click', async () => {
+				const reportType = document.getElementById('payrollReportType').value;
+				const month = document.getElementById('payrollMonth').value;
+				const employee = document.getElementById('payrollEmployee').value;
+				const department = document.getElementById('payrollDepartment').value;
+				const includeStatutory = document.getElementById('includeStatutory').checked;
+				
+				const params = new URLSearchParams({
+					type: reportType,
+					month: month,
+					includeStatutory: includeStatutory
+				});
+				if (employee) params.append('employeeId', employee);
+				if (department) params.append('department', department);
+				
+				window.location.href = `/api/admin/reports/payroll/export/pdf?${params}`;
+			});
+
+			document.getElementById('exportBenefitsExcel').addEventListener('click', async () => {
+				const reportType = document.getElementById('benefitsReportType').value;
+				const benefitCategory = document.getElementById('benefitCategory').value;
+				const department = document.getElementById('benefitsDepartment').value;
+				const year = document.getElementById('kpiYear').value;
+				
+				const params = new URLSearchParams({
+					type: reportType
+				});
+				if (benefitCategory) params.append('benefitCategoryId', benefitCategory);
+				if (department) params.append('department', department);
+				if (reportType === 'performance') params.append('year', year);
+				
+				window.location.href = `/api/admin/reports/benefits/export/excel?${params}`;
+			});
+
+			document.getElementById('exportBenefitsPDF').addEventListener('click', async () => {
+				const reportType = document.getElementById('benefitsReportType').value;
+				const benefitCategory = document.getElementById('benefitCategory').value;
+				const department = document.getElementById('benefitsDepartment').value;
+				const year = document.getElementById('kpiYear').value;
+				
+				const params = new URLSearchParams({
+					type: reportType
+				});
+				if (benefitCategory) params.append('benefitCategoryId', benefitCategory);
+				if (department) params.append('department', department);
+				if (reportType === 'performance') params.append('year', year);
+				
+				window.location.href = `/api/admin/reports/benefits/export/pdf?${params}`;
+			});
+		});
+	</script>
+</body>
+
+</html>
+

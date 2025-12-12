@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Admin Payroll | Employee Management</title>
+	<link rel="stylesheet" href="/css/dashboard.css">
+	<link rel="stylesheet" href="/css/dashboard-enhanced.css">
+</head>
+
+<body>
+	<header>
+		<div class="brand">
+			<div class="brand__avatar"></div>
+			<div class="brand__content">
+				<h1 class="brand__title">TheLorry</h1>
+				<p class="brand__subtitle">Malaysia • Employee Management</p>
+			</div>
+		</div>
+		<div class="page-meta" id="userBadge"></div>
+		<button id="logoutButton" class="logout-button">Logout</button>
+	</header>
+
+	<div class="layout">
+		<nav class="sidebar" id="sidebar">
+			<div class="nav-section">
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="dashboard">Dashboard</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="users">Employees</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="attendance">Attendance</a>
+			<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="leave">Leave</a>
+			<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="overtime">Overtime</a>
+			<a class="nav-link active" href="#" data-nav-scope="admin" data-nav-target="payroll">Payroll</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="benefits">Benefits</a>
+			<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="performance">Performance</a>
+			<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="job-postings">Job Postings</a>
+			<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="announcements">Announcements</a>
+			<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="reports">Reports</a>
+			<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="company-settings">Company Settings</a>
+			</div>
+		</nav>
+
+		<div class="content-area">
+			<main>
+				<div class="card">
+					<h2>Generate Payslip</h2>
+					<form id="adminPayrollForm">
+						<label>Select Employee</label>
+						<select id="employeeSelect" name="userId" required>
+							<option value="">-- Select an Employee --</option>
+						</select>
+
+						<label>Select Month</label>
+						<input type="month" id="salaryMonth" name="salaryMonth" required>
+
+						<button type="submit">Generate Payslip</button>
+					</form>
+				</div>
+
+				<div class="card">
+					<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+						<h2 style="margin: 0;">Payroll Records</h2>
+						<button type="button" id="deleteSelectedPayroll" 
+							style="padding: 8px 16px; background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 500; display: none;"
+							disabled>
+							Delete Selected (<span id="selectedCount">0</span>)
+						</button>
+					</div>
+					<div id="adminPayrollResult">
+						<p style="text-align: center; color: #888; padding: 20px;">Loading payroll records...</p>
+					</div>
+				</div>
+			</main>
+		</div>
+	</div>
+
+	<div id="status" class="status-toast"></div>
+	<script src="/js/common-ui.js"></script>
+	<script src="/js/dashboard.js"></script>
+	<script>
+		document.addEventListener('DOMContentLoaded', async () => {
+			await DashboardApp.guardRole('ADMIN');
+			DashboardApp.renderUserBadge();
+			DashboardApp.initSidebar({ scope: 'admin', active: 'payroll' });
+			DashboardApp.attachLogout();
+			DashboardApp.prefillForms(['adminPayrollForm']);
+			DashboardApp.initAdminPayroll();
+			DashboardApp.initInactivityMonitor();
+		});
+	</script>
+</body>
+
+</html>
+

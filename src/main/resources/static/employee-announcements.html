@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Employee Announcements | Employee Management</title>
+	<link rel="stylesheet" href="/css/dashboard.css">
+	<link rel="stylesheet" href="/css/dashboard-enhanced.css">
+	<style>
+		/* Modern Page Header */
+		.page-header-modern {
+			margin-bottom: 32px;
+		}
+
+		.page-title-modern {
+			font-size: 1.8rem;
+			font-weight: 700;
+			color: var(--text-primary);
+			margin: 0 0 8px 0;
+		}
+
+		.page-subtitle-modern {
+			font-size: 0.95rem;
+			color: var(--text-muted);
+			margin: 0;
+		}
+
+		/* Modern Card Styling */
+		.card-modern {
+			background: #ffffff;
+			border-radius: 16px;
+			padding: 24px;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+			border: 1px solid rgba(0, 0, 0, 0.06);
+			margin-bottom: 24px;
+		}
+
+		.card-modern h2 {
+			font-size: 1.3rem;
+			font-weight: 600;
+			color: var(--text-primary);
+			margin: 0 0 20px 0;
+			padding-bottom: 16px;
+			border-bottom: 1px solid var(--border-color);
+		}
+
+		/* Modern Table */
+		.table-modern {
+			width: 100%;
+			border-collapse: separate;
+			border-spacing: 0;
+			background: #ffffff;
+			border-radius: 12px;
+			overflow: hidden;
+			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+		}
+
+		.table-modern thead {
+			background: #f9f9fb;
+		}
+
+		.table-modern thead th {
+			padding: 16px;
+			text-align: left;
+			font-weight: 600;
+			font-size: 0.85rem;
+			color: var(--text-primary);
+			text-transform: uppercase;
+			letter-spacing: 0.5px;
+			border-bottom: 2px solid var(--border-color);
+		}
+
+		.table-modern tbody tr {
+			border-bottom: 1px solid var(--border-color);
+			transition: background-color 0.2s ease;
+		}
+
+		.table-modern tbody tr:hover {
+			background: #f9f9fb;
+		}
+
+		.table-modern tbody td {
+			padding: 16px;
+			font-size: 0.9rem;
+			color: var(--text-primary);
+		}
+
+		/* Status Pill */
+		.status-pill-modern {
+			display: inline-block;
+			padding: 6px 12px;
+			border-radius: 20px;
+			font-size: 0.8rem;
+			font-weight: 500;
+		}
+
+		.status-pill-modern.pinned {
+			background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+			color: white;
+		}
+
+		.status-pill-modern.active {
+			background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+			color: white;
+		}
+
+		.status-pill-modern.expired {
+			background: #e9ecef;
+			color: #6c757d;
+		}
+
+		/* Empty State */
+		.empty-state-modern {
+			text-align: center;
+			padding: 60px 20px;
+			color: var(--text-muted);
+		}
+
+		/* Announcement Message */
+		.announcement-message {
+			max-width: 400px;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+
+		.announcement-card {
+			background: #ffffff;
+			border-radius: 12px;
+			padding: 20px;
+			margin-bottom: 16px;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+			border: 1px solid var(--border-color);
+			transition: transform 0.2s ease, box-shadow 0.2s ease;
+		}
+
+		.announcement-card:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+		}
+
+		.announcement-card.pinned {
+			border-left: 4px solid #f39c12;
+		}
+
+		.announcement-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: flex-start;
+			margin-bottom: 12px;
+		}
+
+		.announcement-title {
+			font-size: 1.1rem;
+			font-weight: 600;
+			color: var(--text-primary);
+			margin: 0;
+		}
+
+		.announcement-meta {
+			display: flex;
+			gap: 12px;
+			align-items: center;
+			margin-top: 8px;
+			font-size: 0.85rem;
+			color: var(--text-muted);
+		}
+
+		.announcement-content {
+			color: var(--text-primary);
+			line-height: 1.6;
+			margin-top: 12px;
+		}
+	</style>
+</head>
+
+<body>
+	<header>
+		<div class="brand">
+			<div class="brand__avatar"></div>
+			<div class="brand__content">
+				<h1 class="brand__title">TheLorry</h1>
+				<p class="brand__subtitle">Malaysia • Employee Portal</p>
+			</div>
+		</div>
+		
+		<div class="page-meta" id="userBadge"></div>
+		<button id="logoutButton" class="logout-button">Logout</button>
+	</header>
+
+	<div class="layout">
+		<nav class="sidebar" id="sidebar">
+			<div class="nav-section">
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="dashboard">Dashboard</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="profile">Profile</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="attendance">Attendance</a>
+			<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="leave">Leave</a>
+			<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="overtime">Overtime</a>
+			<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="payroll">Payroll</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="benefits">Benefits</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="performance">Performance</a>
+				<a class="nav-link active" href="#" data-nav-scope="employee" data-nav-target="announcements">Announcements</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="reports">Reports</a>
+			</div>
+		</nav>
+
+		<div class="content-area">
+			<main>
+				
+				<div class="card-modern">
+					<h2>All Announcements</h2>
+					<div id="announcementContainer">
+						<div id="announcementEmptyState" class="empty-state-modern">No announcements available.</div>
+					</div>
+				</div>
+			</main>
+		</div>
+	</div>
+
+	<div id="status" class="status-toast"></div>
+	<script src="/js/common-ui.js"></script>
+	<script src="/js/dashboard.js"></script>
+	<script>
+		document.addEventListener('DOMContentLoaded', async () => {
+			await DashboardApp.guardRole('EMPLOYEE');
+			DashboardApp.renderUserBadge();
+			DashboardApp.initSidebar({ scope: 'employee', active: 'announcements' });
+			DashboardApp.attachLogout();
+			DashboardApp.initEmployeeAnnouncements();
+			DashboardApp.initFloatingChatbot();
+			DashboardApp.initInactivityMonitor();
+		});
+	</script>
+</body>
+
+</html>
+

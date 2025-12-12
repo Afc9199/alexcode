@@ -1,0 +1,1903 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Admin Employees | Employee Management</title>
+	<link rel="stylesheet" href="/css/dashboard.css">
+	<link rel="stylesheet" href="/css/dashboard-enhanced.css">
+	<style>
+		/* Modern Page Header */
+		.page-header-modern {
+			margin-bottom: 32px;
+		}
+
+		.page-title-modern {
+			font-size: 1.8rem;
+			font-weight: 700;
+			color: var(--text-primary);
+			margin: 0 0 8px 0;
+		}
+
+		.page-subtitle-modern {
+			font-size: 0.95rem;
+			color: var(--text-muted);
+			margin: 0;
+		}
+
+		/* Modern Card Styling */
+		.card-modern {
+			background: #ffffff;
+			border-radius: 16px;
+			padding: 24px;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+			border: 1px solid rgba(0, 0, 0, 0.06);
+			margin-bottom: 24px;
+		}
+
+		.card-modern h2 {
+			font-size: 1.3rem;
+			font-weight: 600;
+			color: var(--text-primary);
+			margin: 0 0 20px 0;
+			padding-bottom: 16px;
+			border-bottom: 1px solid var(--border-color);
+		}
+
+		/* Modern Toolbar */
+		.toolbar-modern {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 12px;
+			align-items: center;
+			margin-bottom: 24px;
+			padding: 16px;
+			background: #f9f9fb;
+			border-radius: 12px;
+			border: 1px solid var(--border-color);
+		}
+
+		.toolbar-modern .search-container {
+			flex: 1;
+			min-width: 250px;
+			margin: 0;
+		}
+
+		.toolbar-modern .filter-group {
+			display: flex;
+			gap: 8px;
+			align-items: center;
+		}
+
+		.filter-select-modern {
+			padding: 10px 14px;
+			border: 1px solid var(--border-color);
+			border-radius: 8px;
+			background: #ffffff;
+			font-size: 0.9rem;
+			color: var(--text-primary);
+			cursor: pointer;
+			transition: all 0.2s ease;
+		}
+
+		.filter-select-modern:hover {
+			border-color: #3c8ce7;
+		}
+
+		.filter-select-modern:focus {
+			outline: none;
+			border-color: #3c8ce7;
+			box-shadow: 0 0 0 3px rgba(60, 140, 231, 0.15);
+		}
+
+		/* Modern Buttons */
+		.btn-modern {
+			padding: 10px 20px;
+			border-radius: 8px;
+			font-weight: 500;
+			font-size: 0.9rem;
+			border: none;
+			cursor: pointer;
+			transition: all 0.2s ease;
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+		}
+
+		.btn-modern-primary {
+			background: linear-gradient(135deg, #2f4ceb 0%, #1e3dd4 100%);
+			color: white;
+			box-shadow: 0 2px 8px rgba(47, 76, 235, 0.3);
+		}
+
+		.btn-modern-primary:hover {
+			transform: translateY(-1px);
+			box-shadow: 0 4px 12px rgba(47, 76, 235, 0.4);
+		}
+
+		.btn-modern-secondary {
+			background: #ffffff;
+			color: var(--text-primary);
+			border: 1px solid var(--border-color);
+		}
+
+		.btn-modern-secondary:hover {
+			background: #f9f9fb;
+			border-color: #3c8ce7;
+		}
+
+		.btn-modern-danger {
+			background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+			color: white;
+			box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+		}
+
+		.btn-modern-danger:hover {
+			transform: translateY(-1px);
+			box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
+		}
+
+		.btn-group-modern {
+			display: flex;
+			gap: 8px;
+			align-items: center;
+		}
+
+		/* Modern Table */
+		.table-modern {
+			width: 100%;
+			border-collapse: separate;
+			border-spacing: 0;
+			background: #ffffff;
+			border-radius: 12px;
+			overflow: hidden;
+			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+		}
+
+		.table-modern thead {
+			background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+		}
+
+		.table-modern thead th {
+			padding: 16px;
+			text-align: left;
+			font-weight: 600;
+			font-size: 0.85rem;
+			color: var(--text-primary);
+			text-transform: uppercase;
+			letter-spacing: 0.5px;
+			border-bottom: 2px solid var(--border-color);
+		}
+
+		.table-modern thead th:first-child {
+			text-align: center;
+			width: 50px;
+		}
+
+		.table-modern tbody tr {
+			transition: background-color 0.2s ease;
+			border-bottom: 1px solid #f0f0f0;
+		}
+
+		.table-modern tbody tr:hover {
+			background-color: #f8f9fa;
+		}
+
+		.table-modern tbody tr:last-child {
+			border-bottom: none;
+		}
+
+		.table-modern tbody td {
+			padding: 16px;
+			font-size: 0.9rem;
+			color: var(--text-primary);
+		}
+
+		.table-modern tbody td:first-child {
+			text-align: center;
+		}
+
+		/* Checkbox styling */
+		.user-row-checkbox,
+		#adminUserSelectAll {
+			width: 18px;
+			height: 18px;
+			cursor: pointer;
+			accent-color: #2f4ceb;
+		}
+
+		.user-row-checkbox:hover,
+		#adminUserSelectAll:hover {
+			opacity: 0.8;
+		}
+
+		/* User Cell Styling */
+		.user-cell-modern {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+		}
+
+		.avatar-circle-modern {
+			width: 40px;
+			height: 40px;
+			border-radius: 50%;
+			background: linear-gradient(135deg, #2f4ceb 0%, #1e3dd4 100%);
+			color: white;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-weight: 600;
+			font-size: 0.9rem;
+			flex-shrink: 0;
+		}
+
+		.user-info-modern {
+			display: flex;
+			flex-direction: column;
+			gap: 4px;
+		}
+
+		.user-name-modern {
+			font-weight: 600;
+			color: var(--text-primary);
+			font-size: 0.95rem;
+		}
+
+		.user-sub-modern {
+			font-size: 0.85rem;
+			color: var(--text-muted);
+		}
+
+		/* Status Pill */
+		.status-pill-modern {
+			display: inline-block;
+			padding: 6px 12px;
+			border-radius: 20px;
+			font-size: 0.8rem;
+			font-weight: 500;
+		}
+
+		.status-pill-modern.active {
+			background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+			color: white;
+		}
+
+		.status-pill-modern.inactive {
+			background: #e9ecef;
+			color: #6c757d;
+		}
+
+		/* Action Buttons */
+		.action-btn-modern {
+			padding: 6px 12px;
+			border-radius: 6px;
+			font-size: 0.85rem;
+			font-weight: 500;
+			border: none;
+			cursor: pointer;
+			transition: all 0.2s ease;
+			background: transparent;
+			color: #2f4ceb;
+		}
+
+		.action-btn-modern:hover {
+			background: rgba(47, 76, 235, 0.1);
+		}
+
+		.action-btn-modern.danger {
+			color: #e74c3c;
+		}
+
+		.action-btn-modern.danger:hover {
+			background: rgba(231, 76, 60, 0.1);
+		}
+
+		/* Form Styling */
+		.form-modern {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+			gap: 20px;
+		}
+
+		.form-group-modern {
+			display: flex;
+			flex-direction: column;
+			gap: 8px;
+		}
+
+		.form-group-modern label {
+			font-weight: 500;
+			font-size: 0.9rem;
+			color: var(--text-primary);
+		}
+
+		.input-modern,
+		.select-modern,
+		.textarea-modern {
+			padding: 12px 16px;
+			border: 1px solid var(--border-color);
+			border-radius: 8px;
+			font-size: 0.9rem;
+			color: var(--text-primary);
+			background: #ffffff;
+			transition: all 0.2s ease;
+		}
+
+		.input-modern:focus,
+		.select-modern:focus,
+		.textarea-modern:focus {
+			outline: none;
+			border-color: #3c8ce7;
+			box-shadow: 0 0 0 3px rgba(60, 140, 231, 0.15);
+		}
+
+		.input-modern::placeholder {
+			color: var(--text-muted);
+		}
+
+		/* Empty State */
+		.empty-state-modern {
+			text-align: center;
+			padding: 60px 20px;
+			color: var(--text-muted);
+		}
+
+		.empty-state-modern::before {
+			content: '📋';
+			display: block;
+			font-size: 3rem;
+			margin-bottom: 16px;
+		}
+
+		/* Modal Styles */
+		.modal-overlay {
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background: rgba(0, 0, 0, 0.5);
+			backdrop-filter: blur(4px);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			z-index: 10000;
+			opacity: 0;
+			pointer-events: none;
+			transition: opacity 0.3s ease;
+		}
+
+		.modal-overlay.show {
+			opacity: 1;
+			pointer-events: all;
+		}
+
+		.modal-dialog {
+			background: #ffffff;
+			border-radius: 16px;
+			box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+			max-width: 900px;
+			width: 90%;
+			max-height: 90vh;
+			overflow-y: auto;
+			transform: scale(0.9) translateY(20px);
+			transition: transform 0.3s ease;
+			position: relative;
+		}
+
+		.modal-overlay.show .modal-dialog {
+			transform: scale(1) translateY(0);
+		}
+
+		.modal-header {
+			padding: 24px 24px 16px;
+			border-bottom: 1px solid var(--border-color);
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			position: sticky;
+			top: 0;
+			background: #ffffff;
+			z-index: 1;
+		}
+
+		.modal-title {
+			font-size: 1.5rem;
+			font-weight: 700;
+			color: var(--text-primary);
+			margin: 0;
+		}
+
+		.modal-close {
+			width: 32px;
+			height: 32px;
+			border-radius: 50%;
+			border: none;
+			background: #f0f0f0;
+			color: var(--text-muted);
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 1.5rem;
+			transition: all 0.2s ease;
+		}
+
+		.modal-close:hover {
+			background: #e0e0e0;
+			color: var(--text-primary);
+		}
+
+		.modal-body {
+			padding: 24px;
+		}
+
+		.modal-footer {
+			padding: 16px 24px 24px;
+			border-top: 1px solid var(--border-color);
+			display: flex;
+			justify-content: flex-end;
+			gap: 12px;
+			position: sticky;
+			bottom: 0;
+			background: #ffffff;
+			z-index: 1;
+		}
+
+		/* Ensure error messages appear above modals */
+		.status-toast {
+			z-index: 10001 !important;
+		}
+
+		/* Responsive */
+		@media (max-width: 768px) {
+			.toolbar-modern {
+				flex-direction: column;
+			}
+
+			.toolbar-modern .search-container {
+				width: 100%;
+			}
+
+			.form-modern {
+				grid-template-columns: 1fr;
+			}
+
+			.modal-dialog {
+				width: 95%;
+				max-height: 95vh;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<header>
+		<div class="brand">
+			<div class="brand__avatar"></div>
+			<div class="brand__content">
+				<h1 class="brand__title">TheLorry</h1>
+				<p class="brand__subtitle">Malaysia • Employee Management</p>
+			</div>
+		</div>
+		<div class="page-meta" id="userBadge"></div>
+		<button id="logoutButton" class="logout-button">Logout</button>
+	</header>
+
+	<div class="layout">
+		<nav class="sidebar" id="sidebar">
+		<div class="nav-section">
+			<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="dashboard">Dashboard</a>
+			<a class="nav-link active" href="#" data-nav-scope="admin" data-nav-target="users">Employees</a>
+			<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="attendance">Attendance</a>
+			<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="leave">Leave</a>
+			<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="overtime">Overtime</a>
+			<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="payroll">Payroll</a>
+			<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="benefits">Benefits</a>
+			<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="performance">Performance</a>
+			<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="job-postings">Job Postings</a>
+			<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="announcements">Announcements</a>
+			<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="reports">Reports</a>
+			<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="company-settings">Company Settings</a>
+		</div>
+		</nav>
+
+		<div class="content-area">
+			<main>
+				
+
+				<!-- Main Table Card -->
+				<div class="card-modern">
+					<!-- Toolbar -->
+					<div class="toolbar-modern">
+						<div class="search-container">
+							<input type="search" id="adminUserSearch" placeholder="Search by name, email, or department">
+						</div>
+						<div class="filter-group">
+							<select id="adminUserStatusFilter" class="filter-select-modern">
+								<option value="ALL">All Statuses</option>
+								<option value="ACTIVE">Active</option>
+								<option value="INACTIVE">Inactive</option>
+							</select>
+							<input type="date" id="adminUserDateFrom" class="filter-select-modern" placeholder="From Date">
+							<input type="date" id="adminUserDateTo" class="filter-select-modern" placeholder="To Date">
+						</div>
+						<div class="btn-group-modern">
+							<button type="button" class="btn-modern btn-modern-primary" id="adminUserAddScroll">➕ Add Employee</button>
+							<button type="button" class="btn-modern btn-modern-danger" id="adminUserDeleteSelected" style="display: none;">🗑️ Delete Selected</button>
+						</div>
+					</div>
+
+					<!-- Table -->
+					<div class="table-responsive">
+						<table class="table-modern">
+							<thead>
+								<tr>
+									<th>
+										<input type="checkbox" id="adminUserSelectAll" title="Select All">
+									</th>
+									<th>ID</th>
+									<th>Employee</th>
+									<th>Department</th>
+									<th>Role</th>
+									<th>Status</th>
+									<th>Created</th>
+									<th>Actions</th>
+								</tr>
+							</thead>
+							<tbody id="adminUserTableBody"></tbody>
+						</table>
+						<div id="adminUserEmptyState" class="empty-state-modern">No employees match this view.</div>
+					</div>
+				</div>
+
+			<!-- Old forms removed - using modals instead -->
+			</main>
+		</div>
+	</div>
+
+	<div id="status" class="status-toast"></div>
+
+	<!-- Create Employee Modal -->
+	<div id="createEmployeeModal" class="modal-overlay">
+		<div class="modal-dialog">
+			<div class="modal-header">
+				<h2 class="modal-title">Create Employee</h2>
+				<button class="modal-close" id="closeCreateModal" aria-label="Close">×</button>
+			</div>
+			<div class="modal-body">
+				<form id="adminUserCreateForm" novalidate>
+					<!-- Section: Account Information -->
+					<div style="margin-bottom: 32px; padding-bottom: 24px; border-bottom: 2px solid var(--border-color);">
+						<h3 style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 20px;">Account Information</h3>
+						
+						<label>Employee ID</label>
+						<input type="text" id="nextEmployeeId" class="input-modern" readonly style="background-color: #f5f5f5; cursor: not-allowed;">
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Auto-generated employee ID
+						</small>
+						
+						<label>Username <span style="color: red;">*</span></label>
+						<input type="text" name="username" class="input-modern" required maxlength="30">
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Maximum 30 characters
+						</small>
+						
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px; padding: 12px; background-color: #e8f4f8; border-left: 4px solid #2196F3; border-radius: 4px;">
+							<strong>Password:</strong> Default password will be automatically set to the employee's IC number. Employee can change it later in their profile.
+						</small>
+						
+						<label>Role <span style="color: red;">*</span></label>
+						<select name="role" id="createRoleSelect" class="select-modern" required>
+							<option value="">-- Select Role --</option>
+							<option value="EMPLOYEE">Employee</option>
+							<option value="ADMIN">Admin</option>
+						</select>
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Choose the role for this account.
+						</small>
+						
+						<label>Status <span style="color: red;">*</span></label>
+						<select name="active" id="createActiveSelect" class="select-modern" required>
+							<option value="true">Active</option>
+							<option value="false">Inactive</option>
+						</select>
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Choose whether this account can sign in.
+						</small>
+					</div>
+
+					<!-- Section: Personal Information -->
+					<div style="margin-bottom: 32px; padding-bottom: 24px; border-bottom: 2px solid var(--border-color);">
+						<h3 style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 20px;">Personal Information</h3>
+						
+						<label>Full Name <span style="color: red;">*</span></label>
+						<input type="text" name="fullName" class="input-modern" required maxlength="50">
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Maximum 50 characters
+						</small>
+						
+						<label>Gender <span style="color: red;">*</span></label>
+						<select name="gender" class="select-modern" required>
+							<option value="">Select Gender</option>
+							<option value="Male">Male</option>
+							<option value="Female">Female</option>
+							<option value="Prefer Not To Say">Prefer Not To Say</option>
+						</select>
+						
+						<label>Age <span style="color: red;">*</span></label>
+						<input type="number" name="age" class="input-modern" required min="18" placeholder="e.g., 25">
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Age must be 18 or above (will be calculated from Date of Birth if provided)
+						</small>
+						
+						<label>IC Number <span style="color: red;">*</span></label>
+						<input type="text" name="icNumber" id="createIcNumberPersonal" class="input-modern" required maxlength="14" placeholder="123456-12-1234 or 123456121234" pattern="[0-9\-]*" inputmode="numeric">
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Exactly 12 digits, digits and dashes only (no spaces allowed)
+						</small>
+						
+						<label>Race <span style="color: red;">*</span></label>
+						<input type="text" name="race" class="input-modern" required maxlength="30" placeholder="e.g., Malay">
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Letters only, maximum 30 characters
+						</small>
+						
+						<label>Religion <span style="color: red;">*</span></label>
+						<input type="text" name="religion" class="input-modern" required maxlength="30" placeholder="e.g., Islam">
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Letters only, maximum 30 characters
+						</small>
+						
+						<label>Marital Status <span style="color: red;">*</span></label>
+						<select name="maritalStatus" class="select-modern" required>
+							<option value="">Select Marital Status</option>
+							<option value="Single">Single</option>
+							<option value="Married">Married</option>
+							<option value="Divorced">Divorced</option>
+							<option value="Widowed">Widowed</option>
+							<option value="Prefer Not To Say">Prefer Not To Say</option>
+						</select>
+						
+						<label>Number of Children <span style="color: red;">*</span></label>
+						<select name="numberOfChildren" class="select-modern" required>
+							<option value="0">0</option>
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+							<option value="6">6</option>
+							<option value="7">7</option>
+							<option value="8">8</option>
+							<option value="9">9</option>
+							<option value="10">10</option>
+						</select>
+						
+						<label>Spouse Working <span style="color: red;">*</span></label>
+						<select name="spouseWorking" class="select-modern" required>
+							<option value="">Select Option</option>
+							<option value="Yes">Yes</option>
+							<option value="No">No</option>
+						</select>
+						
+						<label>Nationality <span style="color: red;">*</span></label>
+						<select name="nationality" id="createNationality" class="select-modern" required>
+							<option value="">Select Nationality</option>
+							<option value="Malaysian">Malaysian</option>
+							<option value="Non-Malaysian">Non-Malaysian</option>
+						</select>
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Select nationality to determine required identity document (IC for Malaysian, Passport for Non-Malaysian).
+						</small>
+						
+						<div id="createPassportNumberGroup" style="display: none;">
+							<label>Passport Number <span style="color: red;">*</span></label>
+							<input type="text" name="passportNumber" id="createPassportNumber" class="input-modern" required placeholder="A12345678" maxlength="20">
+							<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+								Passport number (letters and numbers, max 20 characters). Required for all government submissions.
+							</small>
+						</div>
+						
+						<label>Resident Status <span style="color: red;">*</span></label>
+						<select name="residentStatus" id="createResidentStatus" class="select-modern" required>
+							<option value="">Select Resident Status</option>
+							<option value="Resident">Resident</option>
+							<option value="Non-resident">Non-resident</option>
+						</select>
+						
+						<label>Date of Birth <span style="color: red;">*</span></label>
+						<input type="date" name="dateOfBirth" class="input-modern" required>
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Used for accurate age calculation, retirement date, and birthday benefits.
+						</small>
+						
+						<label>Permanent Address <span style="color: red;">*</span></label>
+						<textarea name="address" class="textarea-modern" required maxlength="250" rows="3" placeholder="Full permanent address"></textarea>
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Maximum 250 characters
+						</small>
+						
+						<label>Email <span style="color: red;">*</span></label>
+						<input type="email" name="email" class="input-modern" required>
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Must contain @ and . after @, no spaces allowed
+						</small>
+						
+						<label>Contact Number <span style="color: red;">*</span></label>
+						<div style="display: flex; gap: 8px; align-items: center;">
+							<span style="padding: 12px; background-color: #f5f5f5; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 500;">+60</span>
+							<input type="text" id="createContactNumber" name="contactNumber" class="input-modern" required placeholder="12-345 6789" maxlength="15" style="flex: 1;">
+						</div>
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Malaysia phone number (9-10 digits after +60, spaces and dashes will be removed)
+						</small>
+					</div>
+
+					<!-- Section: Emergency Contact -->
+					<div style="margin-bottom: 32px; padding-bottom: 24px; border-bottom: 2px solid var(--border-color);">
+						<h3 style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 20px;">Emergency Contact</h3>
+						
+						<label>Emergency Contact Name <span style="color: red;">*</span></label>
+						<input type="text" name="emergencyContactName" class="input-modern" required maxlength="100" placeholder="Full name of emergency contact">
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							To contact in case of emergency.
+						</small>
+						
+						<label>Relationship <span style="color: red;">*</span></label>
+						<select name="emergencyContactRelationship" class="select-modern" required>
+							<option value="">Select Relationship</option>
+							<option value="Father">Father</option>
+							<option value="Mother">Mother</option>
+							<option value="Spouse">Spouse</option>
+							<option value="Sibling">Sibling</option>
+							<option value="Friend">Friend</option>
+							<option value="Other">Other</option>
+						</select>
+						
+						<label>Emergency Contact Number <span style="color: red;">*</span></label>
+						<div style="display: flex; gap: 8px; align-items: center;">
+							<span style="padding: 12px; background-color: #f5f5f5; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 500;">+60</span>
+							<input type="text" id="createEmergencyContactNumber" name="emergencyContactNumber" class="input-modern" required placeholder="12-345 6789" maxlength="15" style="flex: 1;">
+						</div>
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Malaysia phone number (9-10 digits after +60, spaces and dashes will be removed)
+						</small>
+					</div>
+
+					<!-- Section: Employment Information -->
+					<div style="margin-bottom: 32px; padding-bottom: 24px; border-bottom: 2px solid var(--border-color);">
+						<h3 style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 20px;">Employment Information</h3>
+						
+						<label>Date of Hire <span style="color: red;">*</span></label>
+						<input type="date" name="dateOfHire" class="input-modern" required>
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Used to calculate service years and leave accrual.
+						</small>
+						
+						<label>Department <span style="color: red;">*</span></label>
+						<select name="department" id="createDepartmentSelect" class="select-modern" required>
+							<option value="">-- Select Department --</option>
+							<!-- Options will be dynamically loaded -->
+						</select>
+						
+						<label>Job Title <span style="color: red;">*</span></label>
+						<input type="text" name="jobTitle" class="input-modern" required maxlength="50">
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Maximum 50 characters
+						</small>
+					</div>
+
+					<!-- Section: Financial Information -->
+					<div style="margin-bottom: 32px;">
+						<h3 style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 20px;">Financial Information</h3>
+						
+						<label>Basic Salary <span style="color: red;">*</span></label>
+						<input type="number" name="basicSalary" class="input-modern" required step="0.01" min="0" placeholder="0.00">
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Must be 0 or greater, cannot lead with 0
+						</small>
+						
+						<label>Bank Name</label>
+						<input type="text" name="bankName" class="input-modern" value="Malayan Banking Berhad" readonly style="background-color: #f5f5f5; cursor: not-allowed;">
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Default bank: Malayan Banking Berhad (Maybank)
+						</small>
+						
+						<label>Bank Account Number <span style="color: red;">*</span></label>
+						<input type="text" name="bankAccountNumber" class="input-modern" required minlength="10" maxlength="20" placeholder="1234 5678 9012 3456">
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Digits only, 10-16 digits (spaces and dashes will be removed)
+						</small>
+						
+						<label>EPF Number <span style="color: red;">*</span></label>
+						<input type="text" name="epfNumber" class="input-modern" required minlength="8" maxlength="8" placeholder="12345678">
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Exactly 8 digits
+						</small>
+						
+						<label>SOCSO Number <span style="color: red;">*</span></label>
+						<input type="text" name="socsoNumber" id="createSocsoNumber" class="input-modern" required maxlength="14" placeholder="123456-12-1234 or 123456121234" pattern="[0-9\-]*" inputmode="numeric">
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Exactly 12 digits, digits and dashes only (no spaces allowed, dashes will be removed when stored)
+						</small>
+						
+						<label>Tax Number <span style="color: red;">*</span></label>
+						<input type="text" name="taxNumber" class="input-modern" required placeholder="IG123456789" maxlength="13">
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Must start with "IG" prefix, followed by 9 to 11 digits
+						</small>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" id="adminUserClearForm" class="btn-modern btn-modern-secondary">Clear All</button>
+				<button type="submit" form="adminUserCreateForm" class="btn-modern btn-modern-primary">Create Employee</button>
+			</div>
+		</div>
+	</div>
+
+	<!-- Edit Employee Modal -->
+	<div id="editEmployeeModal" class="modal-overlay">
+		<div class="modal-dialog">
+			<div class="modal-header">
+				<h2 class="modal-title">Edit Employee</h2>
+				<button class="modal-close" id="closeEditModal" aria-label="Close">×</button>
+			</div>
+			<div class="modal-body">
+				<form id="adminUserEditForm" novalidate>
+					<input type="hidden" name="userId">
+					
+					<!-- Section: Account Information -->
+					<div style="margin-bottom: 32px; padding-bottom: 24px; border-bottom: 2px solid var(--border-color);">
+						<h3 style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 20px;">Account Information</h3>
+						
+						<label>Employee ID</label>
+						<input type="text" name="employeeId" class="input-modern" placeholder="Enter Employee ID (e.g., E001)">
+						
+						<label>Username</label>
+						<input type="text" name="username" class="input-modern" maxlength="30">
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Maximum 30 characters
+						</small>
+						
+						
+						
+						<label>New Password (optional)</label>
+						<input type="password" name="password" class="input-modern">
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							If changing password: must be 8-15 characters, include at least one letter, one digit, and one special character.
+						</small>
+						
+						<label>Role</label>
+						<select name="role" id="editRoleSelect" class="select-modern">
+							<option value="EMPLOYEE">Employee</option>
+							<option value="ADMIN">Admin</option>
+						</select>
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Choose the role for this account.
+						</small>
+						
+						<label>Status</label>
+						<select name="active" id="editActiveSelect" class="select-modern">
+							<option value="true">Active</option>
+							<option value="false">Inactive</option>
+						</select>
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Switch to inactive to suspend this employee's sign in.
+						</small>
+					</div>
+
+					<!-- Section: Personal Information -->
+					<div style="margin-bottom: 32px; padding-bottom: 24px; border-bottom: 2px solid var(--border-color);">
+						<h3 style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 20px;">Personal Information</h3>
+						
+						<label>Full Name</label>
+						<input type="text" name="fullName" class="input-modern" maxlength="50">
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Maximum 50 characters
+						</small>
+						
+						<label>Gender</label>
+						<select name="gender" class="select-modern">
+							<option value="">Select Gender</option>
+							<option value="Male">Male</option>
+							<option value="Female">Female</option>
+							<option value="Prefer Not To Say">Prefer Not To Say</option>
+						</select>
+						
+						<label>Age</label>
+						<input type="number" name="age" class="input-modern" min="18" placeholder="e.g., 25">
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Age must be 18 or above (will be calculated from Date of Birth if provided)
+						</small>
+						
+						<label>IC Number</label>
+						<input type="text" name="icNumber" id="editIcNumberPersonal" class="input-modern" maxlength="14" placeholder="123456-12-1234 or 123456121234" pattern="[0-9\-]*" inputmode="numeric">
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Exactly 12 digits, digits and dashes only (no spaces allowed)
+						</small>
+						
+						<label>Race</label>
+						<input type="text" name="race" class="input-modern" maxlength="30" placeholder="e.g., Malay">
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Letters only, maximum 30 characters
+						</small>
+						
+						<label>Religion</label>
+						<input type="text" name="religion" class="input-modern" maxlength="30" placeholder="e.g., Islam">
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Letters only, maximum 30 characters
+						</small>
+						
+						<label>Marital Status</label>
+						<select name="maritalStatus" class="select-modern">
+							<option value="">Select Marital Status</option>
+							<option value="Single">Single</option>
+							<option value="Married">Married</option>
+							<option value="Divorced">Divorced</option>
+							<option value="Widowed">Widowed</option>
+							<option value="Prefer Not To Say">Prefer Not To Say</option>
+						</select>
+						
+						<label>Number of Children</label>
+						<select name="numberOfChildren" class="select-modern">
+							<option value="0">0</option>
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+							<option value="6">6</option>
+							<option value="7">7</option>
+							<option value="8">8</option>
+							<option value="9">9</option>
+							<option value="10">10</option>
+						</select>
+						
+						<label>Spouse Working</label>
+						<select name="spouseWorking" class="select-modern">
+							<option value="">Select Option</option>
+							<option value="Yes">Yes</option>
+							<option value="No">No</option>
+						</select>
+						
+						<label>Nationality</label>
+						<select name="nationality" id="editNationality" class="select-modern">
+							<option value="">Select Nationality</option>
+							<option value="Malaysian">Malaysian</option>
+							<option value="Non-Malaysian">Non-Malaysian</option>
+						</select>
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Select nationality to determine required identity document (IC for Malaysian, Passport for Non-Malaysian).
+						</small>
+						
+						<div id="editPassportNumberGroup" style="display: none;">
+							<label>Passport Number</label>
+							<input type="text" name="passportNumber" id="editPassportNumber" class="input-modern" placeholder="A12345678" maxlength="20">
+							<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+								Passport number (letters and numbers, max 20 characters). Required for all government submissions.
+							</small>
+						</div>
+						
+						<label>Resident Status</label>
+						<select name="residentStatus" id="editResidentStatus" class="select-modern">
+							<option value="">Select Resident Status</option>
+							<option value="Resident">Resident</option>
+							<option value="Non-resident">Non-resident</option>
+						</select>
+						
+						<label>Date of Birth</label>
+						<input type="date" name="dateOfBirth" class="input-modern">
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Used for accurate age calculation, retirement date, and birthday benefits.
+						</small>
+						
+						<label>Permanent Address</label>
+						<textarea name="address" class="textarea-modern" maxlength="250" rows="3" placeholder="Full permanent address"></textarea>
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Maximum 250 characters
+						</small>
+						
+						<label>Email</label>
+						<input type="email" name="email" class="input-modern">
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Must contain @ and . after @, no spaces allowed
+						</small>
+						
+						<label>Contact Number</label>
+						<div style="display: flex; gap: 8px; align-items: center;">
+							<span style="padding: 12px; background-color: #f5f5f5; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 500;">+60</span>
+							<input type="text" id="editContactNumber" name="contactNumber" class="input-modern" placeholder="12-345 6789" maxlength="15" style="flex: 1;">
+						</div>
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Malaysia phone number (9-10 digits after +60, spaces and dashes will be removed)
+						</small>
+					</div>
+
+					<!-- Section: Emergency Contact -->
+					<div style="margin-bottom: 32px; padding-bottom: 24px; border-bottom: 2px solid var(--border-color);">
+						<h3 style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 20px;">Emergency Contact</h3>
+						
+						<label>Emergency Contact Name</label>
+						<input type="text" name="emergencyContactName" class="input-modern" maxlength="100" placeholder="Full name of emergency contact">
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							To contact in case of emergency.
+						</small>
+						
+						<label>Relationship</label>
+						<select name="emergencyContactRelationship" class="select-modern">
+							<option value="">Select Relationship</option>
+							<option value="Father">Father</option>
+							<option value="Mother">Mother</option>
+							<option value="Spouse">Spouse</option>
+							<option value="Sibling">Sibling</option>
+							<option value="Friend">Friend</option>
+							<option value="Other">Other</option>
+						</select>
+						
+						<label>Emergency Contact Number</label>
+						<div style="display: flex; gap: 8px; align-items: center;">
+							<span style="padding: 12px; background-color: #f5f5f5; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 500;">+60</span>
+							<input type="text" id="editEmergencyContactNumber" name="emergencyContactNumber" class="input-modern" placeholder="12-345 6789" maxlength="15" style="flex: 1;">
+						</div>
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Malaysia phone number (9-10 digits after +60, spaces and dashes will be removed)
+						</small>
+					</div>
+
+					<!-- Section: Employment Information -->
+					<div style="margin-bottom: 32px; padding-bottom: 24px; border-bottom: 2px solid var(--border-color);">
+						<h3 style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 20px;">Employment Information</h3>
+						
+						<label>Date of Hire</label>
+						<input type="date" name="dateOfHire" class="input-modern">
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Used to calculate service years and leave accrual.
+						</small>
+						
+						<label>Department</label>
+						<select name="department" id="editDepartmentSelect" class="select-modern">
+							<option value="">-- Select Department --</option>
+							<!-- Options will be dynamically loaded -->
+						</select>
+						
+						<label>Job Title</label>
+						<input type="text" name="jobTitle" class="input-modern" maxlength="50">
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Maximum 50 characters
+						</small>
+					</div>
+
+					<!-- Section: Financial Information -->
+					<div style="margin-bottom: 32px;">
+						<h3 style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 20px;">Financial Information</h3>
+						
+						<label>Basic Salary</label>
+						<input type="number" name="basicSalary" class="input-modern" step="0.01" min="0" placeholder="0.00">
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Must be 0 or greater, cannot lead with 0
+						</small>
+						
+						<label>Bank Name</label>
+						<input type="text" name="bankName" class="input-modern" value="Malayan Banking Berhad" readonly style="background-color: #f5f5f5; cursor: not-allowed;">
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Default bank: Malayan Banking Berhad (Maybank)
+						</small>
+						
+						<label>Bank Account Number</label>
+						<input type="text" name="bankAccountNumber" class="input-modern" minlength="10" maxlength="20" placeholder="1234 5678 9012 3456">
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Digits only, 10-16 digits (spaces and dashes will be removed)
+						</small>
+						
+						<label>EPF Number</label>
+						<input type="text" name="epfNumber" class="input-modern" minlength="8" maxlength="8" placeholder="12345678">
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Exactly 8 digits
+						</small>
+						
+						<label>SOCSO Number</label>
+						<input type="text" name="socsoNumber" id="editSocsoNumber" class="input-modern" maxlength="14" placeholder="123456-12-1234 or 123456121234" pattern="[0-9\-]*" inputmode="numeric">
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Exactly 12 digits, digits and dashes only (no spaces allowed, dashes will be removed when stored)
+						</small>
+						
+						<label>Tax Number</label>
+						<input type="text" name="taxNumber" class="input-modern" placeholder="IG123456789" maxlength="13">
+						<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+							Must start with "IG" prefix, followed by 9 to 11 digits
+						</small>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="submit" form="adminUserEditForm" class="btn-modern btn-modern-primary">Update Employee</button>
+			</div>
+		</div>
+	</div>
+
+	<script src="/js/common-ui.js"></script>
+	<script src="/js/dashboard.js"></script>
+	<script>
+		// Helper function to show status messages
+		function showValidationError(message) {
+			const statusBox = document.getElementById('status');
+			if (statusBox) {
+				statusBox.textContent = message;
+				statusBox.style.display = 'block';
+				setTimeout(() => (statusBox.style.display = 'none'), 3500);
+			}
+		}
+
+		// Password validation function (only used for edit form where password is optional)
+		function validatePassword(password) {
+			// Note: This function is only called when password is provided (not empty)
+			// For create form, password is auto-generated from IC number, so this function is not used
+			if (!password || password.length === 0) {
+				return { valid: false, message: 'Password is required' };
+			}
+			if (password.length < 8) {
+				return { valid: false, message: 'Password must be at least 8 characters long' };
+			}
+			if (password.length > 15) {
+				return { valid: false, message: 'Password must not exceed 15 characters' };
+			}
+			if (!/[a-zA-Z]/.test(password)) {
+				return { valid: false, message: 'Password must contain at least one letter' };
+			}
+			if (!/\d/.test(password)) {
+				return { valid: false, message: 'Password must contain at least one digit' };
+			}
+			if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+				return { valid: false, message: 'Password must contain at least one special character' };
+			}
+			return { valid: true, message: '' };
+		}
+
+		document.addEventListener('DOMContentLoaded', async () => {
+			await DashboardApp.guardRole('ADMIN');
+			DashboardApp.renderUserBadge();
+			DashboardApp.initSidebar({ scope: 'admin', active: 'users' });
+			DashboardApp.attachLogout();
+			DashboardApp.initAdminUsers();
+			DashboardApp.initInactivityMonitor();
+
+			// Fetch and display next employee ID
+			async function loadNextEmployeeId() {
+				try {
+					const response = await fetch('/api/admin/next-employee-id');
+					if (response.ok) {
+						const nextId = await response.text();
+						document.getElementById('nextEmployeeId').value = nextId;
+					}
+				} catch (error) {
+					console.error('Failed to fetch next employee ID:', error);
+				}
+			}
+			await loadNextEmployeeId();
+
+			// Add input filter for IC number field to only allow digits and dashes (no spaces)
+			const createIcNumberInput = document.getElementById('createIcNumberPersonal');
+			if (createIcNumberInput) {
+				createIcNumberInput.addEventListener('input', function(e) {
+					// Only allow digits and dashes, remove spaces and all other characters
+					e.target.value = e.target.value.replace(/[^\d\-]/g, '').replace(/\s/g, '');
+				});
+				// Also prevent paste of spaces
+				createIcNumberInput.addEventListener('paste', function(e) {
+					e.preventDefault();
+					const pastedText = (e.clipboardData || window.clipboardData).getData('text');
+					const cleaned = pastedText.replace(/[^\d\-]/g, '').replace(/\s/g, '');
+					e.target.value = cleaned;
+				});
+			}
+
+			// Add input filter for IC number field in edit form
+			const editIcNumberInput = document.getElementById('editIcNumberPersonal');
+			if (editIcNumberInput) {
+				editIcNumberInput.addEventListener('input', function(e) {
+					// Only allow digits and dashes, remove spaces and all other characters
+					e.target.value = e.target.value.replace(/[^\d\-]/g, '').replace(/\s/g, '');
+				});
+				// Also prevent paste of spaces
+				editIcNumberInput.addEventListener('paste', function(e) {
+					e.preventDefault();
+					const pastedText = (e.clipboardData || window.clipboardData).getData('text');
+					const cleaned = pastedText.replace(/[^\d\-]/g, '').replace(/\s/g, '');
+					e.target.value = cleaned;
+				});
+			}
+
+			// Add input filter for SOCSO number field to only allow digits and dashes (no spaces)
+			const createSocsoNumberInput = document.getElementById('createSocsoNumber');
+			if (createSocsoNumberInput) {
+				createSocsoNumberInput.addEventListener('input', function(e) {
+					// Only allow digits and dashes, remove spaces and all other characters
+					e.target.value = e.target.value.replace(/[^\d\-]/g, '').replace(/\s/g, '');
+				});
+				// Also prevent paste of spaces
+				createSocsoNumberInput.addEventListener('paste', function(e) {
+					e.preventDefault();
+					const pastedText = (e.clipboardData || window.clipboardData).getData('text');
+					const cleaned = pastedText.replace(/[^\d\-]/g, '').replace(/\s/g, '');
+					e.target.value = cleaned;
+				});
+			}
+
+			// Add validation to create form using capture phase
+			const createForm = document.getElementById('adminUserCreateForm');
+			const createUsernameInput = createForm.querySelector('input[name="username"]');
+			const createContactInput = createForm.querySelector('input[name="contactNumber"]');
+			const createEmailInput = createForm.querySelector('input[name="email"]');
+			const createBasicSalaryInput = createForm.querySelector('input[name="basicSalary"]');
+			
+			createForm.addEventListener('submit', (e) => {
+				// Validate username
+				const username = createUsernameInput.value.trim();
+				if (!username) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('Username is required');
+					createUsernameInput.focus();
+					return;
+				}
+				if (username.length > 30) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('Username must not exceed 30 characters');
+					createUsernameInput.focus();
+					return;
+				}
+				
+				// Password is auto-generated from IC number, no validation needed
+
+				// Validate email (required)
+				const email = createEmailInput.value.trim();
+				if (!email) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('Email is required');
+					createEmailInput.focus();
+					return;
+				}
+				if (email.includes(' ')) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('Email must not contain spaces');
+					createEmailInput.focus();
+					return;
+				}
+				if (!email.includes('@')) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('Email must contain @');
+					createEmailInput.focus();
+					return;
+				}
+				const atIndex = email.indexOf('@');
+				const afterAt = email.substring(atIndex + 1);
+				if (!afterAt.includes('.')) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('Email must contain . after @');
+					createEmailInput.focus();
+					return;
+				}
+
+				// Validate basic salary
+				const basicSalaryStr = createBasicSalaryInput.value.trim();
+				const basicSalary = parseFloat(basicSalaryStr);
+				if (basicSalary < 0) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('Basic salary must be 0 or greater');
+					createBasicSalaryInput.focus();
+					return;
+				}
+				// Check if salary leads with 0 (except for valid cases like "0" or "0.50")
+				if (basicSalaryStr && basicSalaryStr.length > 1 && basicSalaryStr.startsWith('0') && basicSalaryStr[1] !== '.') {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('Basic salary cannot lead with 0 (e.g., 0123 is invalid)');
+					createBasicSalaryInput.focus();
+					return;
+				}
+
+					// Validate contact number (required)
+				const contactNumber = createContactInput.value.trim();
+				if (!contactNumber) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('Contact number is required');
+					createContactInput.focus();
+					return;
+				}
+				// Remove spaces and dashes for validation
+				const cleanedNumber = contactNumber.replace(/[\s\-]/g, '');
+				if (!/^[0-9]{9,10}$/.test(cleanedNumber)) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('Contact number must be 9-10 digits');
+					createContactInput.focus();
+					return;
+				}
+
+				// Validate age (required, min 18)
+				const age = createForm.age.value.trim();
+				if (!age) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('Age is required');
+					createForm.age.focus();
+					return;
+				}
+				const ageNum = parseInt(age, 10);
+				if (isNaN(ageNum) || ageNum < 18) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('Age must be 18 or above');
+					createForm.age.focus();
+					return;
+				}
+
+				// Validate number of children (required)
+				const numberOfChildren = createForm.numberOfChildren.value.trim();
+				if (!numberOfChildren && numberOfChildren !== '0') {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('Number of children is required');
+					createForm.numberOfChildren.focus();
+					return;
+				}
+
+				// Validate spouse working (required)
+				const spouseWorking = createForm.spouseWorking.value.trim();
+				if (!spouseWorking) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('Spouse working status is required');
+					createForm.spouseWorking.focus();
+					return;
+				}
+
+				// Validate nationality (required)
+				const nationality = createForm.nationality.value.trim();
+				if (!nationality) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('Nationality is required');
+					createForm.nationality.focus();
+					return;
+				}
+
+				// Validate passport number (required when Non-Malaysian, no format validation)
+				if (nationality === 'Non-Malaysian') {
+					const passportNumber = createForm.passportNumber.value.trim();
+					if (!passportNumber) {
+						e.preventDefault();
+						e.stopImmediatePropagation();
+						showValidationError('Passport number is required for Non-Malaysian');
+						const passportInput = document.getElementById('createPassportNumber');
+						if (passportInput) passportInput.focus();
+						return;
+					}
+				}
+
+				// Validate resident status (required)
+				const residentStatus = createForm.residentStatus.value.trim();
+				if (!residentStatus) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('Resident status is required');
+					createForm.residentStatus.focus();
+					return;
+				}
+
+				// Validate date of birth (required)
+				const dateOfBirth = createForm.dateOfBirth.value.trim();
+				if (!dateOfBirth) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('Date of birth is required');
+					createForm.dateOfBirth.focus();
+					return;
+				}
+
+				// Validate date of hire (required)
+				const dateOfHire = createForm.dateOfHire.value.trim();
+				if (!dateOfHire) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('Date of hire is required');
+					createForm.dateOfHire.focus();
+					return;
+				}
+
+				// Validate department (required)
+				const department = createForm.department.value.trim();
+				if (!department) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('Department is required');
+					createForm.department.focus();
+					return;
+				}
+
+				// Validate job title (required)
+				const jobTitle = createForm.jobTitle.value.trim();
+				if (!jobTitle) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('Job title is required');
+					createForm.jobTitle.focus();
+					return;
+				}
+				if (jobTitle.length > 50) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('Job title must not exceed 50 characters');
+					createForm.jobTitle.focus();
+					return;
+				}
+
+				// Validate emergency contact name (required)
+				const emergencyContactName = createForm.emergencyContactName.value.trim();
+				if (!emergencyContactName) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('Emergency contact name is required');
+					createForm.emergencyContactName.focus();
+					return;
+				}
+				if (emergencyContactName.length > 100) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('Emergency contact name must not exceed 100 characters');
+					createForm.emergencyContactName.focus();
+					return;
+				}
+
+				// Validate relationship (required)
+				const relationship = createForm.emergencyContactRelationship.value.trim();
+				if (!relationship) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('Relationship is required');
+					createForm.emergencyContactRelationship.focus();
+					return;
+				}
+
+				// Validate emergency contact number (required, same validation as contact number)
+				const emergencyContactNumberInput = document.getElementById('createEmergencyContactNumber') || createForm.querySelector('input[name="emergencyContactNumber"]');
+				const emergencyContactNumber = emergencyContactNumberInput ? emergencyContactNumberInput.value.trim() : '';
+				if (!emergencyContactNumber) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('Emergency contact number is required');
+					if (emergencyContactNumberInput) emergencyContactNumberInput.focus();
+					return;
+				}
+				// Remove spaces and dashes for validation
+				const cleanedEmergencyNumber = emergencyContactNumber.replace(/[\s\-]/g, '');
+				if (!/^[0-9]{9,10}$/.test(cleanedEmergencyNumber)) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('Emergency contact number must be 9-10 digits');
+					if (emergencyContactNumberInput) emergencyContactNumberInput.focus();
+					return;
+				}
+
+				// Validate race (letters only, not blank, max 30)
+				const race = createForm.race.value.trim();
+				if (!race) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('Race is required');
+					createForm.race.focus();
+					return;
+				}
+				if (!/^[a-zA-Z\s]+$/.test(race)) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('Race must contain letters only');
+					createForm.race.focus();
+					return;
+				}
+				if (race.length > 30) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('Race must not exceed 30 characters');
+					createForm.race.focus();
+					return;
+				}
+
+				// Validate religion (letters only, not blank, max 30)
+				const religion = createForm.religion.value.trim();
+				if (!religion) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('Religion is required');
+					createForm.religion.focus();
+					return;
+				}
+				if (!/^[a-zA-Z\s]+$/.test(religion)) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('Religion must contain letters only');
+					createForm.religion.focus();
+					return;
+				}
+				if (religion.length > 30) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('Religion must not exceed 30 characters');
+					createForm.religion.focus();
+					return;
+				}
+
+				// Validate address (max 250 characters)
+				const address = createForm.address.value.trim();
+				if (!address) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('Address is required');
+					createForm.address.focus();
+					return;
+				}
+				if (address.length > 250) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('Address must not exceed 250 characters');
+					createForm.address.focus();
+					return;
+				}
+
+				// Validate bank name (letters only, max 50)
+				// Bank name is fixed to "Malayan Banking Berhad", no validation needed
+
+				// Validate bank account number (digits only, 10-16 characters)
+				const bankAccNum = createForm.bankAccountNumber.value.trim();
+				if (!bankAccNum) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('Bank account number is required');
+					createForm.bankAccountNumber.focus();
+					return;
+				}
+				// Remove spaces and dashes for validation
+				const cleanedBankAcc = bankAccNum.replace(/[\s\-]/g, '');
+				if (!/^\d{10,16}$/.test(cleanedBankAcc)) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('Bank account number must be 10-16 digits only');
+					createForm.bankAccountNumber.focus();
+					return;
+				}
+
+				// Validate EPF number (exactly 8 digits)
+				const epfNum = createForm.epfNumber.value.trim();
+				if (!epfNum) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('EPF number is required');
+					createForm.epfNumber.focus();
+					return;
+				}
+				if (!/^\d{8}$/.test(epfNum)) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('EPF number must be exactly 8 digits');
+					createForm.epfNumber.focus();
+					return;
+				}
+
+				// Validate IC number (exactly 12 digits, digits only, no spaces, dashes will be removed)
+				const icNumberInput = document.getElementById('createIcNumberPersonal') || createForm.querySelector('input[name="icNumber"]');
+				const icNum = icNumberInput ? icNumberInput.value.trim() : '';
+				if (!icNum) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('IC number is required');
+					if (icNumberInput) icNumberInput.focus();
+					return;
+				}
+				// Check for spaces explicitly
+				if (icNum.includes(' ')) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('IC number cannot contain spaces');
+					if (icNumberInput) icNumberInput.focus();
+					return;
+				}
+				// Remove all non-digit characters for validation
+				const cleanedIc = icNum.replace(/[^\d]/g, '');
+				if (cleanedIc.length !== 12) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('IC number must be exactly 12 digits');
+					if (icNumberInput) icNumberInput.focus();
+					return;
+				}
+				if (!/^\d{12}$/.test(cleanedIc)) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('IC number must contain only digits');
+					if (icNumberInput) icNumberInput.focus();
+					return;
+				}
+
+				// Validate SOCSO number (exactly 12 digits, digits only, no spaces, dashes will be removed - same as IC number)
+				const socsoNumberInput = document.getElementById('createSocsoNumber') || createForm.querySelector('input[name="socsoNumber"]');
+				const socsoNum = socsoNumberInput ? socsoNumberInput.value.trim() : '';
+				if (!socsoNum) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('SOCSO number is required');
+					if (socsoNumberInput) socsoNumberInput.focus();
+					return;
+				}
+				// Check for spaces explicitly
+				if (socsoNum.includes(' ')) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('SOCSO number cannot contain spaces');
+					if (socsoNumberInput) socsoNumberInput.focus();
+					return;
+				}
+				// Remove all non-digit characters for validation
+				const cleanedSocso = socsoNum.replace(/[^\d]/g, '');
+				if (cleanedSocso.length !== 12) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('SOCSO number must be exactly 12 digits');
+					if (socsoNumberInput) socsoNumberInput.focus();
+					return;
+				}
+				if (!/^\d{12}$/.test(cleanedSocso)) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('SOCSO number must contain only digits');
+					if (socsoNumberInput) socsoNumberInput.focus();
+					return;
+				}
+
+				// Validate tax number (must start with "IG" prefix, then 9-11 digits)
+				const taxNum = createForm.taxNumber.value.trim();
+				if (!taxNum) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('Tax number is required');
+					createForm.taxNumber.focus();
+					return;
+				}
+				if (!/^IG\d{9,11}$/i.test(taxNum)) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('Tax number must start with "IG" prefix, followed by 9 to 11 digits');
+					createForm.taxNumber.focus();
+					return;
+				}
+			}, true); // Use capture phase to run before dashboard.js handler
+
+			// Add password validation to edit form (only if password is provided)
+			const editForm = document.getElementById('adminUserEditForm');
+			const editPasswordInput = editForm.querySelector('input[name="password"]');
+			const editContactInput = editForm.querySelector('input[name="contactNumber"]');
+			const editUsernameInput = editForm.querySelector('input[name="username"]');
+			const editEmailInput = editForm.querySelector('input[name="email"]');
+			const editBasicSalaryInput = editForm.querySelector('input[name="basicSalary"]');
+			
+			editForm.addEventListener('submit', (e) => {
+				// Validate username
+				const username = editUsernameInput.value.trim();
+				if (username && username.length > 30) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('Username must not exceed 30 characters');
+					editUsernameInput.focus();
+					return;
+				}
+
+				const password = editPasswordInput.value;
+				
+				// Only validate if a new password is provided (not empty/whitespace)
+				if (password && password.trim().length > 0) {
+					const validation = validatePassword(password.trim());
+					
+					if (!validation.valid) {
+						e.preventDefault();
+						e.stopImmediatePropagation();
+						showValidationError(validation.message);
+						editPasswordInput.focus();
+						return;
+					}
+				}
+
+				// Validate email
+				const email = editEmailInput.value.trim();
+				if (email) {
+					if (email.includes(' ')) {
+						e.preventDefault();
+						e.stopImmediatePropagation();
+						showValidationError('Email must not contain spaces');
+						editEmailInput.focus();
+						return;
+					}
+					if (!email.includes('@')) {
+						e.preventDefault();
+						e.stopImmediatePropagation();
+						showValidationError('Email must contain @');
+						editEmailInput.focus();
+						return;
+					}
+					const atIndex = email.indexOf('@');
+					const afterAt = email.substring(atIndex + 1);
+					if (!afterAt.includes('.')) {
+						e.preventDefault();
+						e.stopImmediatePropagation();
+						showValidationError('Email must contain . after @');
+						editEmailInput.focus();
+						return;
+					}
+				}
+
+				// Validate basic salary
+				const basicSalaryStr = editBasicSalaryInput.value.trim();
+				const basicSalary = parseFloat(basicSalaryStr);
+				if (basicSalary < 0) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('Basic salary must be 0 or greater');
+					editBasicSalaryInput.focus();
+					return;
+				}
+				// Check if salary leads with 0 (except for valid cases like "0" or "0.50")
+				if (basicSalaryStr && basicSalaryStr.length > 1 && basicSalaryStr.startsWith('0') && basicSalaryStr[1] !== '.') {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('Basic salary cannot lead with 0 (e.g., 0123 is invalid)');
+					editBasicSalaryInput.focus();
+					return;
+				}
+
+				// Validate contact number
+				const contactNumber = editContactInput.value.trim();
+				if (contactNumber) {
+					// Remove spaces and dashes for validation
+					const cleanedNumber = contactNumber.replace(/[\s\-]/g, '');
+					if (!/^[0-9]{9,10}$/.test(cleanedNumber)) {
+						e.preventDefault();
+						e.stopImmediatePropagation();
+						showValidationError('Contact number must be 9-10 digits');
+						editContactInput.focus();
+						return;
+					}
+				}
+
+				// Validate race (letters only, max 30) - optional for edit
+				const race = editForm.race.value.trim();
+				if (race) {
+					if (!/^[a-zA-Z\s]+$/.test(race)) {
+						e.preventDefault();
+						e.stopImmediatePropagation();
+						showValidationError('Race must contain letters only');
+						editForm.race.focus();
+						return;
+					}
+					if (race.length > 30) {
+						e.preventDefault();
+						e.stopImmediatePropagation();
+						showValidationError('Race must not exceed 30 characters');
+						editForm.race.focus();
+						return;
+					}
+				}
+
+				// Validate religion (letters only, max 30) - optional for edit
+				const religion = editForm.religion.value.trim();
+				if (religion) {
+					if (!/^[a-zA-Z\s]+$/.test(religion)) {
+						e.preventDefault();
+						e.stopImmediatePropagation();
+						showValidationError('Religion must contain letters only');
+						editForm.religion.focus();
+						return;
+					}
+					if (religion.length > 30) {
+						e.preventDefault();
+						e.stopImmediatePropagation();
+						showValidationError('Religion must not exceed 30 characters');
+						editForm.religion.focus();
+						return;
+					}
+				}
+
+				// Validate address (max 250 characters) - optional for edit
+				const address = editForm.address.value.trim();
+				if (address && address.length > 250) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('Address must not exceed 250 characters');
+					editForm.address.focus();
+					return;
+				}
+
+				// Validate bank name (letters only, max 50) - optional for edit
+				// Bank name is fixed to "Malayan Banking Berhad", no validation needed
+
+				// Validate bank account number (digits only, 10-16 characters) - optional for edit
+				const bankAccNum = editForm.bankAccountNumber.value.trim();
+				if (bankAccNum) {
+					// Remove spaces and dashes for validation
+					const cleanedBankAcc = bankAccNum.replace(/[\s\-]/g, '');
+					if (!/^\d{10,16}$/.test(cleanedBankAcc)) {
+						e.preventDefault();
+						e.stopImmediatePropagation();
+						showValidationError('Bank account number must be 10-16 digits only');
+						editForm.bankAccountNumber.focus();
+						return;
+					}
+				}
+
+				// Validate EPF number (exactly 8 digits) - optional for edit
+				const epfNum = editForm.epfNumber.value.trim();
+				if (epfNum && !/^\d{8}$/.test(epfNum)) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('EPF number must be exactly 8 digits');
+					editForm.epfNumber.focus();
+					return;
+				}
+
+				// Validate IC number (exactly 12 digits, digits only, no spaces, dashes will be removed) - optional for edit
+				const editIcNumberInput = document.getElementById('editIcNumberPersonal') || editForm.querySelector('input[name="icNumber"]');
+				const icNum = editIcNumberInput ? editIcNumberInput.value.trim() : '';
+				if (icNum) {
+					// Check for spaces explicitly
+					if (icNum.includes(' ')) {
+						e.preventDefault();
+						e.stopImmediatePropagation();
+						showValidationError('IC number cannot contain spaces');
+						if (editIcNumberInput) editIcNumberInput.focus();
+						return;
+					}
+					// Remove all non-digit characters for validation
+					const cleanedIc = icNum.replace(/[^\d]/g, '');
+					if (cleanedIc.length !== 12) {
+						e.preventDefault();
+						e.stopImmediatePropagation();
+						showValidationError('IC number must be exactly 12 digits');
+						if (editIcNumberInput) editIcNumberInput.focus();
+						return;
+					}
+					if (!/^\d{12}$/.test(cleanedIc)) {
+						e.preventDefault();
+						e.stopImmediatePropagation();
+						showValidationError('IC number must contain only digits');
+						if (editIcNumberInput) editIcNumberInput.focus();
+						return;
+					}
+				}
+
+				// Validate tax number (must start with "IG" prefix, then 9-11 digits) - optional for edit
+				const taxNum = editForm.taxNumber.value.trim();
+				if (taxNum && !/^IG\d{9,11}$/i.test(taxNum)) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					showValidationError('Tax number must start with "IG" prefix, followed by 9 to 11 digits');
+					editForm.taxNumber.focus();
+					return;
+				}
+
+				// If password is empty or only whitespace, allow submission (password update is optional)
+			}, true); // Use capture phase to run before dashboard.js handler
+		});
+	</script>
+
+</body>
+
+</html>
+

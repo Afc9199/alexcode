@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Dashboard Redirect | Employee Management</title>
+	<link rel="stylesheet" href="/css/dashboard.css">
+</head>
+
+<body>
+	<script>
+		// Check user role and redirect to appropriate dashboard
+		(async () => {
+			try {
+				const response = await fetch('/api/auth/me', { credentials: 'same-origin' });
+				if (!response.ok) {
+					window.location.href = '/login.html';
+					return;
+				}
+				const user = await response.json();
+				
+				if (user.role === 'ADMIN') {
+					window.location.replace('/admin-dashboard-summary.html');
+				} else {
+					window.location.replace('/employee-dashboard-summary.html');
+				}
+			} catch (error) {
+				console.error('Auth check failed:', error);
+				window.location.href = '/login.html';
+			}
+		})();
+	</script>
+	<header>
+		<div class="brand">
+			<div class="brand__avatar">EM</div>
+			<div>
+				<h1 class="brand__title">Employee Management</h1>
+				<p class="brand__subtitle">Redirecting to dashboard...</p>
+			</div>
+		</div>
+	</header>
+	<div style="padding: 40px; text-align: center;">
+		<p>Redirecting to dashboard...</p>
+		<p>If you are not redirected, please <a href="/login.html">login again</a>.</p>
+	</div>
+</body>
+
+</html>

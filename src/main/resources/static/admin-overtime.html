@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Admin Overtime | Employee Management</title>
+	<link rel="stylesheet" href="/css/dashboard.css">
+	<link rel="stylesheet" href="/css/dashboard-enhanced.css">
+	<style>
+		.card-modern {
+			background: #ffffff;
+			border-radius: 16px;
+			padding: 24px;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+			border: 1px solid rgba(0, 0, 0, 0.06);
+			margin-bottom: 24px;
+		}
+
+		.card-modern h2 {
+			font-size: 1.3rem;
+			font-weight: 600;
+			color: var(--text-primary);
+			margin: 0 0 20px 0;
+			padding-bottom: 16px;
+			border-bottom: 1px solid var(--border-color);
+		}
+
+		.toolbar-modern {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 12px;
+			align-items: center;
+			margin-bottom: 24px;
+			padding: 16px;
+			background: #f9f9fb;
+			border-radius: 12px;
+			border: 1px solid var(--border-color);
+		}
+
+		.table-modern {
+			width: 100%;
+			border-collapse: separate;
+			border-spacing: 0;
+			background: #ffffff;
+			border-radius: 12px;
+			overflow: hidden;
+			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+		}
+
+		.table-modern thead {
+			background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+		}
+
+		.table-modern thead th {
+			padding: 16px;
+			text-align: left;
+			font-weight: 600;
+			font-size: 0.85rem;
+			color: var(--text-primary);
+			text-transform: uppercase;
+			letter-spacing: 0.5px;
+		}
+
+		.table-modern tbody tr {
+			border-bottom: 1px solid var(--border-color);
+			transition: background-color 0.2s ease;
+		}
+
+		.table-modern tbody tr:hover {
+			background-color: #f9f9fb;
+		}
+
+		.table-modern tbody td {
+			padding: 14px 16px;
+			font-size: 0.9rem;
+			color: var(--text-primary);
+		}
+
+		.status-badge {
+			display: inline-block;
+			padding: 6px 12px;
+			border-radius: 20px;
+			font-size: 0.8rem;
+			font-weight: 600;
+			text-transform: uppercase;
+		}
+
+		.status-badge.pending {
+			background: rgba(255, 193, 7, 0.1);
+			color: #856404;
+		}
+
+		.status-badge.approved {
+			background: rgba(40, 167, 69, 0.1);
+			color: #155724;
+		}
+
+		.status-badge.rejected {
+			background: rgba(220, 53, 69, 0.1);
+			color: #721c24;
+		}
+
+		.status-badge.cancelled {
+			background: rgba(108, 117, 125, 0.1);
+			color: #383d41;
+		}
+	</style>
+</head>
+
+<body>
+	<header>
+		<div class="brand">
+			<div class="brand__avatar"></div>
+			<div class="brand__content">
+				<h1 class="brand__title">TheLorry</h1>
+				<p class="brand__subtitle">Malaysia • Employee Management</p>
+			</div>
+		</div>
+		<div class="page-meta" id="userBadge"></div>
+		<button id="logoutButton" class="logout-button">Logout</button>
+	</header>
+
+	<div class="layout">
+		<nav class="sidebar sidebar-modern" id="sidebar">
+			<div class="nav-section">
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="dashboard">Dashboard</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="users">Employees</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="attendance">Attendance</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="leave">Leave</a>
+				<a class="nav-link active" href="#" data-nav-scope="admin" data-nav-target="overtime">Overtime</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="payroll">Payroll</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="benefits">Benefits</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="performance">Performance</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="job-postings">Job Postings</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="announcements">Announcements</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="reports">Reports</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="company-settings">Company Settings</a>
+			</div>
+		</nav>
+
+		<div class="content-area">
+			<main>
+				<div class="card-modern">
+					<h2>Overtime Requests Management</h2>
+					<div class="toolbar-modern">
+						<button type="button" class="btn-modern btn-modern-primary" id="adminOvertimeList">📋 List All Requests</button>
+						<select id="statusFilter" class="filter-select-modern">
+							<option value="">All Status</option>
+							<option value="PENDING">Pending</option>
+							<option value="APPROVED">Approved</option>
+							<option value="REJECTED">Rejected</option>
+							<option value="CANCELLED">Cancelled</option>
+						</select>
+					</div>
+					<div id="overtimeTableContainer"></div>
+				</div>
+			</main>
+		</div>
+	</div>
+
+	<div id="status" class="status-toast"></div>
+
+	<!-- Process Overtime Request Modal -->
+	<div id="processOvertimeModal" class="modal-overlay">
+		<div class="modal-dialog">
+			<div class="modal-header">
+				<h2 class="modal-title">Process Overtime Request</h2>
+				<button class="modal-close" id="closeProcessOvertimeModal" aria-label="Close">×</button>
+			</div>
+			<div class="modal-body">
+				<form id="adminOvertimeForm">
+					<input type="hidden" name="overtimeId" id="processOvertimeId">
+					
+					<label>Decision <span style="color: red;">*</span></label>
+					<select class="select-modern" name="status" required>
+						<option value="">-- Select Decision --</option>
+						<option value="APPROVED">✅ APPROVED</option>
+						<option value="REJECTED">❌ REJECTED</option>
+						<option value="CANCELLED">🚫 CANCELLED</option>
+					</select>
+					
+					<label>Admin Remarks <span style="color: red;">*</span></label>
+					<textarea class="textarea-modern" name="managerComment" required placeholder="Enter your remarks here..." rows="4"></textarea>
+					
+					<input type="hidden" name="decidedBy" id="decidedByHidden">
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="submit" form="adminOvertimeForm" class="btn-modern btn-modern-primary">Submit Decision</button>
+			</div>
+		</div>
+	</div>
+
+	<script src="/js/common-ui.js"></script>
+	<script src="/js/dashboard.js"></script>
+	<script>
+		document.addEventListener('DOMContentLoaded', async () => {
+			await DashboardApp.guardRole('ADMIN');
+			DashboardApp.renderUserBadge();
+			DashboardApp.initSidebar({ scope: 'admin', active: 'overtime' });
+			DashboardApp.attachLogout();
+			DashboardApp.prefillForms(['adminOvertimeForm']);
+			DashboardApp.initAdminOvertime();
+			DashboardApp.initInactivityMonitor();
+		});
+	</script>
+</body>
+
+</html>
+

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Employee Attendance | Employee Management</title>
+	<link rel="stylesheet" href="/css/dashboard.css">
+	<link rel="stylesheet" href="/css/dashboard-enhanced.css">
+</head>
+
+<body>
+	<header>
+		<div class="brand">
+			<div class="brand__avatar"></div>
+			<div class="brand__content">
+				<h1 class="brand__title">TheLorry</h1>
+				<p class="brand__subtitle">Malaysia • Employee Portal</p>
+			</div>
+		</div>
+		
+		<div class="page-meta" id="userBadge"></div>
+		<button id="logoutButton" class="logout-button">Logout</button>
+	</header>
+
+	<div class="layout">
+		<nav class="sidebar" id="sidebar">
+			<div class="nav-section">
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="dashboard">Dashboard</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="profile">Profile</a>
+				<a class="nav-link active" href="#" data-nav-scope="employee" data-nav-target="attendance">Attendance</a>
+			<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="leave">Leave</a>
+			<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="overtime">Overtime</a>
+			<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="payroll">Payroll</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="benefits">Benefits</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="performance">Performance</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="announcements">Announcements</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="reports">Reports</a>
+			</div>
+		</nav>
+
+		<div class="content-area">
+			<main>
+				<div class="card">
+					<h2>Attendance Management</h2>
+					<p class="description">You must enable location services and connect to the company Wi-Fi before submitting attendance.</p>
+					<form id="attendanceForm">
+						<input type="hidden" name="userId">
+
+						<label>Employee ID</label>
+						<input type="text" id="employeeIdDisplay" readonly style="background-color: #f5f5f5; cursor: not-allowed;">
+						<small class="helper-text">Your unique employee identifier</small>
+
+						<label>Work Date</label>
+						<input type="date" name="workDate" id="workDate" readonly required style="background-color: #f5f5f5; cursor: not-allowed;">
+						<small class="helper-text">Attendance can only be submitted for today</small>
+
+						<!-- Hidden fields controlled by Clock In / Clock Out buttons -->
+						<input type="hidden" name="checkIn" id="checkIn">
+						<input type="hidden" name="checkOut" id="checkOut">
+						<input type="hidden" name="notes">
+
+						<div class="form-actions">
+							<button type="button" id="btnClockIn">Clock In</button>
+							<button type="button" class="secondary" id="btnClockOut">Clock Out</button>
+						</div>
+					</form>
+				</div>
+
+				<div class="card">
+					<h2>My Attendance History</h2>
+					<div id="attendanceHistoryContainer"></div>
+				</div>
+			</main>
+		</div>
+	</div>
+
+	<div id="status" class="status-toast"></div>
+	<script src="/js/common-ui.js"></script>
+	<script src="/js/dashboard.js"></script>
+	<script>
+		document.addEventListener('DOMContentLoaded', async () => {
+			await DashboardApp.guardRole('EMPLOYEE');
+			DashboardApp.renderUserBadge();
+			DashboardApp.initSidebar({ scope: 'employee', active: 'attendance' });
+			DashboardApp.attachLogout();
+			DashboardApp.prefillForms(['attendanceForm']);
+			DashboardApp.initEmployeeAttendance();
+			DashboardApp.initFloatingChatbot();
+			DashboardApp.initInactivityMonitor();
+		});
+	</script>
+</body>
+
+</html>
+

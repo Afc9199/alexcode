@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Employee Performance | Employee Management</title>
+	<link rel="stylesheet" href="/css/dashboard.css">
+	<link rel="stylesheet" href="/css/dashboard-enhanced.css">
+	<style>
+		/* Modern Page Header */
+		.page-header-modern {
+			margin-bottom: 32px;
+		}
+
+		.page-title-modern {
+			font-size: 1.8rem;
+			font-weight: 700;
+			color: var(--text-primary);
+			margin: 0 0 8px 0;
+		}
+
+		.page-subtitle-modern {
+			font-size: 0.95rem;
+			color: var(--text-muted);
+			margin: 0;
+		}
+
+		/* Modern Card Styling */
+		.card-modern {
+			background: #ffffff;
+			border-radius: 16px;
+			padding: 24px;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+			border: 1px solid rgba(0, 0, 0, 0.06);
+			margin-bottom: 24px;
+		}
+
+		.card-modern h2 {
+			font-size: 1.3rem;
+			font-weight: 600;
+			color: var(--text-primary);
+			margin: 0 0 20px 0;
+			padding-bottom: 16px;
+			border-bottom: 1px solid var(--border-color);
+		}
+
+		/* Modern Toolbar */
+		.toolbar-modern {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 12px;
+			align-items: center;
+			margin-bottom: 24px;
+			padding: 16px;
+			background: #f9f9fb;
+			border-radius: 12px;
+			border: 1px solid var(--border-color);
+		}
+
+		.toolbar-modern .search-container {
+			flex: 1;
+			min-width: 250px;
+			margin: 0;
+		}
+
+		.search-container input {
+			width: 100%;
+			padding: 12px 16px;
+			border: 1px solid var(--border-color);
+			border-radius: 8px;
+			font-size: 0.9rem;
+			color: var(--text-primary);
+			background: #ffffff;
+			transition: all 0.2s ease;
+		}
+
+		.search-container input:focus {
+			outline: none;
+			border-color: #3c8ce7;
+			box-shadow: 0 0 0 3px rgba(60, 140, 231, 0.15);
+		}
+
+		/* Modern Table */
+		.table-modern {
+			width: 100%;
+			border-collapse: separate;
+			border-spacing: 0;
+			background: #ffffff;
+			border-radius: 12px;
+			overflow: hidden;
+			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+		}
+
+		.table-modern thead {
+			background: #f9f9fb;
+		}
+
+		.table-modern thead th {
+			padding: 16px;
+			text-align: left;
+			font-weight: 600;
+			font-size: 0.85rem;
+			color: var(--text-primary);
+			text-transform: uppercase;
+			letter-spacing: 0.5px;
+			border-bottom: 2px solid var(--border-color);
+		}
+
+		.table-modern tbody tr {
+			border-bottom: 1px solid var(--border-color);
+			transition: background-color 0.2s ease;
+		}
+
+		.table-modern tbody tr:hover {
+			background: #f9f9fb;
+		}
+
+		.table-modern tbody td {
+			padding: 16px;
+			font-size: 0.9rem;
+			color: var(--text-primary);
+		}
+
+		/* Status Pill */
+		.status-pill-modern {
+			display: inline-block;
+			padding: 6px 12px;
+			border-radius: 20px;
+			font-size: 0.8rem;
+			font-weight: 500;
+		}
+
+		.status-pill-modern.success {
+			background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+			color: white;
+		}
+
+		.status-pill-modern.danger {
+			background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+			color: white;
+		}
+
+		.status-pill-modern.secondary {
+			background: #e9ecef;
+			color: #6c757d;
+		}
+
+		/* Action Buttons */
+		.action-btn-modern {
+			padding: 6px 12px;
+			border-radius: 6px;
+			font-size: 0.85rem;
+			font-weight: 500;
+			border: none;
+			cursor: pointer;
+			transition: all 0.2s ease;
+			background: transparent;
+			color: #2f4ceb;
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
+		}
+
+		.action-btn-modern:hover {
+			background: rgba(47, 76, 235, 0.1);
+			transform: translateY(-1px);
+		}
+
+		/* Form Styling */
+		.input-modern,
+		.select-modern,
+		.textarea-modern {
+			padding: 12px 16px;
+			border: 1px solid var(--border-color);
+			border-radius: 8px;
+			font-size: 0.9rem;
+			color: var(--text-primary);
+			background: #ffffff;
+			transition: all 0.2s ease;
+			width: 100%;
+		}
+
+		.input-modern:focus,
+		.select-modern:focus,
+		.textarea-modern:focus {
+			outline: none;
+			border-color: #3c8ce7;
+			box-shadow: 0 0 0 3px rgba(60, 140, 231, 0.15);
+		}
+
+		.input-modern:read-only {
+			background-color: #f5f5f5;
+			cursor: not-allowed;
+		}
+
+		/* Modern Buttons */
+		.btn-modern {
+			padding: 10px 20px;
+			border-radius: 8px;
+			font-weight: 500;
+			font-size: 0.9rem;
+			border: none;
+			cursor: pointer;
+			transition: all 0.2s ease;
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+		}
+
+		.btn-modern-primary {
+			background: linear-gradient(135deg, #2f4ceb 0%, #1e3dd4 100%);
+			color: white;
+			box-shadow: 0 2px 8px rgba(47, 76, 235, 0.3);
+		}
+
+		.btn-modern-primary:hover {
+			transform: translateY(-1px);
+			box-shadow: 0 4px 12px rgba(47, 76, 235, 0.4);
+		}
+
+		.btn-modern-secondary {
+			background: #ffffff;
+			color: var(--text-primary);
+			border: 1px solid var(--border-color);
+		}
+
+		.btn-modern-secondary:hover {
+			background: #f9f9fb;
+			border-color: #3c8ce7;
+		}
+
+		/* Empty State */
+		.empty-state-modern {
+			text-align: center;
+			padding: 60px 20px;
+			color: var(--text-muted);
+		}
+
+		/* Info Box */
+		.info-box {
+			padding: 12px;
+			border: 1px solid var(--border-color);
+			border-radius: 8px;
+			background: #fafafa;
+			font-size: 0.9rem;
+		}
+
+		/* Action Link */
+		.action-link-modern {
+			color: #2f4ceb;
+			text-decoration: none;
+			font-weight: 500;
+			transition: color 0.2s ease;
+		}
+
+		.action-link-modern:hover {
+			color: #1e3dd4;
+			text-decoration: underline;
+		}
+
+		/* Text Utilities */
+		.text-primary {
+			color: #2f4ceb;
+		}
+
+		.text-muted {
+			color: #6c757d;
+		}
+
+		.text-right {
+			text-align: right;
+		}
+
+		.font-medium {
+			font-weight: 500;
+		}
+	</style>
+</head>
+
+<body>
+	<header>
+		<div class="brand">
+			<div class="brand__avatar"></div>
+			<div class="brand__content">
+				<h1 class="brand__title">TheLorry</h1>
+				<p class="brand__subtitle">Malaysia • Employee Portal</p>
+			</div>
+		</div>
+		
+		</div>
+		<div class="page-meta" id="userBadge"></div>
+		<button id="logoutButton" class="logout-button">Logout</button>
+	</header>
+
+	<div class="layout">
+		<nav class="sidebar sidebar-modern" id="sidebar" style="background: #ffffff !important; color: var(--text-primary) !important; border: 1px solid var(--border-color) !important; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;">
+			<div class="nav-section">
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="dashboard">Dashboard</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="profile">Profile</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="attendance">Attendance</a>
+			<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="leave">Leave</a>
+			<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="overtime">Overtime</a>
+			<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="payroll">Payroll</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="benefits">Benefits</a>
+				<a class="nav-link active" href="#" data-nav-scope="employee" data-nav-target="performance">Performance</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="announcements">Announcements</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="reports">Reports</a>
+			</div>
+		</nav>
+
+		<div class="content-area">
+			<main>
+				
+
+				<div class="card-modern">
+					<h2>My KPI Assignments</h2>
+					<p style="margin-bottom: 1rem; color: #666; font-size: 0.9rem;">Review the KPIs assigned to you, their due dates, and the bonus amounts tied to each KPI.</p>
+					<div class="toolbar-modern">
+						<div class="search-container">
+							<input type="text" id="employeeKpiSearchInput" class="input-modern" placeholder="Search by KPI ID, name, or description...">
+						</div>
+						<button type="button" id="employeeKpiSearchButton" class="btn-modern btn-modern-secondary">Search</button>
+					</div>
+					<div id="employeeKpiResult" style="overflow-x: auto;">
+						<div class="empty-state-modern">Loading your KPIs...</div>
+					</div>
+				</div>
+
+				<div class="card-modern" id="kpiProgressCard">
+					<h2>Update KPI Progress</h2>
+					<p style="margin-bottom: 1rem; color: #666; font-size: 0.9rem;">Select a KPI from the table above, log your current achievements, and upload supporting documents or photos.</p>
+					<form id="kpiProgressForm">
+						<input type="hidden" id="kpiProgressAssignmentId">
+
+						<label>Selected KPI</label>
+						<input type="text" id="kpiProgressName" class="input-modern" readonly placeholder="No KPI selected yet">
+
+						<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+							<div>
+								<label>Target Value</label>
+								<div id="kpiProgressTarget" class="info-box">N/A</div>
+							</div>
+							<div>
+								<label>Current Progress</label>
+								<div id="kpiProgressCurrent" class="info-box">N/A</div>
+							</div>
+							<div>
+								<label>Latest Evidence</label>
+								<div id="kpiProgressEvidenceInfo" class="info-box">No file uploaded</div>
+							</div>
+						</div>
+						<div style="margin-bottom: 1rem;">
+							<label>Evaluation Status</label>
+							<div id="kpiProgressStatusInfo" class="info-box">
+								<span id="kpiProgressStatusBadge" class="status-pill-modern secondary">Pending</span>
+							</div>
+						</div>
+
+						<div id="kpiProgressLockNotice" style="display:none; margin: 1rem 0; padding: 12px 16px; border-radius: 8px; background: #fff3cd; color: #856404; border: 1px solid #ffc107;">
+							This KPI has reached its due date. Progress updates are locked.
+						</div>
+
+						<label>New Progress Value <span style="color: red;">*</span></label>
+						<input type="number" id="kpiProgressValue" class="input-modern" min="1" step="1" inputmode="numeric" pattern="[0-9]*" placeholder="Enter the current value you have achieved (digits only)">
+						<small id="kpiProgressPreview" style="display: block; margin-top: 0.25rem; color: #666; font-size: 0.85rem;">Progress Preview: 0%</small>
+
+						<label>Evidence Upload <span style="color: red;">*</span></label>
+						<input type="file" id="kpiProgressEvidence" class="input-modern" accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx" required>
+						<small style="display: block; margin-top: 0.25rem; color: #666; font-size: 0.85rem;">Upload images or documents that prove your progress. Only one file per update.</small>
+
+						<div class="form-actions">
+							<button type="submit" id="kpiProgressSubmitButton" class="btn-modern btn-modern-primary">Submit Progress</button>
+							<button type="button" id="kpiProgressCancelButton" class="btn-modern btn-modern-secondary">Clear Selection</button>
+						</div>
+					</form>
+				</div>
+
+				<div class="card-modern">
+					<h2>How KPI Tracking Works</h2>
+					<ul style="color: #666; line-height: 1.8; font-size: 0.9rem;">
+						<li>KPI details are set by HR and may include descriptions, target values, due dates, and bonus amounts.</li>
+						<li>When a KPI is updated or removed by HR, the list above refreshes automatically.</li>
+						<li>Reach out to HR if you need clarification on a KPI target or measurement criteria.</li>
+					</ul>
+				</div>
+			</main>
+		</div>
+	</div>
+
+	<div id="status" class="status-toast"></div>
+	<script src="/js/common-ui.js"></script>
+	<script src="/js/dashboard.js"></script>
+	<script>
+		document.addEventListener('DOMContentLoaded', async () => {
+			await DashboardApp.guardRole('EMPLOYEE');
+			DashboardApp.renderUserBadge();
+			
+			// Ensure sidebar-modern class is applied
+			const sidebar = document.getElementById('sidebar');
+			if (sidebar) {
+				sidebar.classList.add('sidebar-modern');
+			}
+			
+			// Wait for CommonUI to finish
+			await new Promise(resolve => setTimeout(resolve, 150));
+			
+			DashboardApp.initSidebar({ scope: 'employee', active: 'performance' });
+			DashboardApp.attachLogout();
+			DashboardApp.initEmployeeKPIs();
+			DashboardApp.initFloatingChatbot();
+			DashboardApp.initInactivityMonitor();
+		});
+	</script>
+</body>
+
+</html>
+

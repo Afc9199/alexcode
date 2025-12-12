@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Employee Profile | Employee Management</title>
+	<link rel="stylesheet" href="/css/dashboard.css">
+	<link rel="stylesheet" href="/css/dashboard-enhanced.css">
+	<style>
+		/* Modern Buttons - matching admin design */
+		.btn-modern {
+			padding: 10px 20px;
+			border-radius: 8px;
+			font-weight: 500;
+			font-size: 0.9rem;
+			border: none;
+			cursor: pointer;
+			transition: all 0.2s ease;
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+		}
+
+		.btn-modern-primary {
+			background: linear-gradient(135deg, #2f4ceb 0%, #1e3dd4 100%);
+			color: white;
+			box-shadow: 0 2px 8px rgba(47, 76, 235, 0.3);
+		}
+
+		.btn-modern-primary:hover {
+			transform: translateY(-1px);
+			box-shadow: 0 4px 12px rgba(47, 76, 235, 0.4);
+		}
+
+		.btn-modern-secondary {
+			background: #ffffff;
+			color: var(--text-primary);
+			border: 1px solid var(--border-color);
+		}
+
+		.btn-modern-secondary:hover {
+			background: #f9f9fb;
+			border-color: #3c8ce7;
+		}
+
+		.btn-modern svg {
+			flex-shrink: 0;
+		}
+	</style>
+</head>
+
+<body>
+	<header>
+		<div class="brand">
+			<div class="brand__avatar"></div>
+			<div class="brand__content">
+				<h1 class="brand__title">TheLorry</h1>
+				<p class="brand__subtitle">Malaysia • Employee Portal</p>
+			</div>
+		</div>
+	
+		<div class="page-meta" id="userBadge"></div>
+		<button id="logoutButton" class="logout-button">Logout</button>
+	</header>
+
+	<div class="layout">
+		<nav class="sidebar sidebar-modern" id="sidebar" style="background: #ffffff !important; color: var(--text-primary) !important; border: 1px solid var(--border-color) !important; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;">
+			<div class="nav-section">
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="dashboard">Dashboard</a>
+				<a class="nav-link active" href="#" data-nav-scope="employee" data-nav-target="profile">Profile</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="attendance">Attendance</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="leave">Leave</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="overtime">Overtime</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="payroll">Payroll</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="benefits">Benefits</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="performance">Performance</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="announcements">Announcements</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="reports">Reports</a>
+			</div>
+		</nav>
+
+		<div class="content-area">
+			<main>
+				<div class="card">
+					<h2>Profile Management</h2>
+					<form id="employeeProfileForm">
+						<input type="hidden" name="userId">
+
+						<!-- Section: Account Information -->
+						<div style="margin-bottom: 32px; padding-bottom: 24px; border-bottom: 2px solid var(--border-color);">
+							<h3 style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 20px;">Account Information</h3>
+							
+							<label>Employee ID</label>
+							<input type="text" name="employeeId" class="input-modern" readonly style="background-color: #f5f5f5; cursor: not-allowed;">
+							
+							<label>Username</label>
+							<input type="text" name="username" class="input-modern" readonly style="background-color: #f5f5f5; cursor: not-allowed;">
+							<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+								Your login username (cannot be changed)
+							</small>
+						</div>
+
+						<!-- Section: Change Password -->
+						<div style="margin-bottom: 32px; padding-bottom: 24px; border-bottom: 2px solid var(--border-color);">
+							<h3 style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 20px;">Change Password</h3>
+							
+							<label>Old Password</label>
+							<input type="password" name="oldPassword" id="oldPassword" class="input-modern" placeholder="Enter your IC number (default password)">
+							<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+								Enter your IC number (this is your default password) or your current password if you've changed it
+							</small>
+							
+							<label>New Password</label>
+							<input type="password" name="newPassword" id="newPassword" class="input-modern" placeholder="Enter new password">
+							<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+								Password must be 8-15 characters, include at least one letter, one digit, and one special character (!@#$%^&*()_+-=[]{};':"\|,.<>/?).
+							</small>
+							
+							<label>Confirm New Password</label>
+							<input type="password" name="confirmNewPassword" id="confirmNewPassword" class="input-modern" placeholder="Confirm new password">
+							<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+								Must be 8-15 characters, include at least one letter, one digit, and one special character, and must match the new password exactly.
+							</small>
+						</div>
+
+						<!-- Section: Personal Information -->
+						<div style="margin-bottom: 32px; padding-bottom: 24px; border-bottom: 2px solid var(--border-color);">
+							<h3 style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 20px;">Personal Information</h3>
+							
+							<label>Full Name</label>
+							<input type="text" name="fullName" class="input-modern" maxlength="50" readonly style="background-color: #f5f5f5; cursor: not-allowed;">
+							<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+								Contact HR to update your full name
+							</small>
+							
+							<label>Gender</label>
+							<select name="gender" class="select-modern" disabled style="background-color: #f5f5f5; cursor: not-allowed; pointer-events: none;">
+								<option value="">Select Gender</option>
+								<option value="Male">Male</option>
+								<option value="Female">Female</option>
+								<option value="Prefer Not To Say">Prefer Not To Say</option>
+							</select>
+							<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+								Contact HR to update your gender
+							</small>
+							
+							<label>Age</label>
+							<input type="number" name="age" class="input-modern" min="18" placeholder="e.g., 25" readonly style="background-color: #f5f5f5; cursor: not-allowed;">
+							<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+								Age is calculated from Date of Birth
+							</small>
+							
+							<label>IC Number</label>
+							<input type="text" name="icNumber" id="profileIcNumber" class="input-modern" maxlength="14" placeholder="123456-12-1234 or 123456121234" pattern="[0-9\-]*" inputmode="numeric" readonly style="background-color: #f5f5f5; cursor: not-allowed;">
+							<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+								Contact HR to update your IC number
+							</small>
+							
+							<label>Race</label>
+							<input type="text" name="race" class="input-modern" maxlength="30" placeholder="e.g., Malay" readonly style="background-color: #f5f5f5; cursor: not-allowed;">
+							<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+								Contact HR to update your race
+							</small>
+							
+							<label>Religion</label>
+							<input type="text" name="religion" class="input-modern" maxlength="30" placeholder="e.g., Islam" readonly style="background-color: #f5f5f5; cursor: not-allowed;">
+							<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+								Contact HR to update your religion
+							</small>
+							
+							<label>Marital Status</label>
+							<select name="maritalStatus" class="select-modern" disabled style="background-color: #f5f5f5; cursor: not-allowed; pointer-events: none;">
+								<option value="">Select Marital Status</option>
+								<option value="Single">Single</option>
+								<option value="Married">Married</option>
+								<option value="Divorced">Divorced</option>
+								<option value="Widowed">Widowed</option>
+								<option value="Prefer Not To Say">Prefer Not To Say</option>
+							</select>
+							<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+								Contact HR to update your marital status
+							</small>
+							
+							<label>Number of Children</label>
+							<select name="numberOfChildren" class="select-modern" disabled style="background-color: #f5f5f5; cursor: not-allowed; pointer-events: none;">
+								<option value="0">0</option>
+								<option value="1">1</option>
+								<option value="2">2</option>
+								<option value="3">3</option>
+								<option value="4">4</option>
+								<option value="5">5</option>
+								<option value="6">6</option>
+								<option value="7">7</option>
+								<option value="8">8</option>
+								<option value="9">9</option>
+								<option value="10">10</option>
+							</select>
+							<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+								Contact HR to update number of children
+							</small>
+							
+							<label>Spouse Working</label>
+							<select name="spouseWorking" class="select-modern" disabled style="background-color: #f5f5f5; cursor: not-allowed; pointer-events: none;">
+								<option value="">Select Option</option>
+								<option value="Yes">Yes</option>
+								<option value="No">No</option>
+							</select>
+							<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+								Contact HR to update spouse working status
+							</small>
+							
+							<label>Nationality</label>
+							<select name="nationality" id="profileNationality" class="select-modern" disabled style="background-color: #f5f5f5; cursor: not-allowed; pointer-events: none;">
+								<option value="">Select Nationality</option>
+								<option value="Malaysian">Malaysian</option>
+								<option value="Non-Malaysian">Non-Malaysian</option>
+							</select>
+							<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+								Contact HR to update your nationality
+							</small>
+							
+							<div id="profilePassportNumberGroup" style="display: none;">
+								<label>Passport Number</label>
+								<input type="text" name="passportNumber" id="profilePassportNumber" class="input-modern" placeholder="A12345678" maxlength="20" readonly style="background-color: #f5f5f5; cursor: not-allowed;">
+								<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+									Contact HR to update your passport number
+								</small>
+							</div>
+							
+							<label>Resident Status</label>
+							<select name="residentStatus" id="profileResidentStatus" class="select-modern" disabled style="background-color: #f5f5f5; cursor: not-allowed; pointer-events: none;">
+								<option value="">Select Resident Status</option>
+								<option value="Resident">Resident</option>
+								<option value="Non-resident">Non-resident</option>
+							</select>
+							<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+								Contact HR to update your resident status
+							</small>
+							
+							<label>Date of Birth</label>
+							<input type="date" name="dateOfBirth" class="input-modern" readonly style="background-color: #f5f5f5; cursor: not-allowed;">
+							<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+								Contact HR to update your date of birth
+							</small>
+							
+							<label>Permanent Address</label>
+							<textarea name="address" class="textarea-modern" maxlength="250" rows="3" placeholder="Full permanent address" readonly style="background-color: #f5f5f5; cursor: not-allowed;"></textarea>
+							<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+								Contact HR to update your address
+							</small>
+							
+							<label>Email</label>
+							<input type="email" name="email" class="input-modern" readonly style="background-color: #f5f5f5; cursor: not-allowed;">
+							<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+								Contact HR to update your email
+							</small>
+							
+							<label>Contact Number</label>
+							<div style="display: flex; gap: 8px; align-items: center;">
+								<span style="padding: 12px; background-color: #f5f5f5; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 500;">+60</span>
+								<input type="text" name="contactNumber" class="input-modern" placeholder="12-345 6789" maxlength="15" style="flex: 1; background-color: #f5f5f5; cursor: not-allowed;" readonly>
+							</div>
+							<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+								Contact HR to update your contact number
+							</small>
+						</div>
+
+						<!-- Section: Emergency Contact -->
+						<div style="margin-bottom: 32px; padding-bottom: 24px; border-bottom: 2px solid var(--border-color);">
+							<h3 style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 20px;">Emergency Contact</h3>
+							
+							<label>Emergency Contact Name</label>
+							<input type="text" name="emergencyContactName" class="input-modern" maxlength="100" placeholder="Full name of emergency contact" readonly style="background-color: #f5f5f5; cursor: not-allowed;">
+							<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+								Contact HR to update emergency contact name
+							</small>
+							
+							<label>Relationship</label>
+							<select name="emergencyContactRelationship" class="select-modern" disabled style="background-color: #f5f5f5; cursor: not-allowed; pointer-events: none;">
+								<option value="">Select Relationship</option>
+								<option value="Father">Father</option>
+								<option value="Mother">Mother</option>
+								<option value="Spouse">Spouse</option>
+								<option value="Sibling">Sibling</option>
+								<option value="Friend">Friend</option>
+								<option value="Other">Other</option>
+							</select>
+							<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+								Contact HR to update relationship
+							</small>
+							
+							<label>Emergency Contact Number</label>
+							<div style="display: flex; gap: 8px; align-items: center;">
+								<span style="padding: 12px; background-color: #f5f5f5; border: 1px solid #e0e0e0; border-radius: 8px; font-weight: 500;">+60</span>
+								<input type="text" name="emergencyContactNumber" class="input-modern" placeholder="12-345 6789" maxlength="15" style="flex: 1; background-color: #f5f5f5; cursor: not-allowed;" readonly>
+							</div>
+							<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+								Contact HR to update emergency contact number
+							</small>
+						</div>
+
+						<!-- Section: Employment Information -->
+						<div style="margin-bottom: 32px; padding-bottom: 24px; border-bottom: 2px solid var(--border-color);">
+							<h3 style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 20px;">Employment Information</h3>
+							
+							<label>Date of Hire</label>
+							<input type="date" name="dateOfHire" class="input-modern" readonly style="background-color: #f5f5f5; cursor: not-allowed;">
+							<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+								Used to calculate service years and leave accrual.
+							</small>
+							
+							<label>Department</label>
+							<select name="department" id="employeeDepartmentSelect" class="select-modern" disabled style="background-color: #f5f5f5; cursor: not-allowed; pointer-events: none;">
+								<option value="">-- Select Department --</option>
+								<!-- Options will be dynamically loaded -->
+							</select>
+							<input type="hidden" name="department" id="employeeDepartmentHidden">
+							<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+								Contact HR to update your department
+							</small>
+							
+							<label>Job Title</label>
+							<input type="text" name="jobTitle" class="input-modern" maxlength="50" readonly style="background-color: #f5f5f5; cursor: not-allowed;">
+							<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+								Contact HR to update your job title
+							</small>
+						</div>
+
+						<!-- Section: Financial Information -->
+						<div style="margin-bottom: 32px;">
+							<h3 style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 20px;">Financial Information</h3>
+							
+							<label>Basic Salary</label>
+							<input type="text" name="basicSalary" class="input-modern" readonly style="background-color: #f5f5f5; cursor: not-allowed;">
+							<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+								Contact HR to update your salary
+							</small>
+							
+							<label>Bank Name</label>
+							<input type="text" name="bankName" class="input-modern" value="Malayan Banking Berhad" readonly style="background-color: #f5f5f5; cursor: not-allowed;">
+							<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+								Default bank: Malayan Banking Berhad (Maybank)
+							</small>
+							
+							<label>Bank Account Number</label>
+							<input type="text" name="bankAccountNumber" class="input-modern" minlength="10" maxlength="20" placeholder="1234 5678 9012 3456" readonly style="background-color: #f5f5f5; cursor: not-allowed;">
+							<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+								Contact HR to update your bank account number
+							</small>
+							
+							<label>EPF Number</label>
+							<input type="text" name="epfNumber" class="input-modern" minlength="8" maxlength="8" placeholder="12345678" readonly style="background-color: #f5f5f5; cursor: not-allowed;">
+							<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+								Contact HR to update your EPF number
+							</small>
+							
+							<label>SOCSO Number</label>
+							<input type="text" name="socsoNumber" id="profileSocsoNumber" class="input-modern" maxlength="14" placeholder="123456-12-1234 or 123456121234" pattern="[0-9\-]*" inputmode="numeric" readonly style="background-color: #f5f5f5; cursor: not-allowed;">
+							<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+								Contact HR to update your SOCSO number
+							</small>
+							
+							<label>Tax Number</label>
+							<input type="text" name="taxNumber" class="input-modern" placeholder="IG123456789" maxlength="13" readonly style="background-color: #f5f5f5; cursor: not-allowed;">
+							<small style="color: #666; display: block; margin-top: -8px; margin-bottom: 12px;">
+								Contact HR to update your tax number
+							</small>
+						</div>
+
+					<div class="form-actions" style="display: flex; gap: 12px; margin-top: 32px; padding-top: 24px; border-top: 2px solid var(--border-color); justify-content: flex-start;">
+						<button type="button" id="changePasswordButton" class="btn-modern btn-modern-primary">
+							
+							Update Details
+						</button>
+					</div>
+					</form>
+				</div>
+
+			</main>
+		</div>
+	</div>
+
+	<div id="status" class="status-toast"></div>
+	<script src="/js/common-ui.js"></script>
+	<script src="/js/dashboard.js"></script>
+	<script>
+		document.addEventListener('DOMContentLoaded', async () => {
+			await DashboardApp.guardRole('EMPLOYEE');
+			DashboardApp.renderUserBadge();
+			
+			// Ensure sidebar-modern class is applied
+			const sidebar = document.getElementById('sidebar');
+			if (sidebar) {
+				sidebar.classList.add('sidebar-modern');
+			}
+			
+			// Wait for CommonUI to finish
+			await new Promise(resolve => setTimeout(resolve, 150));
+			
+			DashboardApp.initSidebar({ scope: 'employee', active: 'profile' });
+			DashboardApp.attachLogout();
+			DashboardApp.prefillForms(['employeeProfileForm']);
+			DashboardApp.initEmployeeProfile();
+			DashboardApp.initFloatingChatbot();
+			DashboardApp.initInactivityMonitor();
+
+			// Add input filter for IC number field to only allow digits and dashes (no spaces)
+			const profileIcNumberInput = document.getElementById('profileIcNumber');
+			if (profileIcNumberInput) {
+				profileIcNumberInput.addEventListener('input', function(e) {
+					// Only allow digits and dashes, remove spaces and all other characters
+					e.target.value = e.target.value.replace(/[^\d\-]/g, '').replace(/\s/g, '');
+				});
+				// Also prevent paste of spaces
+				profileIcNumberInput.addEventListener('paste', function(e) {
+					e.preventDefault();
+					const pastedText = (e.clipboardData || window.clipboardData).getData('text');
+					const cleaned = pastedText.replace(/[^\d\-]/g, '').replace(/\s/g, '');
+					e.target.value = cleaned;
+				});
+			}
+
+			// Add input filter for SOCSO number field to only allow digits and dashes (no spaces)
+			const profileSocsoNumberInput = document.getElementById('profileSocsoNumber');
+			if (profileSocsoNumberInput) {
+				profileSocsoNumberInput.addEventListener('input', function(e) {
+					// Only allow digits and dashes, remove spaces and all other characters
+					e.target.value = e.target.value.replace(/[^\d\-]/g, '').replace(/\s/g, '');
+				});
+				// Also prevent paste of spaces
+				profileSocsoNumberInput.addEventListener('paste', function(e) {
+					e.preventDefault();
+					const pastedText = (e.clipboardData || window.clipboardData).getData('text');
+					const cleaned = pastedText.replace(/[^\d\-]/g, '').replace(/\s/g, '');
+					e.target.value = cleaned;
+				});
+			}
+		});
+	</script>
+</body>
+
+</html>
+

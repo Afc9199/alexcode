@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Admin Benefits | Employee Management</title>
+	<link rel="stylesheet" href="/css/dashboard.css">
+	<link rel="stylesheet" href="/css/dashboard-enhanced.css">
+	<style>
+		/* Modern Card Styling */
+		.card-modern {
+			background: #ffffff;
+			border-radius: 16px;
+			padding: 24px;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+			border: 1px solid rgba(0, 0, 0, 0.06);
+			margin-bottom: 24px;
+		}
+
+		.card-modern h2 {
+			font-size: 1.3rem;
+			font-weight: 600;
+			color: var(--text-primary);
+			margin: 0 0 20px 0;
+			padding-bottom: 16px;
+			border-bottom: 1px solid var(--border-color);
+		}
+
+		/* Modern Toolbar */
+		.toolbar-modern {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 12px;
+			align-items: center;
+			margin-bottom: 24px;
+			padding: 16px;
+			background: #f9f9fb;
+			border-radius: 12px;
+			border: 1px solid var(--border-color);
+		}
+
+		.toolbar-modern .search-container {
+			flex: 1;
+			min-width: 250px;
+			margin: 0;
+		}
+
+		/* Modern Buttons */
+		.btn-modern {
+			padding: 10px 20px;
+			border-radius: 8px;
+			font-weight: 500;
+			font-size: 0.9rem;
+			border: none;
+			cursor: pointer;
+			transition: all 0.2s ease;
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+		}
+
+		.btn-modern-primary {
+			background: linear-gradient(135deg, #2f4ceb 0%, #1e3dd4 100%);
+			color: white;
+			box-shadow: 0 2px 8px rgba(47, 76, 235, 0.3);
+		}
+
+		.btn-modern-primary:hover {
+			transform: translateY(-1px);
+			box-shadow: 0 4px 12px rgba(47, 76, 235, 0.4);
+		}
+
+		.btn-modern-secondary {
+			background: #ffffff;
+			color: var(--text-primary);
+			border: 1px solid var(--border-color);
+		}
+
+		.btn-modern-secondary:hover {
+			background: #f9f9fb;
+			border-color: #3c8ce7;
+		}
+
+		/* Form Styling */
+		.input-modern,
+		.select-modern,
+		.textarea-modern {
+			padding: 12px 16px;
+			border: 1px solid var(--border-color);
+			border-radius: 8px;
+			font-size: 0.9rem;
+			color: var(--text-primary);
+			background: #ffffff;
+			transition: all 0.2s ease;
+			width: 100%;
+		}
+
+		.input-modern:focus,
+		.select-modern:focus,
+		.textarea-modern:focus {
+			outline: none;
+			border-color: #3c8ce7;
+			box-shadow: 0 0 0 3px rgba(60, 140, 231, 0.15);
+		}
+
+		.form-actions {
+			display: flex;
+			gap: 12px;
+			justify-content: flex-end;
+			margin-top: 24px;
+		}
+
+		/* Action Buttons */
+		.action-btn-modern {
+			padding: 8px 16px;
+			border-radius: 8px;
+			font-size: 0.85rem;
+			font-weight: 500;
+			border: none;
+			cursor: pointer;
+			transition: all 0.2s ease;
+			background: transparent;
+			color: #2f4ceb;
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
+		}
+
+		.action-btn-modern:hover {
+			background: rgba(47, 76, 235, 0.1);
+			transform: translateY(-1px);
+		}
+
+		.action-btn-modern.danger {
+			color: #e74c3c;
+		}
+
+		.action-btn-modern.danger:hover {
+			background: rgba(231, 76, 60, 0.1);
+		}
+
+		/* Empty State */
+		.empty-state-modern {
+			text-align: center;
+			padding: 60px 20px;
+			color: var(--text-muted);
+		}
+
+		.empty-state-modern::before {
+			content: '📋';
+			display: block;
+			font-size: 3rem;
+			margin-bottom: 16px;
+		}
+	</style>
+</head>
+
+<body>
+	<header>
+		<div class="brand">
+			<div class="brand__avatar"></div>
+			<div class="brand__content">
+				<h1 class="brand__title">TheLorry</h1>
+				<p class="brand__subtitle">Malaysia • Employee Management</p>
+			</div>
+		</div>
+		<div class="page-meta" id="userBadge"></div>
+		<button id="logoutButton" class="logout-button">Logout</button>
+	</header>
+
+	<div class="layout">
+		<nav class="sidebar sidebar-modern" id="sidebar">
+			<div class="nav-section">
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="dashboard">Dashboard</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="users">Employees</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="attendance">Attendance</a>
+			<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="leave">Leave</a>
+			<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="overtime">Overtime</a>
+			<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="payroll">Payroll</a>
+				<a class="nav-link active" href="#" data-nav-scope="admin" data-nav-target="benefits">Benefits</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="performance">Performance</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="job-postings">Job Postings</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="announcements">Announcements</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="reports">Reports</a>
+				<a class="nav-link" href="#" data-nav-scope="admin" data-nav-target="company-settings">Company Settings</a>
+			</div>
+		</nav>
+
+		<div class="content-area">
+			<main>
+				<!-- Benefit Categories Card -->
+				<div class="card-modern">
+					<h2>Benefit Categories</h2>
+					<div class="toolbar-modern">
+						<div class="search-container">
+							<input type="text" id="benefitSearchInput" class="input-modern" placeholder="Search benefit categories...">
+						</div>
+					</div>
+					<div class="table-responsive">
+						<div id="benefitResult"></div>
+						<div id="benefitEmptyState" class="empty-state-modern" style="display: none;">No benefit categories found.</div>
+					</div>
+				</div>
+
+				<!-- Create/Edit Benefit Category Card -->
+				<div class="card-modern">
+					<h2 id="benefitFormTitle">Create New Benefit Category</h2>
+					<form id="benefitForm">
+						<input type="hidden" id="displayBenefitId" readonly>
+						
+						<label>Benefit Category Name <span style="color: red;">*</span></label>
+						<input type="text" name="name" class="input-modern" required placeholder="e.g., Insurance, Travel Allowance, Meal Subsidy" maxlength="100">
+						<small style="color: #666; display: block; margin-top: 0.25rem;">Maximum 100 characters</small>
+						
+						<label>Description</label>
+						<textarea name="description" class="textarea-modern" placeholder="Enter a description for this benefit category..." rows="4" maxlength="500"></textarea>
+						<small style="color: #666; display: block; margin-top: 0.25rem;">Maximum 500 characters</small>
+						
+						<label>Benefit Amount (RM) <span style="color: red;">*</span></label>
+						<input type="number" name="benefitAmount" class="input-modern" required step="0.01" min="0.01" placeholder="0.00" id="benefitAmountInput">
+						<small style="color: #666; display: block; margin-top: 0.25rem;">Enter the benefit amount in Malaysian Ringgit (RM). Must be greater than 0 and cannot start with 0.</small>
+						
+						<input type="hidden" name="benefitId" id="benefitId">
+						
+						<div class="form-actions">
+							<button type="button" class="btn-modern btn-modern-secondary" id="benefitCancelButton" style="display: none;">Cancel Edit</button>
+							<button type="submit" class="btn-modern btn-modern-primary" id="benefitSubmitButton">Create Benefit Category</button>
+						</div>
+					</form>
+				</div>
+
+				<!-- Assign Benefits to Employees Card -->
+				<div class="card-modern">
+					<h2>Assign Benefits to Employees</h2>
+					<form id="assignBenefitForm">
+						<label>Employee <span style="color: red;">*</span></label>
+						<select name="employeeId" id="assignEmployeeSelect" class="select-modern" required>
+							<option value="">Select an active employee</option>
+						</select>
+						<small style="color: #666; display: block; margin-top: 0.25rem;">Only active employees are listed</small>
+						
+						<label>Employee Name</label>
+						<input type="text" id="assignEmployeeName" class="input-modern" readonly style="background-color: #f5f5f5; cursor: not-allowed;">
+						<small style="color: #666; display: block; margin-top: 0.25rem;">Auto-filled based on employee selection</small>
+						
+						<label>Benefit Category <span style="color: red;">*</span></label>
+						<select name="benefitCategoryId" id="assignBenefitCategory" class="select-modern" required>
+							<option value="">Select a benefit category</option>
+						</select>
+						<small style="color: #666; display: block; margin-top: 0.25rem;">Only active benefit categories are listed</small>
+						
+						<div class="form-actions">
+							<button type="submit" class="btn-modern btn-modern-primary" id="assignBenefitButton">Assign Benefit</button>
+						</div>
+					</form>
+				</div>
+
+				<!-- Benefit Assignments Card -->
+				<div class="card-modern">
+					<h2>Benefit Assignments</h2>
+					<div class="toolbar-modern">
+						<div class="search-container">
+							<input type="text" id="assignmentSearchInput" class="input-modern" placeholder="Search by Employee ID or Benefit...">
+						</div>
+					</div>
+					<div class="table-responsive">
+						<div id="assignmentResult"></div>
+						<div id="assignmentEmptyState" class="empty-state-modern" style="display: none;">No benefit assignments found.</div>
+					</div>
+				</div>
+			</main>
+		</div>
+	</div>
+
+	<div id="status" class="status-toast"></div>
+
+	<script src="/js/common-ui.js"></script>
+	<script src="/js/dashboard.js"></script>
+	<script>
+		document.addEventListener('DOMContentLoaded', async () => {
+			await DashboardApp.guardRole('ADMIN');
+			DashboardApp.renderUserBadge();
+			DashboardApp.initSidebar({ scope: 'admin', active: 'benefits' });
+			DashboardApp.attachLogout();
+			DashboardApp.prefillForms(['benefitForm']);
+			DashboardApp.initAdminBenefits();
+			DashboardApp.initInactivityMonitor();
+		});
+	</script>
+</body>
+
+</html>
+

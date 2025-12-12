@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Employee Leave | Employee Management</title>
+	<link rel="stylesheet" href="/css/dashboard.css">
+	<link rel="stylesheet" href="/css/dashboard-enhanced.css">
+	<style>
+		.leave-page-header {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			margin-bottom: 24px;
+			flex-wrap: wrap;
+			gap: 16px;
+		}
+
+		.leave-page-title {
+			font-size: 1.8rem;
+			font-weight: 700;
+			margin: 0;
+			color: var(--text-primary);
+		}
+
+
+		.leave-form-card {
+			background: #ffffff;
+			border-radius: 16px;
+			padding: 28px;
+			border: 1px solid rgba(0, 0, 0, 0.06);
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+		}
+
+		.leave-form-header {
+			margin-bottom: 24px;
+			padding-bottom: 20px;
+			border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+		}
+
+		.leave-form-header h2 {
+			font-size: 1.5rem;
+			font-weight: 700;
+			margin: 0 0 8px 0;
+			color: var(--text-primary);
+		}
+
+		.leave-form-header p {
+			color: var(--text-muted);
+			margin: 0;
+			font-size: 0.95rem;
+		}
+
+		.leave-alert {
+			margin-top: 12px;
+			padding: 12px 16px;
+			border-radius: 12px;
+			font-size: 0.9rem;
+			display: none;
+		}
+
+		.leave-alert.warning {
+			background: rgba(255, 193, 7, 0.1);
+			border: 1px solid rgba(255, 193, 7, 0.3);
+			color: #856404;
+		}
+
+		.leave-alert.error {
+			background: rgba(231, 76, 60, 0.1);
+			border: 1px solid rgba(231, 76, 60, 0.3);
+			color: #c33;
+		}
+
+		.split-layout {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 16px;
+		}
+
+		.leave-requests-card {
+			background: #ffffff;
+			border-radius: 16px;
+			padding: 28px;
+			border: 1px solid rgba(0, 0, 0, 0.06);
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+		}
+
+		.leave-requests-header {
+			margin-bottom: 24px;
+			padding-bottom: 20px;
+			border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+		}
+
+		.leave-requests-header h2 {
+			font-size: 1.5rem;
+			font-weight: 700;
+			margin: 0;
+			color: var(--text-primary);
+		}
+
+		@media (max-width: 768px) {
+			.split-layout {
+				grid-template-columns: 1fr;
+			}
+
+			.leave-form-card,
+			.leave-requests-card {
+				padding: 20px;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<header>
+		<div class="brand">
+			<div class="brand__avatar"></div>
+			<div class="brand__content">
+				<h1 class="brand__title">TheLorry</h1>
+				<p class="brand__subtitle">Malaysia • Employee Portal</p>
+			</div>
+		</div>
+		<div class="page-meta" id="userBadge"></div>
+		<button id="logoutButton" class="logout-button">Logout</button>
+	</header>
+
+	<div class="layout">
+		<nav class="sidebar sidebar-modern" id="sidebar">
+			<div class="nav-section">
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="dashboard">Dashboard</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="profile">Profile</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="attendance">Attendance</a>
+				<a class="nav-link active" href="#" data-nav-scope="employee" data-nav-target="leave">Leave</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="overtime">Overtime</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="payroll">Payroll</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="benefits">Benefits</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="performance">Performance</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="announcements">Announcements</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="reports">Reports</a>
+			</div>
+		</nav>
+
+		<div class="content-area">
+			<main>
+				<div class="card">
+					<h2>My Leave Balance</h2>
+					<div id="leaveBalanceContainer">
+						<!-- Leave balances will be displayed here -->
+					</div>
+				</div>
+
+				<div class="leave-form-card">
+					<div class="leave-form-header">
+						<h2>Submit Leave Request</h2>
+						<p>Fill in the form below to submit a new leave request</p>
+					</div>
+					<form id="leaveForm">
+						<input type="hidden" name="userId" required>
+						
+						<label>Employee ID</label>
+						<input type="text" id="displayEmployeeId" readonly style="background-color: #f5f5f5; cursor: not-allowed;">
+						
+						<label>Leave Type <span style="color: red;">*</span></label>
+						<select name="leaveType" id="leaveTypeSelect" required>
+							<option value="">-- Select Leave Type --</option>
+							<!-- Options will be dynamically loaded -->
+						</select>
+						<div id="leaveBalanceAlert" class="leave-alert"></div>
+						
+						<div class="split-layout">
+							<div>
+								<label>Start Date <span style="color: red;">*</span></label>
+								<input type="date" name="startDate" required>
+							</div>
+							<div>
+								<label>End Date <span style="color: red;">*</span></label>
+								<input type="date" name="endDate" required>
+							</div>
+						</div>
+						
+						<label>Reason / Notes <span style="color: red;">*</span></label>
+						<textarea name="reason" required placeholder="Please provide a reason for your leave request..." rows="4"></textarea>
+						
+						<label>Supporting Document (Optional)</label>
+						<input type="file" name="supportingDocument" id="supportingDocument" accept="image/*,.pdf,.doc,.docx">
+						<small class="helper-text">You can upload photos, documents, or PDF files to support your leave request (Max 10MB)</small>
+						
+						<div class="form-actions">
+							<button type="submit">Submit Leave Request</button>
+							<button type="button" class="secondary" data-action="listLeave">View My Requests</button>
+						</div>
+					</form>
+				</div>
+
+				<div class="leave-requests-card">
+					<div class="leave-requests-header">
+						<h2>My Leave Requests</h2>
+					</div>
+					<div id="leaveResult"></div>
+				</div>
+			</main>
+		</div>
+	</div>
+
+	<div id="status" class="status-toast"></div>
+	<script src="/js/common-ui.js"></script>
+	<script src="/js/dashboard.js"></script>
+	<script>
+		document.addEventListener('DOMContentLoaded', async () => {
+			await DashboardApp.guardRole('EMPLOYEE');
+			DashboardApp.renderUserBadge();
+			DashboardApp.initSidebar({ scope: 'employee', active: 'leave' });
+			DashboardApp.attachLogout();
+			DashboardApp.prefillForms(['leaveForm']);
+			DashboardApp.initEmployeeLeave();
+			DashboardApp.initFloatingChatbot();
+			DashboardApp.initInactivityMonitor();
+		});
+	</script>
+</body>
+
+</html>

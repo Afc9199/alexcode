@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>My Reports | Employee Management</title>
+	<link rel="stylesheet" href="/css/dashboard.css">
+	<link rel="stylesheet" href="/css/dashboard-enhanced.css">
+	<style>
+		/* Modern Card Styling */
+		.card-modern {
+			background: #ffffff;
+			border-radius: 16px;
+			padding: 24px;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+			border: 1px solid rgba(0, 0, 0, 0.06);
+			margin-bottom: 24px;
+		}
+
+		.card-modern h2 {
+			font-size: 1.3rem;
+			font-weight: 600;
+			color: var(--text-primary);
+			margin: 0 0 20px 0;
+			padding-bottom: 16px;
+			border-bottom: 1px solid var(--border-color);
+		}
+
+		/* Modern Buttons */
+		.btn-modern {
+			padding: 10px 20px;
+			border-radius: 8px;
+			font-weight: 500;
+			font-size: 0.9rem;
+			border: none;
+			cursor: pointer;
+			transition: all 0.2s ease;
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+		}
+
+		.btn-modern-primary {
+			background: linear-gradient(135deg, #2f4ceb 0%, #1e3dd4 100%);
+			color: white;
+			box-shadow: 0 2px 8px rgba(47, 76, 235, 0.3);
+		}
+
+		.btn-modern-primary:hover {
+			transform: translateY(-1px);
+			box-shadow: 0 4px 12px rgba(47, 76, 235, 0.4);
+		}
+
+		.btn-modern-secondary {
+			background: #ffffff;
+			color: var(--text-primary);
+			border: 1px solid var(--border-color);
+		}
+
+		.btn-modern-secondary:hover {
+			background: #f9f9fb;
+			border-color: #3c8ce7;
+		}
+
+		.btn-modern:disabled {
+			opacity: 0.5;
+			cursor: not-allowed;
+		}
+
+		/* Form Styling */
+		.input-modern,
+		.select-modern {
+			padding: 12px 16px;
+			border: 1px solid var(--border-color);
+			border-radius: 8px;
+			font-size: 0.9rem;
+			color: var(--text-primary);
+			background: #ffffff;
+			transition: all 0.2s ease;
+			width: 100%;
+			box-sizing: border-box;
+		}
+
+		.input-modern:focus,
+		.select-modern:focus {
+			outline: none;
+			border-color: #3c8ce7;
+			box-shadow: 0 0 0 3px rgba(60, 140, 231, 0.15);
+		}
+
+		.form-group {
+			margin-bottom: 20px;
+		}
+
+		.form-group label {
+			display: block;
+			margin-bottom: 8px;
+			font-weight: 500;
+			color: var(--text-primary);
+			font-size: 0.9rem;
+		}
+
+		.form-row {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+			gap: 16px;
+			margin-bottom: 20px;
+		}
+
+		.report-section {
+			margin-bottom: 32px;
+			padding-bottom: 24px;
+			border-bottom: 2px solid var(--border-color);
+		}
+
+		.report-section:last-child {
+			border-bottom: none;
+		}
+
+		.report-actions {
+			display: flex;
+			gap: 12px;
+			flex-wrap: wrap;
+			margin-top: 20px;
+		}
+
+		.report-result {
+			margin-top: 24px;
+			padding: 20px;
+			background: #f9f9fb;
+			border-radius: 12px;
+			border: 1px solid var(--border-color);
+		}
+
+		.report-result table {
+			width: 100%;
+			border-collapse: collapse;
+			margin-top: 16px;
+		}
+
+		.report-result th,
+		.report-result td {
+			padding: 12px;
+			text-align: left;
+			border-bottom: 1px solid var(--border-color);
+		}
+
+		.report-result th {
+			background: #f0f0f0;
+			font-weight: 600;
+			font-size: 0.85rem;
+			text-transform: uppercase;
+		}
+
+		.report-result tr:hover {
+			background: #f5f5f5;
+		}
+
+		.loading {
+			text-align: center;
+			padding: 40px;
+			color: var(--text-muted);
+		}
+
+		.error {
+			color: #d32f2f;
+			padding: 16px;
+			background: #ffebee;
+			border-radius: 8px;
+			border-left: 4px solid #d32f2f;
+		}
+	</style>
+</head>
+
+<body>
+	<header>
+		<div class="brand">
+			<div class="brand__avatar"></div>
+			<div class="brand__content">
+				<h1 class="brand__title">TheLorry</h1>
+				<p class="brand__subtitle">Malaysia • Employee Portal</p>
+			</div>
+		</div>
+		<div class="page-meta" id="userBadge"></div>
+		<button id="logoutButton" class="logout-button">Logout</button>
+	</header>
+
+	<div class="layout">
+		<nav class="sidebar sidebar-modern" id="sidebar">
+			<div class="nav-section">
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="dashboard">Dashboard</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="profile">Profile</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="attendance">Attendance</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="leave">Leave</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="overtime">Overtime</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="payroll">Payroll</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="benefits">Benefits</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="performance">Performance</a>
+				<a class="nav-link" href="#" data-nav-scope="employee" data-nav-target="announcements">Announcements</a>
+				<a class="nav-link active" href="#" data-nav-scope="employee" data-nav-target="reports">Reports</a>
+			</div>
+		</nav>
+
+		<div class="content-area">
+			<main>
+				<div class="card-modern">
+					<h2>📊 My Reports & Analytics</h2>
+
+					<!-- Attendance Reports Section -->
+					<div class="report-section">
+						<h3 style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color);">11.1. Attendance Reports</h3>
+						<p style="color: var(--text-muted); margin-bottom: 16px; font-size: 0.9rem;">Generate attendance and punctuality reports for your records.</p>
+						
+						<div class="form-row">
+							<div class="form-group">
+								<label>Report Type</label>
+								<select id="attendanceReportType" class="select-modern">
+									<option value="daily">Daily</option>
+									<option value="weekly">Weekly</option>
+									<option value="monthly">Monthly</option>
+								</select>
+							</div>
+							<div class="form-group">
+								<label>Start Date</label>
+								<input type="date" id="attendanceStartDate" class="input-modern" required>
+							</div>
+							<div class="form-group">
+								<label>End Date</label>
+								<input type="date" id="attendanceEndDate" class="input-modern" required>
+							</div>
+						</div>
+						
+						<div class="report-actions">
+							<button type="button" id="generateAttendanceReport" class="btn-modern btn-modern-primary">Generate Report</button>
+							<button type="button" id="exportAttendanceExcel" class="btn-modern btn-modern-secondary" disabled>📊 Export to Excel</button>
+							<button type="button" id="exportAttendancePDF" class="btn-modern btn-modern-secondary" disabled>📄 Export to PDF</button>
+						</div>
+						
+						<div id="attendanceReportResult"></div>
+					</div>
+
+					<!-- Performance Analytics Section -->
+					<div class="report-section">
+						<h3 style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color);">11.2. Performance Analytics</h3>
+						<p style="color: var(--text-muted); margin-bottom: 16px; font-size: 0.9rem;">Generate performance trend reports for your KPIs.</p>
+						
+						<div class="form-row">
+							<div class="form-group">
+								<label>Year</label>
+								<input type="number" id="performanceYear" class="input-modern" min="2020" max="2099" value="2024">
+							</div>
+						</div>
+						
+						<div class="report-actions">
+							<button type="button" id="generatePerformanceReport" class="btn-modern btn-modern-primary">Generate Report</button>
+							<button type="button" id="exportPerformanceExcel" class="btn-modern btn-modern-secondary" disabled>📊 Export to Excel</button>
+							<button type="button" id="exportPerformancePDF" class="btn-modern btn-modern-secondary" disabled>📄 Export to PDF</button>
+						</div>
+						
+						<div id="performanceReportResult"></div>
+					</div>
+
+					<!-- Payroll Reports Section -->
+					<div class="report-section">
+						<h3 style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color);">11.3. Payroll Reports</h3>
+						<p style="color: var(--text-muted); margin-bottom: 16px; font-size: 0.9rem;">Generate monthly/annual payroll reports for your records.</p>
+						
+						<div class="form-row">
+							<div class="form-group">
+								<label>Report Period</label>
+								<select id="payrollReportPeriod" class="select-modern">
+									<option value="monthly">Monthly</option>
+									<option value="annual">Annual</option>
+								</select>
+							</div>
+							<div class="form-group">
+								<label>Month (If Monthly)</label>
+								<input type="month" id="payrollMonth" class="input-modern">
+							</div>
+							<div class="form-group">
+								<label>Year (If Annual)</label>
+								<input type="number" id="payrollYear" class="input-modern" min="2020" max="2099" value="2024">
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label>
+								<input type="checkbox" id="includeStatutory" checked> Include Statutory Contribution Summaries
+							</label>
+						</div>
+						
+						<div class="report-actions">
+							<button type="button" id="generatePayrollReport" class="btn-modern btn-modern-primary">Generate Report</button>
+							<button type="button" id="exportPayrollExcel" class="btn-modern btn-modern-secondary" disabled>📊 Export to Excel</button>
+							<button type="button" id="exportPayrollPDF" class="btn-modern btn-modern-secondary" disabled>📄 Export to PDF</button>
+						</div>
+						
+						<div id="payrollReportResult"></div>
+					</div>
+				</div>
+			</main>
+		</div>
+	</div>
+
+	<div id="status" class="status-toast"></div>
+	<script src="/js/common-ui.js"></script>
+	<script src="/js/dashboard.js"></script>
+	<script>
+		document.addEventListener('DOMContentLoaded', async () => {
+			await DashboardApp.guardRole('EMPLOYEE');
+			DashboardApp.renderUserBadge();
+			DashboardApp.initSidebar({ scope: 'employee', active: 'reports' });
+			DashboardApp.attachLogout();
+			DashboardApp.initEmployeeReports();
+			DashboardApp.initFloatingChatbot();
+			DashboardApp.initInactivityMonitor();
+
+			// Set default dates
+			const today = new Date();
+			const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+			const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+			
+			document.getElementById('attendanceStartDate').value = firstDay.toISOString().split('T')[0];
+			document.getElementById('attendanceEndDate').value = lastDay.toISOString().split('T')[0];
+			document.getElementById('payrollMonth').value = today.toISOString().slice(0, 7);
+		});
+	</script>
+</body>
+
+</html>
+
