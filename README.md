@@ -1,14 +1,36 @@
 # Employee Management System (Spring Boot + MongoDB)
+Final Year Project (FYP)
+A modern Employee Management System built with Spring Boot 3.4, MongoDB
 
-This project skeleton was generated from Spring Initializr with the correct dependencies to build a reactive-ready Employee Management System backed by MongoDB.
+# Key Features
+- Role-Based Access Control (RBAC): Distinct workflows and dashboards for ADMIN and EMPLOYEE roles.
+- Automated HR Workflows: Real-time attendance tracking, leave application/approval, and dynamic payroll processing.
+
+#Image
+1. Admin - View Employee
+  <img width="1901" height="942" alt="image" src="https://github.com/user-attachments/assets/c17f1964-19d8-4ddd-8336-e6b6af59fd83" />
+
+2. Admin - View Employee Attendance List
+<img width="1881" height="890" alt="image" src="https://github.com/user-attachments/assets/2250e54e-597e-4c05-bbb1-5561a6c7a5fe" />
+
+3. Admin - View Employee Leave
+<img width="1887" height="867" alt="image" src="https://github.com/user-attachments/assets/1a716949-8656-434e-9067-b36dec6481f3" />
+
+4. Admin - Generate Employee Payslip
+<img width="1876" height="580" alt="image" src="https://github.com/user-attachments/assets/a7b402ed-25af-40fa-9f25-d14d431542c7" />
+
+5. Employee - Take Attendance
+<img width="1882" height="854" alt="image" src="https://github.com/user-attachments/assets/3624fdd5-5921-4a3f-a396-3227d6b0f8b3" />
+
+6. Employee - View Leave Balance
+<img width="1886" height="909" alt="image" src="https://github.com/user-attachments/assets/0debe328-b2f3-40dd-b554-14a96c08203a" />
+ 
 
 ## Tech stack
-- Spring Boot 3.4.x (Java 21, Maven)
-- Spring Web for REST APIs
-- Spring Data MongoDB with automatic index creation enabled
+- Backend Framework: Spring Boot 3.4.x (Java 21, Maven)
+- Database: MongoDB
 - Jakarta Bean Validation for DTO/entity validation
 - Spring Boot Actuator for health/info endpoints
-- Lombok (optional, disable it if your toolchain lacks support)
 
 ## Getting started
 
@@ -28,58 +50,10 @@ This project skeleton was generated from Spring Initializr with the correct depe
    - For MongoDB Atlas, enable your IP on the network access list and copy the connection string into `spring.data.mongodb.uri`.
 
 3. **Run the application**
-   ```bash
-   ./mvnw spring-boot:run
-   ```
-   or
-   ```bash
-   ./mvnw clean package
-   java -jar target/employee-management-0.0.1-SNAPSHOT.jar
-   ```
-
-4. **Health checks**
-   - Actuator endpoints are exposed at `http://localhost:8080/actuator/health` and `/actuator/info`.
+   - Execute the following commands in the project root directory
+   - ./mvnw spring-boot:run
 
 ## Authentication quick start
 - Default accounts are created automatically:
   - Admin: `admin` / `admin123`
   - Employee: `employee` / `employee123`
-- Use `POST http://localhost:8080/api/auth/login` with body:
-  ```json
-  {
-    "username": "admin",
-    "password": "admin123"
-  }
-  ```
-- Successful logins return the user id, username, role (`ADMIN` or `EMPLOYEE`) and a message; failed logins return HTTP 401.
-
-## Dashboard & APIs
-- `http://localhost:8080/login.html` → quick login helper (JSON-based)
-- `http://localhost:8080/dashboard.html` → lightweight dashboard for employees/admins:
-  - Employee mode: update profile, submit attendance/leave, view payroll, read announcements.
-  - Admin mode: approve attendance/leave, manage payroll, publish announcements, list users.
-- REST endpoints (selected):
-  - Employee: `/api/employee/profile/{userId}`, `/api/employee/attendance`, `/api/employee/leave`, `/api/employee/payroll/{userId}`, `/api/employee/announcements`
-  - Admin: `/api/admin/attendance`, `/api/admin/leave`, `/api/admin/payroll`, `/api/admin/announcements`, `/api/admin/users`
-
-## AI Copilot (Google Gemini 3 Pro Preview)
-- Backend endpoint: `POST /api/employee/chatbot` (requires an authenticated employee session).  
-- Frontend workspace: `employee-chatbot.html` with real-time streaming from the same endpoint.
-- Configuration:
-  ```yaml
-  gemini:
-    api-key: ${GEMINI_API_KEY:}
-    model: gemini-3.0-pro-preview-001
-  ```
-- Set the API key as an environment variable before starting Spring Boot, e.g. on PowerShell:
-  ```powershell
-  setx GEMINI_API_KEY "AIzaSy..."
-  ```
-- The assistant only returns answers grounded in MongoDB data (profile, attendance, leave, payroll, KPIs, benefits). If the key is missing the endpoint returns HTTP 503.
-
-## Next steps
-- Define domain models under `src/main/java/com/example/employeemanagement`.
-- Create repositories via `Spring Data MongoRepository`.
-- Build REST controllers and DTOs with validation annotations.
-- Add integration tests using the built-in `spring-boot-starter-test` (consider embedding MongoDB via Testcontainers for realism).
-
